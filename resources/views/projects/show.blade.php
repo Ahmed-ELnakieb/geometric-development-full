@@ -174,12 +174,20 @@
 
                 <h2 class="bs-sec-title-4 title wa-split-right wa-capitalize" data-cursor="-opaque">Learn More About {{ $project->title }}</h2>
 
-                <p class="bs-p-4 disc wa-fadeInUp">{!! $project->description !!}</p>
+                {{-- Description output: Content is admin-controlled and sanitized upstream --}}
+                @if(!empty($project->description))
+                    @php
+                        // Sanitize HTML output - allow only safe tags
+                        $allowedTags = '<p><br><ul><ol><li><strong><b><em><i><h2><h3><h4><a><span>';
+                        $sanitizedDescription = strip_tags($project->description, $allowedTags);
+                    @endphp
+                    <p class="bs-p-4 disc wa-fadeInUp">{!! $sanitizedDescription !!}</p>
+                @endif
 
                 <div class="btn-wrap wa-fadeInUp">
                     @php
-                        $brochure = $project->getMedia('documents')->where('name', 'brochure')->first();
-                        $factsheet = $project->getMedia('documents')->where('name', 'factsheet')->first();
+                        $brochure = $project->getFirstMedia('brochure') ?? $project->getMedia('documents')->firstWhere('custom_properties.type', 'brochure');
+                        $factsheet = $project->getFirstMedia('factsheet') ?? $project->getMedia('documents')->firstWhere('custom_properties.type', 'factsheet');
                     @endphp
                     @if($brochure)
                         <a href="{{ $brochure->getUrl() }}" aria-label="Download Brochure" class="bs-pr-btn-2" download>
@@ -482,27 +490,5 @@
 </div>
 <!-- map-end -->
 
-@if($relatedProjects->isNotEmpty())
-<!-- related-projects-start -->
-<section class="bs-related-projects pt-50 pb-50">
-    <div class="container">
-        <h2 class="text-center mb-4">Similar Projects</h2>
-        <div class="row">
-            @foreach($relatedProjects as $relatedProject)
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="{{ $relatedProject->getMedia('gallery')->first()?->getUrl() ?? asset('assets/img/random/random (10).png') }}" class="card-img-top" alt="">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $relatedProject->title }}</h5>
-                            <p class="card-text">{{ $relatedProject->location }}</p>
-                            <a href="{{ route('projects.show', $relatedProject->slug) }}" class="btn btn-primary">View Project</a>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-<!-- related-projects-end -->
-@endif
+
 @endsection

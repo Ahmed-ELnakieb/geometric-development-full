@@ -168,6 +168,48 @@ class ProjectSeeder extends Seeder
             }
         }
 
+        // Add brochure if provided
+        if (isset($images["brochure"]) && is_string($images["brochure"])) {
+            echo "  Adding brochure...\n";
+            $fullPath = $this->ensureImageExists($images["brochure"]);
+            echo "    Checking: {$images["brochure"]} -> {$fullPath}\n";
+            if (file_exists($fullPath)) {
+                echo "    File exists, adding to brochure collection\n";
+                try {
+                    $project
+                        ->addMedia($fullPath)
+                        ->preservingOriginal()
+                        ->toMediaCollection("brochure");
+                    echo "    Successfully added!\n";
+                } catch (\Exception $e) {
+                    echo "    ERROR: " . $e->getMessage() . "\n";
+                }
+            } else {
+                echo "    File does not exist: {$fullPath}\n";
+            }
+        }
+
+        // Add factsheet if provided
+        if (isset($images["factsheet"]) && is_string($images["factsheet"])) {
+            echo "  Adding factsheet...\n";
+            $fullPath = $this->ensureImageExists($images["factsheet"]);
+            echo "    Checking: {$images["factsheet"]} -> {$fullPath}\n";
+            if (file_exists($fullPath)) {
+                echo "    File exists, adding to factsheet collection\n";
+                try {
+                    $project
+                        ->addMedia($fullPath)
+                        ->preservingOriginal()
+                        ->toMediaCollection("factsheet");
+                    echo "    Successfully added!\n";
+                } catch (\Exception $e) {
+                    echo "    ERROR: " . $e->getMessage() . "\n";
+                }
+            } else {
+                echo "    File does not exist: {$fullPath}\n";
+            }
+        }
+
         echo "  Media addition complete for {$project->title}\n\n";
     }
 
@@ -189,7 +231,7 @@ class ProjectSeeder extends Seeder
             "excerpt" =>
                 "A premium beachfront residential community in Ras Al Khaimah offering luxury villas and apartments with stunning sea views.",
             "description" =>
-                '<h2>Project Overview</h2><p>MUROJ represents a pinnacle of luxury living in Ras Al Khaimah, UAE. This exclusive beachfront development offers residents an unparalleled lifestyle, combining modern architecture with the serenity of coastal living. Positioned in Mina\'s North Harbour, MUROJ provides easy access to Dubai and Abu Dhabi while maintaining the tranquility of a secluded paradise.</p><h3>Location Advantages</h3><p>The project\'s prime location offers proximity to world-class amenities, including international schools, healthcare facilities, and shopping centers. With direct access to major highways and the upcoming Al Marjan Island developments, residents enjoy seamless connectivity to the UAE\'s business hubs.</p><h3>Architectural Design</h3><p>MUROJ features resort-inspired residences with panoramic sea views. The architectural design blends traditional Arabian elements with contemporary aesthetics, creating a harmonious balance between heritage and modernity. Each unit is meticulously crafted to maximize natural light and ventilation.</p><ul><li>Premium finishes and materials</li><li>Smart home technology integration</li><li>Sustainable building practices</li><li>Private balconies and terraces</li></ul><h3>Amenities and Lifestyle</h3><p>The community offers world-class amenities designed to enhance everyday living. From infinity pools overlooking the Gulf to wellness centers and recreational facilities, MUROJ provides everything residents need for a luxurious lifestyle.</p><h3>Investment Potential</h3><p>With Ras Al Khaimah\'s growing tourism and real estate sectors, MUROJ presents excellent investment opportunities. The project\'s strategic location and high-quality development make it an attractive option for both residential and rental investments.</p>',
+                'MUROJ occupies a prime location that strikes the perfect balance between tranquil seclusion and effortless connectivity. With easy access to Cairo International Airport, major highways, and Egypt\'s most sought-after landmarks, residents enjoy seamless connections throughout the region and beyond. Download our brochure to discover more.',
             "property_size_min" => 1200,
             "property_size_max" => 4500,
             "total_units" => 250,
@@ -326,6 +368,8 @@ class ProjectSeeder extends Seeder
                 "assets/img/random/random (19).png",
                 "assets/img/random/random (20).png",
             ],
+            "brochure" => "assets/documents/muroj-brochure.pdf",
+            "factsheet" => "assets/documents/muroj-factsheet.pdf",
         ]);
 
         // Project 2: Rich Hills
@@ -338,7 +382,7 @@ class ProjectSeeder extends Seeder
             "excerpt" =>
                 "An upscale residential compound in 6 October City featuring modern villas and townhouses with premium amenities.",
             "description" =>
-                '<h2>Project Overview</h2><p>Rich Hills is a prestigious residential development in 6 October City, Egypt, offering a perfect blend of modern living and natural beauty. This upscale compound features luxury villas and townhouses designed to provide residents with a serene and sophisticated lifestyle.</p><h3>Location Advantages</h3><p>Located in the heart of 6 October City, Rich Hills offers excellent connectivity to Cairo and major business districts. The area is known for its green spaces, international schools, and proximity to shopping and entertainment centers.</p><h3>Architectural Design</h3><p>The development showcases contemporary architectural designs with spacious layouts and high-quality finishes. Each villa and townhouse is crafted to maximize privacy and comfort, featuring private gardens and modern amenities.</p><ul><li>Spacious living areas</li><li>Private gardens and terraces</li><li>Energy-efficient designs</li><li>Customizable interiors</li></ul><h3>Amenities and Lifestyle</h3><p>Rich Hills provides a comprehensive range of amenities to enhance daily life. From recreational facilities to wellness centers, the compound ensures residents have everything they need for a fulfilling lifestyle.</p><h3>Investment Potential</h3><p>As a completed project, Rich Hills offers immediate occupancy and strong rental potential. The area\'s growth and demand for quality housing make it an excellent long-term investment.</p>',
+                "Rich Hills is a prestigious residential development in 6 October City, offering a perfect blend of modern living and natural beauty. This upscale compound features luxury villas and townhouses designed to provide residents with a serene and sophisticated lifestyle. Download our brochure to discover more.",
             "property_size_min" => 800,
             "property_size_max" => 3500,
             "total_units" => 180,
@@ -475,6 +519,8 @@ class ProjectSeeder extends Seeder
                 "assets/img/random/random (3).png",
                 "assets/img/random/random (4).png",
             ],
+            "brochure" => "assets/documents/rich-hills-brochure.pdf",
+            "factsheet" => "assets/documents/rich-hills-factsheet.pdf",
         ]);
 
         // Project 3: Maldives
@@ -487,7 +533,7 @@ class ProjectSeeder extends Seeder
             "excerpt" =>
                 "A coastal resort-style residential development in Hurghada inspired by Maldivian architecture and lifestyle.",
             "description" =>
-                '<h2>Project Overview</h2><p>Maldives brings the essence of tropical paradise to Hurghada, Egypt. This coastal resort-style development features overwater villas and beachfront properties, inspired by the serene beauty of the Maldives. Residents can enjoy a lifestyle of luxury and relaxation by the Red Sea.</p><h3>Location Advantages</h3><p>Hurghada\'s prime location on the Red Sea coast offers stunning beaches, clear waters, and a thriving tourism industry. The area provides easy access to international airports and is a gateway to Egypt\'s most popular coastal destinations.</p><h3>Architectural Design</h3><p>The project incorporates Maldivian-inspired architecture with modern elements, featuring overwater bungalows, beach villas, and resort-style apartments. Each unit is designed to maximize ocean views and provide a sense of seclusion.</p><ul><li>Overwater villas with private docks</li><li>Beachfront properties</li><li>Tropical landscaping</li><li>Eco-friendly materials</li></ul><h3>Amenities and Lifestyle</h3><p>Maldives offers resort-like amenities including private beaches, water sports facilities, and wellness centers. The development creates a community focused on leisure, health, and environmental sustainability.</p><h3>Investment Potential</h3><p>With Hurghada\'s growing appeal as a tourist destination, Maldives presents strong investment opportunities. The unique concept and high demand for coastal properties make it an attractive option for investors.</p>',
+                "Maldives brings the essence of tropical paradise to Hurghada, Egypt. This coastal resort-style development features overwater villas and beachfront properties, inspired by the serene beauty of the Maldives. Residents can enjoy a lifestyle of luxury and relaxation by the Red Sea. Download our brochure to discover more.",
             "property_size_min" => 900,
             "property_size_max" => 2800,
             "total_units" => 320,
@@ -624,6 +670,8 @@ class ProjectSeeder extends Seeder
                 "assets/img/random/random (14).png",
                 "assets/img/random/random (15).png",
             ],
+            "brochure" => "assets/documents/maldives-brochure.pdf",
+            "factsheet" => "assets/documents/maldives-factsheet.pdf",
         ]);
 
         // Project 4: RAS AL KHAIMAH
@@ -636,7 +684,7 @@ class ProjectSeeder extends Seeder
             "excerpt" =>
                 "A mixed-use development in Ras Al Khaimah combining residential, commercial, and hospitality spaces.",
             "description" =>
-                "<h2>Project Overview</h2><p>Ras Al Khaimah Towers is a visionary mixed-use development in Ras Al Khaimah, UAE, blending residential, commercial, and hospitality elements. This project aims to create a vibrant urban center that caters to modern lifestyles and business needs.</p><h3>Location Advantages</h3><p>Located in the heart of Ras Al Khaimah, the development benefits from proximity to key infrastructure, including highways, airports, and business districts. The area is experiencing rapid growth as a commercial and tourism hub.</p><h3>Architectural Design</h3><p>The towers feature contemporary designs with sustainable materials and smart technology integration. The mixed-use concept includes high-rise residential units, office spaces, retail areas, and hotel facilities.</p><ul><li>High-rise residential towers</li><li>Commercial office spaces</li><li>Retail and entertainment zones</li><li>Hospitality suites</li></ul><h3>Amenities and Lifestyle</h3><p>Ras Al Khaimah Towers offers comprehensive amenities including rooftop gardens, fitness centers, and business lounges. The development fosters a community that supports work-life balance and urban living.</p><h3>Investment Potential</h3><p>As a mixed-use project in a growing emirate, Ras Al Khaimah Towers provides diverse investment opportunities in residential, commercial, and hospitality sectors. The strategic location ensures long-term value appreciation.</p>",
+                "Ras Al Khaimah Towers is a visionary mixed-use development blending residential, commercial, and hospitality elements. This project creates a vibrant urban center that caters to modern lifestyles and business needs, with high-rise residential units, office spaces, retail areas, and hotel facilities. Download our brochure to discover more.",
             "property_size_min" => 600,
             "property_size_max" => 5000,
             "total_units" => 450,
@@ -775,6 +823,8 @@ class ProjectSeeder extends Seeder
                 "assets/img/random/random (16).png",
                 "assets/img/random/random (17).png",
             ],
+            "brochure" => "assets/documents/rak-brochure.pdf",
+            "factsheet" => "assets/documents/rak-factsheet.pdf",
         ]);
 
         // Project 5: Sheikh Zayed Residence
@@ -787,7 +837,7 @@ class ProjectSeeder extends Seeder
             "excerpt" =>
                 "A smart residential community in Sheikh Zayed featuring integrated technology and sustainable design.",
             "description" =>
-                '<h2>Project Overview</h2><p>Sheikh Zayed Residence is a forward-thinking residential community in Sheikh Zayed, Egypt, emphasizing smart technology and sustainable living. This development integrates cutting-edge innovations with eco-friendly designs to create a modern, efficient lifestyle.</p><h3>Location Advantages</h3><p>Situated in Sheikh Zayed, the project offers proximity to Cairo\'s business districts, international schools, and healthcare facilities. The area is known for its planned infrastructure and green spaces.</p><h3>Architectural Design</h3><p>The residences feature smart home systems, energy-efficient materials, and sustainable building practices. Each unit is designed for comfort, with integrated technology for security, entertainment, and energy management.</p><ul><li>Smart home automation</li><li>Solar panel integration</li><li>Water conservation systems</li><li>Green building certifications</li></ul><h3>Amenities and Lifestyle</h3><p>Sheikh Zayed Residence provides amenities focused on wellness and technology, including smart gyms, community gardens, and tech-enabled common areas. The development promotes a healthy, connected lifestyle.</p><h3>Investment Potential</h3><p>As a smart community in a developing area, Sheikh Zayed Residence offers strong investment potential. The focus on technology and sustainability appeals to modern buyers and investors seeking future-proof properties.</p>',
+                "Sheikh Zayed Residence is a forward-thinking residential community emphasizing smart technology and sustainable living. This development integrates cutting-edge innovations with eco-friendly designs to create a modern, efficient lifestyle with smart home systems and energy-efficient materials. Download our brochure to discover more.",
             "property_size_min" => 1000,
             "property_size_max" => 3800,
             "total_units" => 200,
@@ -924,6 +974,8 @@ class ProjectSeeder extends Seeder
                 "assets/img/random/random (23).png",
                 "assets/img/random/random (24).png",
             ],
+            "brochure" => "assets/documents/sheikh-zayed-brochure.pdf",
+            "factsheet" => "assets/documents/sheikh-zayed-factsheet.pdf",
         ]);
 
         // Project 6: Coastal Paradise
@@ -936,7 +988,7 @@ class ProjectSeeder extends Seeder
             "excerpt" =>
                 'A luxury beachfront development on Egypt\'s North Coast with world-class amenities and services.',
             "description" =>
-                '<h2>Project Overview</h2><p>Coastal Paradise is a luxurious beachfront development on Egypt\'s North Coast, offering residents an unparalleled coastal lifestyle. This project combines high-end residences with world-class amenities, creating a paradise for those seeking luxury by the sea.</p><h3>Location Advantages</h3><p>Located on the pristine North Coast, Coastal Paradise provides access to some of Egypt\'s most beautiful beaches and clear Mediterranean waters. The area is a popular destination for tourism and offers proximity to major cities.</p><h3>Architectural Design</h3><p>The development features contemporary architectural designs inspired by coastal aesthetics. Units include beachfront villas, apartments, and penthouses, all designed to maximize sea views and natural light.</p><ul><li>Beachfront properties</li><li>Private beach access</li><li>Coastal-inspired interiors</li><li>High-end finishes</li></ul><h3>Amenities and Lifestyle</h3><p>Coastal Paradise offers extensive amenities including private beaches, marina facilities, and wellness centers. The development promotes an active, healthy lifestyle with recreational and leisure options.</p><h3>Investment Potential</h3><p>The North Coast\'s growing popularity as a tourist and residential destination makes Coastal Paradise an excellent investment. The luxury positioning and coastal location ensure strong demand and value appreciation.</p>',
+                'Coastal Paradise is a luxurious beachfront development on Egypt\'s North Coast, offering residents an unparalleled coastal lifestyle. This project combines high-end residences with world-class amenities, including beachfront villas, apartments, and penthouses, all designed to maximize sea views and natural light. Download our brochure to discover more.',
             "property_size_min" => 1500,
             "property_size_max" => 6000,
             "total_units" => 280,
@@ -1075,6 +1127,8 @@ class ProjectSeeder extends Seeder
                 "assets/img/random/random (16).png",
                 "assets/img/random/random (17).png",
             ],
+            "brochure" => "assets/documents/coastal-paradise-brochure.pdf",
+            "factsheet" => "assets/documents/coastal-paradise-factsheet.pdf",
         ]);
     }
 }

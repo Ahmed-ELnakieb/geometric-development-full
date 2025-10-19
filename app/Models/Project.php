@@ -161,6 +161,22 @@ class Project extends Model implements HasMedia
             "application/msword",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         ]);
+
+        $this->addMediaCollection("brochure")
+            ->acceptsMimeTypes([
+                "application/pdf",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ])
+            ->singleFile();
+
+        $this->addMediaCollection("factsheet")
+            ->acceptsMimeTypes([
+                "application/pdf",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ])
+            ->singleFile();
     }
 
     public function registerMediaConversions(?Media $media = null): void
