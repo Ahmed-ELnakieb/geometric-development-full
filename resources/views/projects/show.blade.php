@@ -256,10 +256,14 @@
 
             <div class="bs-project-4-card-pin">
                 <div class="bs-project-4-card ">
-                    @php $cardClasses = ['has-card-1', 'has-card-2', 'has-card-3', 'has-card-4']; @endphp
-                    @foreach($project->unitTypes()->ordered()->get() as $index => $unitType)
+                    @php
+                        $cardClasses = ['has-card-1', 'has-card-2', 'has-card-3', 'has-card-4'];
+                        $unitTypes = $project->unitTypes()->ordered()->get()->take(4);
+                        $unitTypesCount = $unitTypes->count();
+                    @endphp
+                    @foreach($unitTypes as $index => $unitType)
                         <!-- single-card -->
-                        <div class="bs-project-4-card-single {{ $cardClasses[$index % 4] }}">
+                        <div class="bs-project-4-card-single {{ $cardClasses[$index] }}">
                             <div class="card-img wa-fix wa-img-cover">
                                 <a href="{{ route('projects.show', $project->slug) }}" aria-label="View" data-cursor-text="View">
                                     <img src="{{ $unitType->image?->getUrl() ?? asset('assets/img/random/random (17).png') }}" alt="">
@@ -282,9 +286,6 @@
                             </div>
                         </div>
                     @endforeach
-                    @if($project->unitTypes->isEmpty())
-                        <p>Unit type information coming soon.</p>
-                    @endif
                 </div>
 
             </div>
