@@ -482,16 +482,16 @@
 <!-- properties-gallery-end -->
 
 <!-- contact-start -->
-<section class="bs-contact-6-area pt-130 pb-160">
-    <div class="bs-contact-6-bg wa-fix wa-img-cover wa-p-relative">
+<section class="bs-contact-4-area wa-fix wa-p-relative">
+    <div class="bs-contact-4-bg wa-fix wa-img-cover wa-p-relative">
         <img class="wa-parallax-img" src="{{ asset('assets/img/contact/c4-img-1.png') }}" alt="">
         <img src="{{ asset('assets/img/contact/c4-grow-1.png') }}" alt="" class="glow-1">
     </div>
     <div class="container bs-container-2">
-        <div class="bs-contact-6-wrap">
+        <div class="bs-contact-4-wrap">
 
             <!-- left-form -->
-            <div class="bs-contact-6-form">
+            <div class="bs-contact-4-form">
                 <h5 class="bs-h-1 title">Interested in {{ $project->title }}?</h5>
 
                 <form action="{{ route('contact.project.inquiry') }}" class="bs-form-1" method="POST">
@@ -550,9 +550,9 @@
             </div>
 
             <!-- section-title -->
-            <h2 class="bs-sec-title-4 bs-contact-6-title wa-split-right wa-capitalize">{{ $project->title }} - Where Luxury Meets the Sea.</h2>
+            <h2 class="bs-sec-title-4 bs-contact-4-title wa-split-right wa-capitalize">{{ $project->title }} - Where Luxury Meets the Sea.</h2>
 
-            <div class="bs-contact-6-img wa-fix wa-img-cover wa-clip-top-bottom">
+            <div class="bs-contact-4-img wa-fix wa-img-cover wa-clip-top-bottom">
                 <img class="wa-parallax-img" src="{{ asset('assets/img/contact/c4-img-2.png') }}" alt="">
             </div>
         </div>
