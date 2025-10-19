@@ -11,18 +11,10 @@
   - Added `video_url` and `video_preview_url` to all 6 project creations
   - Default values: `video_url` = `https://www.youtube.com/watch?v=e45TPIcx5CY`
   - Default values: `video_preview_url` = `assets/img/video/project-video.mp4`
-- **Backfill Seeder**: Created `AddVideoPreviewToProjectsSeeder`
-  - Populated existing 6 projects with default video preview URL
 - **View**: Updated `resources/views/projects/show.blade.php`
   - Modified video section to use `$project->video_preview_url` attribute
   - Fallback to default path if not set
-- **Status**: ✅ Migration run successfully, all seeders updated, all projects have video attributes
-
-### 2025-10-19 - Default Video URL Feature
-- **Seeder**: Created `AddDefaultVideoToProjectsSeeder`
-  - Added default YouTube URL to all projects: `https://www.youtube.com/watch?v=e45TPIcx5CY`
-  - Updated 6 projects successfully
-- **Status**: ✅ Completed
+- **Status**: ✅ Migration run successfully, main seeder updated, all future projects will have video attributes
 
 ### 2025-10-19 - Contact Section Fix
 - **View**: Fixed `resources/views/projects/show.blade.php`
