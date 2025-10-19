@@ -406,22 +406,16 @@
 <div class="bs-video-1-area wa-fix">
     <div class="bs-video-1-content wa-p-relative">
         <div class="bs-video-1-content-img has-video-2  wa-p-relative wa-fix wa-img-cover">
-            @if($project->video_url)
-                <a href="{{ $project->video_url }}" aria-label="Play Video" class="popup-video" data-cursor-text="play" >
-                    <!-- Video thumbnail or poster image can be added here if available -->
-                </a>
-            @elseif($project->videoFile)
-                <video class="wa-parallax-img"  src="{{ $project->videoFile->getUrl() }}" autoplay loop muted></video>
-            @endif
+            <a href="{{ $project->video_url }}" aria-label="Play Video" class="popup-video" data-cursor-text="play" >
+                <video class="wa-parallax-img"  src="{{ asset($project->video_preview_url ?? 'assets/img/video/project-video.mp4') }}" autoplay loop muted></video>
+            </a>
 
             <div class="bs-video-1-play-btn ">
-                @if($project->video_url)
-                    <a href="{{ $project->video_url }}" aria-label="Play Video" class="bs-play-btn-3 wa-magnetic popup-video">
-                        <span class="icon wa-magnetic-btn">
-                            <i class="fa-solid fa-play"></i>
-                        </span>
-                    </a>
-                @endif
+                <a href="{{ $project->video_url ?? 'https://www.youtube.com/watch?v=e45TPIcx5CY' }}" aria-label="Play Video" class="bs-play-btn-3 wa-magnetic popup-video">
+                    <span class="icon wa-magnetic-btn">
+                        <i class="fa-solid fa-play"></i>
+                    </span>
+                </a>
             </div>
         </div>
     </div>

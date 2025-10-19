@@ -31,6 +31,7 @@ class Project extends Model implements HasMedia
         "excerpt",
         "description",
         "video_url",
+        "video_preview_url",
         "total_units",
         "property_size_min",
         "property_size_max",

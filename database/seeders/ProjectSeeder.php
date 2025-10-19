@@ -232,6 +232,8 @@ class ProjectSeeder extends Seeder
                 "A premium beachfront residential community in Ras Al Khaimah offering luxury villas and apartments with stunning sea views.",
             "description" =>
                 'MUROJ occupies a prime location that strikes the perfect balance between tranquil seclusion and effortless connectivity. With easy access to Cairo International Airport, major highways, and Egypt\'s most sought-after landmarks, residents enjoy seamless connections throughout the region and beyond. Download our brochure to discover more.',
+            "video_url" => "https://www.youtube.com/watch?v=e45TPIcx5CY",
+            "video_preview_url" => "assets/img/video/project-video.mp4",
             "property_size_min" => 390,
             "property_size_max" => 3742,
             "total_units" => 280,
@@ -374,6 +376,8 @@ class ProjectSeeder extends Seeder
                 "An upscale residential compound in 6 October City featuring modern villas and townhouses with premium amenities.",
             "description" =>
                 "Rich Hills is a prestigious residential development in 6 October City, offering a perfect blend of modern living and natural beauty. This upscale compound features luxury villas and townhouses designed to provide residents with a serene and sophisticated lifestyle. Download our brochure to discover more.",
+            "video_url" => "https://www.youtube.com/watch?v=e45TPIcx5CY",
+            "video_preview_url" => "assets/img/video/project-video.mp4",
             "property_size_min" => 450,
             "property_size_max" => 2800,
             "total_units" => 165,
@@ -508,6 +512,8 @@ class ProjectSeeder extends Seeder
                 "A coastal resort-style residential development in Hurghada inspired by Maldivian architecture and lifestyle.",
             "description" =>
                 "Maldives brings the essence of tropical paradise to Hurghada, Egypt. This coastal resort-style development features overwater villas and beachfront properties, inspired by the serene beauty of the Maldives. Residents can enjoy a lifestyle of luxury and relaxation by the Red Sea. Download our brochure to discover more.",
+            "video_url" => "https://www.youtube.com/watch?v=e45TPIcx5CY",
+            "video_preview_url" => "assets/img/video/project-video.mp4",
             "property_size_min" => 520,
             "property_size_max" => 2400,
             "total_units" => 195,
@@ -633,6 +639,8 @@ class ProjectSeeder extends Seeder
                 "A mixed-use development in Ras Al Khaimah combining residential, commercial, and hospitality spaces.",
             "description" =>
                 "Ras Al Khaimah Towers is a visionary mixed-use development blending residential, commercial, and hospitality elements. This project creates a vibrant urban center that caters to modern lifestyles and business needs, with high-rise residential units, office spaces, retail areas, and hotel facilities. Download our brochure to discover more.",
+            "video_url" => "https://www.youtube.com/watch?v=e45TPIcx5CY",
+            "video_preview_url" => "assets/img/video/project-video.mp4",
             "property_size_min" => 580,
             "property_size_max" => 3200,
             "total_units" => 340,
@@ -769,6 +777,8 @@ class ProjectSeeder extends Seeder
                 "A smart residential community in Sheikh Zayed featuring integrated technology and sustainable design.",
             "description" =>
                 "Sheikh Zayed Residence is a forward-thinking residential community emphasizing smart technology and sustainable living. This development integrates cutting-edge innovations with eco-friendly designs to create a modern, efficient lifestyle with smart home systems and energy-efficient materials. Download our brochure to discover more.",
+            "video_url" => "https://www.youtube.com/watch?v=e45TPIcx5CY",
+            "video_preview_url" => "assets/img/video/project-video.mp4",
             "property_size_min" => 650,
             "property_size_max" => 2900,
             "total_units" => 220,
@@ -902,6 +912,8 @@ class ProjectSeeder extends Seeder
                 'A luxury beachfront development on Egypt\'s North Coast with world-class amenities and services.',
             "description" =>
                 'Coastal Paradise is a luxurious beachfront development on Egypt\'s North Coast, offering residents an unparalleled coastal lifestyle. This project combines high-end residences with world-class amenities, including beachfront villas, apartments, and penthouses, all designed to maximize sea views and natural light. Download our brochure to discover more.',
+            "video_url" => "https://www.youtube.com/watch?v=e45TPIcx5CY",
+            "video_preview_url" => "assets/img/video/project-video.mp4",
             "property_size_min" => 720,
             "property_size_max" => 4200,
             "total_units" => 175,
