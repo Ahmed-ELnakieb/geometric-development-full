@@ -31,7 +31,6 @@
             @include('partials.page-transition')
 
             <!-- main-content-wrapper -->
-            <div class="main-content-wrapper">
 
                 <!-- No navbar/header included for project details page -->
 
@@ -40,8 +39,6 @@
                 @include('partials.footer')
 
                 @include('partials.offcanvas')
-
-            </div>
             <!-- end main-content-wrapper -->
 
             @include('partials.back-to-top')
@@ -55,6 +52,8 @@
         <script src="{{ asset('assets/js/swiper-bundle.min.js') }}"></script>
         <script src="{{ asset('assets/js/wow.js') }}"></script>
         <script src="{{ asset('assets/js/text-type.js') }}"></script>
+        <script src="{{ asset('assets/js/matter.js') }}"></script>
+        <script src="{{ asset('assets/js/throwable.js') }}"></script>
         <script src="{{ asset('assets/js/tilt.js') }}"></script>
         <script src="{{ asset('assets/js/nice-select.min.js') }}"></script>
         <script src="{{ asset('assets/js/marquee.min.js') }}"></script>

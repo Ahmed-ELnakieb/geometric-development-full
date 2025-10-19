@@ -4,6 +4,50 @@
 @section('meta-description', $project->meta_description ?? $project->excerpt)
 @section('body-class', 'bs-home-4')
 
+@push('styles')
+<style>
+    /* Prevent white screen during Unit Types scroll */
+    .bs-project-4-area .bs-project-4-card-single {
+        min-height: 400px;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    .bs-project-4-area .card-img {
+        background-color: #f5f5f0;
+        min-height: 300px;
+        position: relative;
+    }
+
+    .bs-project-4-area .card-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* Ensure smooth loading */
+    .bs-project-4-card-pin {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    .bs-project-4-height {
+        min-height: 100vh;
+    }
+
+    /* Prevent flicker during image load */
+    .bs-project-4-area .card-img img.loading {
+        opacity: 0.5;
+    }
+
+    .bs-project-4-area .card-img img.loaded {
+        opacity: 1;
+        transition: opacity 0.3s ease;
+    }
+</style>
+@endpush
+
 @section('content')
 <!-- hero-start -->
 <section class="bs-hero-4-area wa-p-relative pt-90 wa-fix">
@@ -258,29 +302,64 @@
                 <div class="bs-project-4-card ">
                     @php
                         $cardClasses = ['has-card-1', 'has-card-2', 'has-card-3', 'has-card-4'];
+                        $fallbackImages = [
+                            asset('assets/img/random/random (17).png'),
+                            asset('assets/img/random/random (18).png'),
+                            asset('assets/img/random/random (19).png'),
+                            asset('assets/img/random/random (20).png')
+                        ];
+                        $defaultUnits = [
+                            ['name' => 'Studio Apartments', 'size' => '390 sq ft', 'features' => 'Compact & Modern Design'],
+                            ['name' => '1-2 Bedroom Apartments', 'size' => '800-1,200 sq ft', 'features' => 'Gulf Views & Balconies'],
+                            ['name' => '3 Bedroom Duplexes', 'size' => '1,800-2,200 sq ft', 'features' => 'Two Floors & Spacious Layout'],
+                            ['name' => 'Exclusive Penthouses', 'size' => '2,500-3,742 sq ft', 'features' => 'Panoramic Views & Terraces']
+                        ];
+
                         $unitTypes = $project->unitTypes()->ordered()->get()->take(4);
-                        $unitTypesCount = $unitTypes->count();
+
+                        // Pad with placeholders to ensure exactly 4 cards
+                        $displayUnits = [];
+                        for ($i = 0; $i < 4; $i++) {
+                            if (isset($unitTypes[$i])) {
+                                $displayUnits[] = [
+                                    'type' => 'real',
+                                    'unit' => $unitTypes[$i],
+                                    'image' => $unitTypes[$i]->image?->getUrl() ?? $fallbackImages[$i],
+                                    'name' => $unitTypes[$i]->name,
+                                    'size' => $unitTypes[$i]->size_min . '-' . $unitTypes[$i]->size_max . ' sq ft',
+                                    'features' => $unitTypes[$i]->description
+                                ];
+                            } else {
+                                $displayUnits[] = [
+                                    'type' => 'placeholder',
+                                    'image' => $fallbackImages[$i],
+                                    'name' => $defaultUnits[$i]['name'],
+                                    'size' => $defaultUnits[$i]['size'],
+                                    'features' => $defaultUnits[$i]['features']
+                                ];
+                            }
+                        }
                     @endphp
-                    @foreach($unitTypes as $index => $unitType)
+                    @foreach($displayUnits as $index => $displayUnit)
                         <!-- single-card -->
                         <div class="bs-project-4-card-single {{ $cardClasses[$index] }}">
                             <div class="card-img wa-fix wa-img-cover">
                                 <a href="{{ route('projects.show', $project->slug) }}" aria-label="View" data-cursor-text="View">
-                                    <img src="{{ $unitType->image?->getUrl() ?? asset('assets/img/random/random (17).png') }}" alt="">
+                                    <img src="{{ $displayUnit['image'] }}" alt="{{ $displayUnit['name'] }}" loading="eager" class="unit-type-image loading" data-unit-index="{{ $index }}">
                                 </a>
                             </div>
                             <div class="content">
                                 <h5 class="bs-h-4 title">
-                                    <a href="{{ route('projects.show', $project->slug) }}" aria-label="View">{{ $unitType->name }}</a>
+                                    <a href="{{ route('projects.show', $project->slug) }}" aria-label="View">{{ $displayUnit['name'] }}</a>
                                 </h5>
                                 <ul class="card-details wa-list-style-none">
                                     <li class="bs-p-4">
                                         <span>Size:</span>
-                                        {{ $unitType->size_min }}-{{ $unitType->size_max }} sq ft
+                                        {{ $displayUnit['size'] }}
                                     </li>
                                     <li class="bs-p-4">
                                         <span>Features:</span>
-                                        {{ $unitType->description }}
+                                        {{ $displayUnit['features'] }}
                                     </li>
                                 </ul>
                             </div>
@@ -309,9 +388,6 @@
             @foreach($project->amenities()->ordered()->get() as $amenity)
                 <!-- Amenity Item -->
                 <div class="amenity-item" data-amenity-id="{{ $amenity->id }}">
-                    @if($amenity->icon)
-                        <i class="{{ $amenity->icon }}"></i>
-                    @endif
                     <h3 class="amenity-title" style="font-size: 16px; font-weight: 600; letter-spacing: 1.5px; margin-bottom: 12px; color: #000; text-transform: uppercase;">{{ $amenity->title }}</h3>
                     <p class="amenity-description" style="font-size: 14px; line-height: 1.6; color: #666; margin: 0;">{{ $amenity->description }}</p>
                 </div>
@@ -493,3 +569,61 @@
 
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for Unit Types images to load before initializing ScrollTrigger
+    const unitTypeImages = document.querySelectorAll('.bs-project-4-area .unit-type-image');
+
+    if (unitTypeImages.length === 0) {
+        return;
+    }
+
+    let loadedImages = 0;
+    const totalImages = unitTypeImages.length;
+
+    function imageLoaded(img) {
+        img.classList.remove('loading');
+        img.classList.add('loaded');
+        loadedImages++;
+
+        // When all images are loaded, refresh ScrollTrigger
+        if (loadedImages === totalImages) {
+            setTimeout(function() {
+                if (typeof ScrollTrigger !== 'undefined') {
+                    ScrollTrigger.refresh(true);
+                    console.log('ScrollTrigger refreshed after Unit Types images loaded');
+                }
+            }, 100);
+        }
+    }
+
+    unitTypeImages.forEach(function(img) {
+        if (img.complete && img.naturalHeight !== 0) {
+            // Image already loaded
+            imageLoaded(img);
+        } else {
+            // Wait for image to load
+            img.addEventListener('load', function() {
+                imageLoaded(img);
+            });
+
+            // Handle error case
+            img.addEventListener('error', function() {
+                console.warn('Failed to load image:', img.src);
+                imageLoaded(img); // Count as loaded to prevent blocking
+            });
+        }
+    });
+
+    // Fallback: refresh after 3 seconds if images are taking too long
+    setTimeout(function() {
+        if (loadedImages < totalImages && typeof ScrollTrigger !== 'undefined') {
+            ScrollTrigger.refresh(true);
+            console.log('ScrollTrigger fallback refresh triggered');
+        }
+    }, 3000);
+});
+</script>
+@endpush
