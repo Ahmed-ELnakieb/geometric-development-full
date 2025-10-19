@@ -147,11 +147,11 @@
     <div class="container bs-container-1">
 
         <ul class="bs-project-details-meta">
-            <li><b>Status:</b>{{ ucfirst($project->status) }}</li>
+            <li><b>Status:</b>{{ ucfirst(str_replace('_', '-', $project->status)) }}</li>
             <li><b>Total Units:</b>{{ $project->total_units ?? 'N/A' }}</li>
             <li><b>Unit types:</b>{{ $project->unitTypes->pluck('name')->join(', ') }}</li>
             <li><b>Property size (sq ft):</b>{{ $project->property_size_min ?? 'N/A' }}-{{ $project->property_size_max ?? 'N/A' }}</li>
-            <li><b>Completion date:</b>{{ $project->completion_date?->format('M Y') ?? 'TBA' }}</li>
+            <li><b>Completion date:</b>{{ $project->completion_date ? 'Q' . ceil($project->completion_date->month / 3) . ' - ' . $project->completion_date->format('Y') : 'TBA' }}</li>
         </ul>
 
     </div>

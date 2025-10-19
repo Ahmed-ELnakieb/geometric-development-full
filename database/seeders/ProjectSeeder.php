@@ -232,10 +232,10 @@ class ProjectSeeder extends Seeder
                 "A premium beachfront residential community in Ras Al Khaimah offering luxury villas and apartments with stunning sea views.",
             "description" =>
                 'MUROJ occupies a prime location that strikes the perfect balance between tranquil seclusion and effortless connectivity. With easy access to Cairo International Airport, major highways, and Egypt\'s most sought-after landmarks, residents enjoy seamless connections throughout the region and beyond. Download our brochure to discover more.',
-            "property_size_min" => 1200,
-            "property_size_max" => 4500,
-            "total_units" => 250,
-            "completion_date" => Carbon::parse("2026-12-31"),
+            "property_size_min" => 390,
+            "property_size_max" => 3742,
+            "total_units" => 280,
+            "completion_date" => Carbon::parse("2028-09-30"),
             "is_published" => true,
             "is_featured" => true,
             "display_order" => 1,
@@ -245,7 +245,7 @@ class ProjectSeeder extends Seeder
         // Unit Types for MUROJ
         ProjectUnitType::create([
             "project_id" => $muroj->id,
-            "name" => "Studio Apartment",
+            "name" => "Studio",
             "description" =>
                 "Compact and efficient studio with modern finishes",
             "size_min" => 45,
@@ -254,36 +254,27 @@ class ProjectSeeder extends Seeder
         ]);
         ProjectUnitType::create([
             "project_id" => $muroj->id,
-            "name" => "1-Bedroom Apartment",
-            "description" => "Spacious one-bedroom unit with balcony",
+            "name" => "1-2 BR Apartments",
+            "description" => "Spacious apartments with balcony",
             "size_min" => 70,
-            "size_max" => 90,
+            "size_max" => 140,
             "display_order" => 2,
         ]);
         ProjectUnitType::create([
             "project_id" => $muroj->id,
-            "name" => "2-Bedroom Apartment",
-            "description" => "Comfortable two-bedroom apartment with sea views",
-            "size_min" => 110,
-            "size_max" => 140,
+            "name" => "3 BR Duplexes",
+            "description" => "Luxurious three-bedroom duplexes",
+            "size_min" => 160,
+            "size_max" => 200,
             "display_order" => 3,
         ]);
         ProjectUnitType::create([
             "project_id" => $muroj->id,
-            "name" => "3-Bedroom Apartment",
-            "description" =>
-                "Luxurious three-bedroom unit with premium amenities",
-            "size_min" => 160,
-            "size_max" => 200,
-            "display_order" => 4,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $muroj->id,
-            "name" => "Penthouse",
-            "description" => "Exclusive penthouse with panoramic views",
+            "name" => "Penthouses",
+            "description" => "Exclusive penthouses with panoramic views",
             "size_min" => 250,
             "size_max" => 350,
-            "display_order" => 5,
+            "display_order" => 4,
         ]);
 
         // Amenities for MUROJ
@@ -383,20 +374,20 @@ class ProjectSeeder extends Seeder
                 "An upscale residential compound in 6 October City featuring modern villas and townhouses with premium amenities.",
             "description" =>
                 "Rich Hills is a prestigious residential development in 6 October City, offering a perfect blend of modern living and natural beauty. This upscale compound features luxury villas and townhouses designed to provide residents with a serene and sophisticated lifestyle. Download our brochure to discover more.",
-            "property_size_min" => 800,
-            "property_size_max" => 3500,
-            "total_units" => 180,
-            "completion_date" => Carbon::parse("2024-06-30"),
+            "property_size_min" => 450,
+            "property_size_max" => 2800,
+            "total_units" => 165,
+            "completion_date" => Carbon::parse("2024-03-31"),
             "is_published" => true,
             "is_featured" => true,
             "display_order" => 2,
         ]);
         $richHills->categories()->attach([$residential->id]);
 
-        // Unit Types for Rich Hills (similar to MUROJ)
+        // Unit Types for Rich Hills
         ProjectUnitType::create([
             "project_id" => $richHills->id,
-            "name" => "Studio Apartment",
+            "name" => "Studio",
             "description" =>
                 "Compact and efficient studio with modern finishes",
             "size_min" => 45,
@@ -405,36 +396,19 @@ class ProjectSeeder extends Seeder
         ]);
         ProjectUnitType::create([
             "project_id" => $richHills->id,
-            "name" => "1-Bedroom Apartment",
-            "description" => "Spacious one-bedroom unit with balcony",
+            "name" => "1-3 BR Apartments",
+            "description" => "Spacious apartments with modern amenities",
             "size_min" => 70,
-            "size_max" => 90,
+            "size_max" => 200,
             "display_order" => 2,
         ]);
         ProjectUnitType::create([
             "project_id" => $richHills->id,
-            "name" => "2-Bedroom Apartment",
-            "description" => "Comfortable two-bedroom apartment with sea views",
-            "size_min" => 110,
-            "size_max" => 140,
-            "display_order" => 3,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $richHills->id,
-            "name" => "3-Bedroom Apartment",
-            "description" =>
-                "Luxurious three-bedroom unit with premium amenities",
-            "size_min" => 160,
-            "size_max" => 200,
-            "display_order" => 4,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $richHills->id,
-            "name" => "Penthouse",
-            "description" => "Exclusive penthouse with panoramic views",
+            "name" => "Villas",
+            "description" => "Luxury villas with private gardens",
             "size_min" => 250,
-            "size_max" => 350,
-            "display_order" => 5,
+            "size_max" => 450,
+            "display_order" => 3,
         ]);
 
         // Amenities for Rich Hills (same as MUROJ)
@@ -534,58 +508,32 @@ class ProjectSeeder extends Seeder
                 "A coastal resort-style residential development in Hurghada inspired by Maldivian architecture and lifestyle.",
             "description" =>
                 "Maldives brings the essence of tropical paradise to Hurghada, Egypt. This coastal resort-style development features overwater villas and beachfront properties, inspired by the serene beauty of the Maldives. Residents can enjoy a lifestyle of luxury and relaxation by the Red Sea. Download our brochure to discover more.",
-            "property_size_min" => 900,
-            "property_size_max" => 2800,
-            "total_units" => 320,
-            "completion_date" => Carbon::parse("2025-09-30"),
+            "property_size_min" => 520,
+            "property_size_max" => 2400,
+            "total_units" => 195,
+            "completion_date" => Carbon::parse("2025-06-30"),
             "is_published" => true,
             "is_featured" => true,
             "display_order" => 3,
         ]);
         $maldives->categories()->attach([$residential->id, $investment->id]);
 
-        // Unit Types for Maldives (similar)
+        // Unit Types for Maldives
         ProjectUnitType::create([
             "project_id" => $maldives->id,
-            "name" => "Studio Apartment",
-            "description" =>
-                "Compact and efficient studio with modern finishes",
-            "size_min" => 45,
-            "size_max" => 60,
+            "name" => "Beach Apartments",
+            "description" => "Beachfront apartments with sea views",
+            "size_min" => 70,
+            "size_max" => 140,
             "display_order" => 1,
         ]);
         ProjectUnitType::create([
             "project_id" => $maldives->id,
-            "name" => "1-Bedroom Apartment",
-            "description" => "Spacious one-bedroom unit with balcony",
-            "size_min" => 70,
-            "size_max" => 90,
-            "display_order" => 2,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $maldives->id,
-            "name" => "2-Bedroom Apartment",
-            "description" => "Comfortable two-bedroom apartment with sea views",
-            "size_min" => 110,
-            "size_max" => 140,
-            "display_order" => 3,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $maldives->id,
-            "name" => "3-Bedroom Apartment",
-            "description" =>
-                "Luxurious three-bedroom unit with premium amenities",
+            "name" => "Overwater Villas",
+            "description" => "Luxurious overwater villas",
             "size_min" => 160,
-            "size_max" => 200,
-            "display_order" => 4,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $maldives->id,
-            "name" => "Penthouse",
-            "description" => "Exclusive penthouse with panoramic views",
-            "size_min" => 250,
-            "size_max" => 350,
-            "display_order" => 5,
+            "size_max" => 280,
+            "display_order" => 2,
         ]);
 
         // Amenities for Maldives (same)
@@ -685,10 +633,10 @@ class ProjectSeeder extends Seeder
                 "A mixed-use development in Ras Al Khaimah combining residential, commercial, and hospitality spaces.",
             "description" =>
                 "Ras Al Khaimah Towers is a visionary mixed-use development blending residential, commercial, and hospitality elements. This project creates a vibrant urban center that caters to modern lifestyles and business needs, with high-rise residential units, office spaces, retail areas, and hotel facilities. Download our brochure to discover more.",
-            "property_size_min" => 600,
-            "property_size_max" => 5000,
-            "total_units" => 450,
-            "completion_date" => Carbon::parse("2027-12-31"),
+            "property_size_min" => 580,
+            "property_size_max" => 3200,
+            "total_units" => 340,
+            "completion_date" => Carbon::parse("2027-09-30"),
             "is_published" => true,
             "is_featured" => true,
             "display_order" => 4,
@@ -697,10 +645,10 @@ class ProjectSeeder extends Seeder
             ->categories()
             ->attach([$mixedUse->id, $commercial->id, $investment->id]);
 
-        // Unit Types for RAS AL KHAIMAH (assuming similar for mixed-use)
+        // Unit Types for RAS AL KHAIMAH
         ProjectUnitType::create([
             "project_id" => $rasAlKhaimah->id,
-            "name" => "Studio Apartment",
+            "name" => "Studio",
             "description" =>
                 "Compact and efficient studio with modern finishes",
             "size_min" => 45,
@@ -709,36 +657,19 @@ class ProjectSeeder extends Seeder
         ]);
         ProjectUnitType::create([
             "project_id" => $rasAlKhaimah->id,
-            "name" => "1-Bedroom Apartment",
-            "description" => "Spacious one-bedroom unit with balcony",
+            "name" => "1-3 BR Apartments",
+            "description" => "Spacious apartments with city views",
             "size_min" => 70,
-            "size_max" => 90,
+            "size_max" => 200,
             "display_order" => 2,
         ]);
         ProjectUnitType::create([
             "project_id" => $rasAlKhaimah->id,
-            "name" => "2-Bedroom Apartment",
-            "description" => "Comfortable two-bedroom apartment with sea views",
-            "size_min" => 110,
-            "size_max" => 140,
+            "name" => "Office Spaces",
+            "description" => "Modern commercial office spaces",
+            "size_min" => 150,
+            "size_max" => 500,
             "display_order" => 3,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $rasAlKhaimah->id,
-            "name" => "3-Bedroom Apartment",
-            "description" =>
-                "Luxurious three-bedroom unit with premium amenities",
-            "size_min" => 160,
-            "size_max" => 200,
-            "display_order" => 4,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $rasAlKhaimah->id,
-            "name" => "Penthouse",
-            "description" => "Exclusive penthouse with panoramic views",
-            "size_min" => 250,
-            "size_max" => 350,
-            "display_order" => 5,
         ]);
 
         // Amenities for RAS AL KHAIMAH (same)
@@ -838,9 +769,9 @@ class ProjectSeeder extends Seeder
                 "A smart residential community in Sheikh Zayed featuring integrated technology and sustainable design.",
             "description" =>
                 "Sheikh Zayed Residence is a forward-thinking residential community emphasizing smart technology and sustainable living. This development integrates cutting-edge innovations with eco-friendly designs to create a modern, efficient lifestyle with smart home systems and energy-efficient materials. Download our brochure to discover more.",
-            "property_size_min" => 1000,
-            "property_size_max" => 3800,
-            "total_units" => 200,
+            "property_size_min" => 650,
+            "property_size_max" => 2900,
+            "total_units" => 220,
             "completion_date" => Carbon::parse("2026-03-31"),
             "is_published" => true,
             "is_featured" => false,
@@ -848,48 +779,30 @@ class ProjectSeeder extends Seeder
         ]);
         $sheikhZayed->categories()->attach([$residential->id]);
 
-        // Unit Types for Sheikh Zayed Residence (similar)
+        // Unit Types for Sheikh Zayed Residence
         ProjectUnitType::create([
             "project_id" => $sheikhZayed->id,
-            "name" => "Studio Apartment",
-            "description" =>
-                "Compact and efficient studio with modern finishes",
+            "name" => "Smart Studios",
+            "description" => "Compact studios with smart home technology",
             "size_min" => 45,
             "size_max" => 60,
             "display_order" => 1,
         ]);
         ProjectUnitType::create([
             "project_id" => $sheikhZayed->id,
-            "name" => "1-Bedroom Apartment",
-            "description" => "Spacious one-bedroom unit with balcony",
+            "name" => "1-2 BR Smart Apartments",
+            "description" => "Smart apartments with modern amenities",
             "size_min" => 70,
-            "size_max" => 90,
+            "size_max" => 140,
             "display_order" => 2,
         ]);
         ProjectUnitType::create([
             "project_id" => $sheikhZayed->id,
-            "name" => "2-Bedroom Apartment",
-            "description" => "Comfortable two-bedroom apartment with sea views",
-            "size_min" => 110,
-            "size_max" => 140,
+            "name" => "Luxury Duplexes",
+            "description" => "Spacious duplexes with premium features",
+            "size_min" => 200,
+            "size_max" => 300,
             "display_order" => 3,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $sheikhZayed->id,
-            "name" => "3-Bedroom Apartment",
-            "description" =>
-                "Luxurious three-bedroom unit with premium amenities",
-            "size_min" => 160,
-            "size_max" => 200,
-            "display_order" => 4,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $sheikhZayed->id,
-            "name" => "Penthouse",
-            "description" => "Exclusive penthouse with panoramic views",
-            "size_min" => 250,
-            "size_max" => 350,
-            "display_order" => 5,
         ]);
 
         // Amenities for Sheikh Zayed Residence (same)
@@ -989,9 +902,9 @@ class ProjectSeeder extends Seeder
                 'A luxury beachfront development on Egypt\'s North Coast with world-class amenities and services.',
             "description" =>
                 'Coastal Paradise is a luxurious beachfront development on Egypt\'s North Coast, offering residents an unparalleled coastal lifestyle. This project combines high-end residences with world-class amenities, including beachfront villas, apartments, and penthouses, all designed to maximize sea views and natural light. Download our brochure to discover more.',
-            "property_size_min" => 1500,
-            "property_size_max" => 6000,
-            "total_units" => 280,
+            "property_size_min" => 720,
+            "property_size_max" => 4200,
+            "total_units" => 175,
             "completion_date" => Carbon::parse("2027-06-30"),
             "is_published" => true,
             "is_featured" => false,
@@ -1001,48 +914,29 @@ class ProjectSeeder extends Seeder
             ->categories()
             ->attach([$residential->id, $investment->id]);
 
-        // Unit Types for Coastal Paradise (similar)
         ProjectUnitType::create([
             "project_id" => $coastalParadise->id,
-            "name" => "Studio Apartment",
-            "description" =>
-                "Compact and efficient studio with modern finishes",
-            "size_min" => 45,
-            "size_max" => 60,
+            "name" => "Beach Apartments",
+            "description" => "Beachfront apartments with sea views",
+            "size_min" => 90,
+            "size_max" => 180,
             "display_order" => 1,
         ]);
         ProjectUnitType::create([
             "project_id" => $coastalParadise->id,
-            "name" => "1-Bedroom Apartment",
-            "description" => "Spacious one-bedroom unit with balcony",
-            "size_min" => 70,
-            "size_max" => 90,
+            "name" => "Beach Villas",
+            "description" => "Luxury beachfront villas",
+            "size_min" => 200,
+            "size_max" => 400,
             "display_order" => 2,
         ]);
         ProjectUnitType::create([
             "project_id" => $coastalParadise->id,
-            "name" => "2-Bedroom Apartment",
-            "description" => "Comfortable two-bedroom apartment with sea views",
-            "size_min" => 110,
-            "size_max" => 140,
+            "name" => "Penthouses",
+            "description" => "Exclusive penthouses with panoramic sea views",
+            "size_min" => 300,
+            "size_max" => 500,
             "display_order" => 3,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $coastalParadise->id,
-            "name" => "3-Bedroom Apartment",
-            "description" =>
-                "Luxurious three-bedroom unit with premium amenities",
-            "size_min" => 160,
-            "size_max" => 200,
-            "display_order" => 4,
-        ]);
-        ProjectUnitType::create([
-            "project_id" => $coastalParadise->id,
-            "name" => "Penthouse",
-            "description" => "Exclusive penthouse with panoramic views",
-            "size_min" => 250,
-            "size_max" => 350,
-            "display_order" => 5,
         ]);
 
         // Amenities for Coastal Paradise (same)
