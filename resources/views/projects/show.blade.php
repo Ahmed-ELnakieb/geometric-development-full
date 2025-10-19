@@ -9,8 +9,8 @@
     /* Prevent white screen during Unit Types scroll */
     .bs-project-4-area .bs-project-4-card-single {
         min-height: 400px;
-        opacity: 1 !important;
-        visibility: visible !important;
+        /* opacity: 1 !important; */
+        /* visibility: visible !important; */
     }
 
     .bs-project-4-area .card-img {
