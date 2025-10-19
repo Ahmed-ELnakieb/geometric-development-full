@@ -31,7 +31,7 @@
             @include('partials.page-transition')
 
             <!-- main-content-wrapper -->
-            <div class="main-content-wrapper">
+            <div class="main-content">
             
                 @include('partials.header')
 
