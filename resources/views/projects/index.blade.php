@@ -65,7 +65,6 @@
                                         <h5 class="bs-h-1 item-title">
                                             <a href="{{ route('projects.show', $project->slug) }}" aria-label="name">{{ $project->title }}</a>
                                         </h5>
-                                        <p class="bs-p-1 item-location">{{ $project->location }}</p>
                                     </div>
                                 </div>
                             @endforeach
