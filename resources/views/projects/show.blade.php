@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.project-details')
 
 @section('title', $project->meta_title ?? $project->title . ' - Geometric Development')
 @section('meta-description', $project->meta_description ?? $project->excerpt)
@@ -43,7 +43,13 @@
         <div class="bs-hero-4-slider-img">
             <div class="swiper-container bs-h4-img-active wa-fix">
                 <div class="swiper-wrapper">
-                    @forelse($project->getMedia('gallery') as $image)
+                    @php
+                        $heroSliderImages = $project->getMedia('hero_slider');
+                        if ($heroSliderImages->isEmpty()) {
+                            $heroSliderImages = $project->getMedia('gallery')->take(4);
+                        }
+                    @endphp
+                    @forelse($heroSliderImages as $image)
                         <!-- single-slide -->
                         <div class="swiper-slide">
                             <div class="bs-hero-4-slider-img-item ">
@@ -98,26 +104,34 @@
             </div>
         </div>
 
+        @php
+            // Get hero thumbnails, or use hero slider images as fallback
+            $heroThumbnails = $project->getMedia('hero_thumbnails');
+            if ($heroThumbnails->isEmpty()) {
+                $heroSliderImages = $project->getMedia('hero_slider');
+                if ($heroSliderImages->isEmpty()) {
+                    $heroThumbnails = $project->getMedia('gallery')->take(4);
+                } else {
+                    $heroThumbnails = $heroSliderImages;
+                }
+            }
+        @endphp
+
+        @if($heroThumbnails->count() > 0)
         <div class="bs-hero-4-slider-thum">
             <div class="swiper-container bs-h4-thum-active wa-fix">
                 <div class="swiper-wrapper">
-                    @forelse($project->getMedia('gallery') as $image)
+                    @foreach($heroThumbnails as $image)
                         <!-- single-slide -->
                         <div class="swiper-slide">
                             <div class="bs-hero-4-slider-thum-item wa-img-cover wa-fix">
-                                <img src="{{ $image->getUrl('thumb') ?? $image->getUrl() }}" alt="">
+                                <img src="{{ $image->hasGeneratedConversion('thumb') ? $image->getUrl('thumb') : $image->getUrl() }}" alt="">
                             </div>
                         </div>
-                    @empty
-                        <!-- fallback thumbnail -->
-                        <div class="swiper-slide">
-                            <div class="bs-hero-4-slider-thum-item wa-img-cover wa-fix">
-                                <img src="{{ asset('assets/img/random/random (10).png') }}" alt="">
-                            </div>
-                        </div>
-                    @endforelse
+                    @endforeach
                 </div>
             </div>
+        @endif
         </div>
 
         <h2 class="bs-hero-4-big-title bs-h-4 wa-split-up" data-split-delay="1.5s">{{ $project->title }}</h2>
@@ -194,7 +208,7 @@
 
             <!-- right-img -->
             <div class="bs-team-4-img wa-fix wa-img-cover wa-clip-left-right">
-                <img src="{{ $project->getMedia('gallery')->skip(1)->first()?->getUrl() ?? asset('assets/img/random/random (11).png') }}" alt="">
+                <img src="{{ $project->getMedia('about_image')->first()?->getUrl() ?? $project->getMedia('gallery')->skip(1)->first()?->getUrl() ?? asset('assets/img/random/random (11).png') }}" alt="">
             </div>
         </div>
 
@@ -357,7 +371,7 @@
                     <div class="swiper-container bs-p3-active wa-fix">
                         <div class="swiper-wrapper">
                             @php $sizes = ['has-lg-size', 'has-md-size', 'has-sm-size', '']; @endphp
-                            @foreach($project->getMedia('gallery')->skip(4) as $index => $galleryImage)
+                            @foreach($project->getMedia('gallery') as $index => $galleryImage)
                                 <!-- single-slide -->
                                 <div class="swiper-slide">
                                     <div class="bs-projects-3-item {{ $sizes[$index % 4] }}">
