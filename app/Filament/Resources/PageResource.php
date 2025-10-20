@@ -143,16 +143,111 @@ class PageResource extends Resource
                                         Forms\Components\TextInput::make('sections.services.section_title')
                                             ->label('Section Title')
                                             ->columnSpanFull(),
+                                        Forms\Components\FileUpload::make('sections.services.background_image')
+                                            ->label('Section Background Image')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->directory('services/backgrounds')
+                                            ->visibility('public')
+                                            ->helperText('Background image for the entire services section')
+                                            ->columnSpanFull(),
                                         Forms\Components\Repeater::make('sections.services.tabs')
+                                            ->label('Service/Project Tabs')
                                             ->schema([
-                                                Forms\Components\TextInput::make('name')->required(),
-                                                Forms\Components\TextInput::make('year')->default('2025'),
-                                                Forms\Components\TextInput::make('location')->columnSpanFull(),
-                                                Forms\Components\TextInput::make('start_date'),
-                                                Forms\Components\TextInput::make('end_date'),
+                                                Forms\Components\TextInput::make('name')
+                                                    ->label('Project Name')
+                                                    ->required()
+                                                    ->columnSpanFull(),
+                                                Forms\Components\Grid::make(2)
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('year')
+                                                            ->label('Year')
+                                                            ->default('2025'),
+                                                        Forms\Components\Toggle::make('active')
+                                                            ->label('Active Tab')
+                                                            ->default(false),
+                                                    ]),
+                                                Forms\Components\TextInput::make('location')
+                                                    ->label('Location')
+                                                    ->columnSpanFull(),
+                                                Forms\Components\Grid::make(2)
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('start_date')
+                                                            ->label('Start Date')
+                                                            ->placeholder('jan 02, 2025'),
+                                                        Forms\Components\TextInput::make('end_date')
+                                                            ->label('Completion Date')
+                                                            ->placeholder('aug 02, 2025'),
+                                                    ]),
+                                                Forms\Components\TextInput::make('link')
+                                                    ->label('Project Link')
+                                                    ->url()
+                                                    ->default('/projects')
+                                                    ->columnSpanFull(),
+                                                
+                                                // Project Image
+                                                Forms\Components\FileUpload::make('main_image')
+                                                    ->label('Project Image')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('services/projects')
+                                                    ->visibility('public')
+                                                    ->helperText('Main project image - click to upload or drag & drop')
+                                                    ->columnSpanFull(),
+                                                
+                                                // Social Links Section
+                                                Forms\Components\Section::make('Social Media Links')
+                                                    ->description('Share project on social media')
+                                                    ->schema([
+                                                        Forms\Components\Repeater::make('social_links')
+                                                            ->label('Social Links')
+                                                            ->schema([
+                                                                Forms\Components\Select::make('platform')
+                                                                    ->label('Platform')
+                                                                    ->options([
+                                                                        'facebook' => 'Facebook',
+                                                                        'twitter' => 'Twitter/X',
+                                                                        'linkedin' => 'LinkedIn',
+                                                                        'pinterest' => 'Pinterest',
+                                                                        'instagram' => 'Instagram',
+                                                                        'youtube' => 'YouTube',
+                                                                    ])
+                                                                    ->required()
+                                                                    ->live()
+                                                                    ->afterStateUpdated(function ($state, callable $set) {
+                                                                        $icons = [
+                                                                            'facebook' => 'fa-brands fa-facebook-f',
+                                                                            'twitter' => 'fa-brands fa-x-twitter',
+                                                                            'linkedin' => 'fa-brands fa-linkedin-in',
+                                                                            'pinterest' => 'fa-brands fa-pinterest-p',
+                                                                            'instagram' => 'fa-brands fa-instagram',
+                                                                            'youtube' => 'fa-brands fa-youtube',
+                                                                        ];
+                                                                        $set('icon', $icons[$state] ?? '');
+                                                                    }),
+                                                                Forms\Components\TextInput::make('icon')
+                                                                    ->label('Icon Class')
+                                                                    ->default('fa-brands fa-facebook-f')
+                                                                    ->helperText('FontAwesome icon class'),
+                                                                Forms\Components\TextInput::make('url')
+                                                                    ->label('URL')
+                                                                    ->url()
+                                                                    ->default('#')
+                                                                    ->required()
+                                                                    ->columnSpanFull(),
+                                                            ])
+                                                            ->columns(2)
+                                                            ->defaultItems(4)
+                                                            ->collapsible()
+                                                            ->itemLabel(fn (array $state): ?string => $state['platform'] ?? null)
+                                                            ->columnSpanFull(),
+                                                    ])
+                                                    ->collapsed()
+                                                    ->collapsible(),
                                             ])
-                                            ->columns(2)
+                                            ->columns(1)
                                             ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => $state['name'] ?? 'New Service')
                                             ->columnSpanFull(),
                                     ])->collapsible(),
                             ]),

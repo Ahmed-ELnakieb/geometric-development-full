@@ -178,6 +178,12 @@ class HomePageSeeder extends Seeder
                         'end_date' => 'aug 02, 2025',
                         'location' => '136 North Coast, Egypt',
                         'link' => '/projects',
+                        'social_links' => [
+                            ['platform' => 'facebook', 'icon' => 'fa-brands fa-facebook-f', 'url' => '#'],
+                            ['platform' => 'twitter', 'icon' => 'fa-brands fa-x-twitter', 'url' => '#'],
+                            ['platform' => 'linkedin', 'icon' => 'fa-brands fa-linkedin-in', 'url' => '#'],
+                            ['platform' => 'pinterest', 'icon' => 'fa-brands fa-pinterest-p', 'url' => '#'],
+                        ],
                     ],
                     [
                         'name' => 'Mina Marina',
@@ -190,6 +196,12 @@ class HomePageSeeder extends Seeder
                         'end_date' => 'aug 02, 2025',
                         'location' => 'New Cairo, Egypt',
                         'link' => '/projects',
+                        'social_links' => [
+                            ['platform' => 'facebook', 'icon' => 'fa-brands fa-facebook-f', 'url' => '#'],
+                            ['platform' => 'twitter', 'icon' => 'fa-brands fa-x-twitter', 'url' => '#'],
+                            ['platform' => 'linkedin', 'icon' => 'fa-brands fa-linkedin-in', 'url' => '#'],
+                            ['platform' => 'pinterest', 'icon' => 'fa-brands fa-pinterest-p', 'url' => '#'],
+                        ],
                     ],
                     [
                         'name' => 'Rich Hills',
@@ -202,6 +214,12 @@ class HomePageSeeder extends Seeder
                         'end_date' => 'aug 02, 2025',
                         'location' => 'North Coast, Egypt',
                         'link' => '/projects',
+                        'social_links' => [
+                            ['platform' => 'facebook', 'icon' => 'fa-brands fa-facebook-f', 'url' => '#'],
+                            ['platform' => 'twitter', 'icon' => 'fa-brands fa-x-twitter', 'url' => '#'],
+                            ['platform' => 'linkedin', 'icon' => 'fa-brands fa-linkedin-in', 'url' => '#'],
+                            ['platform' => 'pinterest', 'icon' => 'fa-brands fa-pinterest-p', 'url' => '#'],
+                        ],
                     ],
                     [
                         'name' => 'Ras Al Khaimah',
@@ -214,6 +232,12 @@ class HomePageSeeder extends Seeder
                         'end_date' => 'aug 02, 2025',
                         'location' => 'Hurghada, Egypt',
                         'link' => '/projects',
+                        'social_links' => [
+                            ['platform' => 'facebook', 'icon' => 'fa-brands fa-facebook-f', 'url' => '#'],
+                            ['platform' => 'twitter', 'icon' => 'fa-brands fa-x-twitter', 'url' => '#'],
+                            ['platform' => 'linkedin', 'icon' => 'fa-brands fa-linkedin-in', 'url' => '#'],
+                            ['platform' => 'pinterest', 'icon' => 'fa-brands fa-pinterest-p', 'url' => '#'],
+                        ],
                     ],
                 ],
             ],
