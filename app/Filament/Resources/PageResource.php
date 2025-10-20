@@ -290,7 +290,7 @@ class PageResource extends Resource
                         Forms\Components\Tabs\Tab::make('🎬 Video')
                             ->schema([
                                 Forms\Components\Section::make('Video Section')
-                                    ->description('Promotional video - Lines 201-221')
+                                    ->description('Promotional video with upload or YouTube link')
                                     ->schema([
                                         // Visibility Toggle
                                         Forms\Components\Toggle::make('sections.video.is_active')
@@ -300,14 +300,37 @@ class PageResource extends Resource
                                             ->inline(false)
                                             ->columnSpanFull(),
                                         
-                                        Forms\Components\TextInput::make('sections.video.youtube_url')
-                                            ->label('YouTube URL')
-                                            ->placeholder('https://www.youtube.com/watch?v=...')
+                                        Forms\Components\FileUpload::make('sections.video.video_file')
+                                            ->label('Upload Video File')
+                                            ->disk('public')
+                                            ->directory('videos')
+                                            ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/ogg'])
+                                            ->maxSize(102400)
+                                            ->helperText('Upload MP4, WebM, or OGG video (max 100MB). If uploaded, this will be used instead of YouTube URL.')
                                             ->columnSpanFull(),
-                                        Forms\Components\Toggle::make('sections.video.autoplay')->inline(false),
-                                        Forms\Components\Toggle::make('sections.video.loop')->inline(false),
-                                        Forms\Components\Toggle::make('sections.video.muted')->inline(false),
-                                    ])->columns(3)->collapsible(),
+                                        
+                                        Forms\Components\TextInput::make('sections.video.youtube_url')
+                                            ->label('YouTube URL (Fallback)')
+                                            ->placeholder('https://www.youtube.com/watch?v=...')
+                                            ->helperText('Used only if no video file is uploaded')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(3)
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.video.autoplay')
+                                                    ->label('Autoplay')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                Forms\Components\Toggle::make('sections.video.loop')
+                                                    ->label('Loop')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                Forms\Components\Toggle::make('sections.video.muted')
+                                                    ->label('Muted')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                            ]),
+                                    ])->collapsible(),
                             ]),
                         
                         // SERVICES TABS
