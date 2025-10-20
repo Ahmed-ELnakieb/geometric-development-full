@@ -35,24 +35,34 @@ class ProjectResource extends Resource
     {
         return $form
             ->schema([
-                Tabs::make('Tabs')
-                    ->tabs([
-                        Tabs\Tab::make('Basic Information')
+                Forms\Components\Grid::make(2)
+                    ->schema([
+                        // LEFT COLUMN
+                        Forms\Components\Grid::make(1)
                             ->schema([
+                                // Basic Information
+                                Section::make('Basic Information')
+                                    ->icon('heroicon-o-information-circle')
+                                    ->collapsible()
+                                    ->schema([
                                 Section::make('Project Details')
+                                    ->columns(2)
                                     ->schema([
                                         Forms\Components\TextInput::make('title')
                                             ->required()
                                             ->maxLength(191)
-                                            ->autofocus(),
+                                            ->autofocus()
+                                            ->columnSpan(1),
                                         Forms\Components\TextInput::make('slug')
                                             ->required()
                                             ->maxLength(191)
                                             ->unique(ignoreRecord: true)
-                                            ->disabled(fn (?Project $record) => $record !== null),
+                                            ->disabled(fn (?Project $record) => $record !== null)
+                                            ->columnSpan(1),
                                         Forms\Components\TextInput::make('location')
                                             ->required()
-                                            ->maxLength(191),
+                                            ->maxLength(191)
+                                            ->columnSpanFull(),
                                         Select::make('type')
                                             ->required()
                                             ->options([
@@ -61,7 +71,8 @@ class ProjectResource extends Resource
                                                 'commercial' => 'Commercial',
                                                 'investment' => 'Investment',
                                                 'mixed_use' => 'Mixed Use',
-                                            ]),
+                                            ])
+                                            ->columnSpan(1),
                                         Select::make('status')
                                             ->required()
                                             ->options([
@@ -70,7 +81,8 @@ class ProjectResource extends Resource
                                                 'upcoming' => 'Upcoming',
                                                 'on_hold' => 'On Hold',
                                             ])
-                                            ->default('in_progress'),
+                                            ->default('in_progress')
+                                            ->columnSpan(1),
                                         Forms\Components\Textarea::make('excerpt')
                                             ->rows(3)
                                             ->columnSpanFull(),
@@ -88,9 +100,14 @@ class ProjectResource extends Resource
                                             ]),
                                     ]),
                             ]),
-                        Tabs\Tab::make('Media & Assets')
-                            ->schema([
+                                // Media & Assets
+                                Section::make('Media & Assets')
+                                    ->icon('heroicon-o-photo')
+                                    ->collapsible()
+                                    ->collapsed()
+                                    ->schema([
                                 Section::make('Hero Section Media')
+                                    ->columns(2)
                                     ->schema([
                                         SpatieMediaLibraryFileUpload::make('hero_slider')
                                             ->collection('hero_slider')
@@ -109,7 +126,8 @@ class ProjectResource extends Resource
                                                 }
                                             })
                                             ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
-                                            ->helperText('Upload images for the hero slider. Recommended size: 1920x1080px. You can drag to reorder images.'),
+                                            ->helperText('Upload images for the hero slider. Recommended size: 1920x1080px. You can drag to reorder images.')
+                                            ->columnSpan(1),
                                         SpatieMediaLibraryFileUpload::make('hero_thumbnails')
                                             ->collection('hero_thumbnails')
                                             ->multiple()
@@ -127,7 +145,8 @@ class ProjectResource extends Resource
                                                 }
                                             })
                                             ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
-                                            ->helperText('Upload up to 3 thumbnail images (max enforced). If not uploaded, thumbnails will be auto-generated from hero slider. You can drag to reorder.'),
+                                            ->helperText('Upload up to 3 thumbnail images (max enforced). If not uploaded, thumbnails will be auto-generated from hero slider. You can drag to reorder.')
+                                            ->columnSpan(1),
                                     ]),
                                 Section::make('Gallery & About')
                                     ->schema([
@@ -224,27 +243,40 @@ class ProjectResource extends Resource
                                             ->helperText('Upload additional project documents'),
                                     ]),
                             ]),
-                        Tabs\Tab::make('Property Details')
+                        ]),
+                        // RIGHT COLUMN
+                        Forms\Components\Grid::make(1)
                             ->schema([
+                                // Property Details
+                                Section::make('Property Details')
+                                    ->icon('heroicon-o-building-office')
+                                    ->collapsible()
+                                    ->collapsed()
+                                    ->schema([
                                 Section::make('Unit Information')
+                                    ->columns(2)
                                     ->schema([
                                         Forms\Components\TextInput::make('total_units')
                                             ->numeric()
                                             ->minValue(0)
-                                            ->label('Total Units'),
+                                            ->label('Total Units')
+                                            ->columnSpan(1),
+                                        Forms\Components\DatePicker::make('completion_date')
+                                            ->label('Completion Date')
+                                            ->displayFormat('M Y')
+                                            ->columnSpan(1),
                                         Forms\Components\TextInput::make('property_size_min')
                                             ->numeric()
                                             ->minValue(0)
                                             ->suffix('sq ft')
-                                            ->label('Minimum Property Size'),
+                                            ->label('Minimum Property Size')
+                                            ->columnSpan(1),
                                         Forms\Components\TextInput::make('property_size_max')
                                             ->numeric()
                                             ->minValue(0)
                                             ->suffix('sq ft')
-                                            ->label('Maximum Property Size'),
-                                        Forms\Components\DatePicker::make('completion_date')
-                                            ->label('Completion Date')
-                                            ->displayFormat('M Y'),
+                                            ->label('Maximum Property Size')
+                                            ->columnSpan(1),
                                     ]),
                                 Section::make('Categories')
                                     ->schema([
@@ -256,8 +288,12 @@ class ProjectResource extends Resource
                                             ->helperText('Select one or more categories for this project'),
                                     ]),
                             ]),
-                        Tabs\Tab::make('SEO & Publishing')
-                            ->schema([
+                                // SEO & Publishing
+                                Section::make('SEO & Publishing')
+                                    ->icon('heroicon-o-globe-alt')
+                                    ->collapsible()
+                                    ->collapsed()
+                                    ->schema([
                                 Section::make('SEO Settings')
                                     ->schema([
                                         Forms\Components\TextInput::make('meta_title')
@@ -270,25 +306,30 @@ class ProjectResource extends Resource
                                             ->helperText('Recommended length: 150-160 characters'),
                                     ]),
                                 Section::make('Publishing')
+                                    ->columns(2)
                                     ->schema([
                                         Forms\Components\Toggle::make('is_featured')
                                             ->label('Featured Project')
-                                            ->default(false),
+                                            ->default(false)
+                                            ->columnSpan(1),
+                                        Forms\Components\Toggle::make('is_published')
+                                            ->label('Published')
+                                            ->default(false)
+                                            ->reactive()
+                                            ->columnSpan(1),
                                         Forms\Components\TextInput::make('display_order')
                                             ->numeric()
                                             ->default(0)
                                             ->minValue(0)
-                                            ->helperText('Lower numbers appear first'),
-                                        Forms\Components\Toggle::make('is_published')
-                                            ->label('Published')
-                                            ->default(false)
-                                            ->reactive(),
+                                            ->helperText('Lower numbers appear first')
+                                            ->columnSpan(1),
                                         Forms\Components\DateTimePicker::make('published_at')
                                             ->label('Publish Date')
                                             ->visible(fn (Get $get) => $get('is_published')),
                                     ]),
                             ]),
                     ]),
+                ]),
             ]);
     }
 

@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->maxContentWidth('full') // Set full width for all pages
             ->plugin(
                 FilamentMediaManagerPlugin::make()
                     ->allowSubFolders()
