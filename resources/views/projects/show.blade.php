@@ -402,12 +402,12 @@
 
 
 <!-- video-start -->
-@if($project->video_url || $project->videoFile)
+@if($project->video_url)
 <div class="bs-video-1-area wa-fix">
     <div class="bs-video-1-content wa-p-relative">
         <div class="bs-video-1-content-img has-video-2  wa-p-relative wa-fix wa-img-cover">
             <a href="{{ $project->video_url }}" aria-label="Play Video" class="popup-video" data-cursor-text="play" >
-                <video class="wa-parallax-img"  src="{{ asset($project->video_preview_url ?? 'assets/img/video/project-video.mp4') }}" autoplay loop muted></video>
+                <video class="wa-parallax-img"  src="{{ $project->getFirstMediaUrl('video_preview') ?: asset($project->video_preview_url ?? 'assets/img/video/project-video.mp4') }}" autoplay loop muted></video>
             </a>
 
             <div class="bs-video-1-play-btn ">

@@ -53,26 +53,6 @@ class Project extends Model implements HasMedia
         "published_at" => "datetime",
     ];
 
-    public function featuredImage(): BelongsTo
-    {
-        return $this->belongsTo(Media::class, "featured_image_id");
-    }
-
-    public function videoFile(): BelongsTo
-    {
-        return $this->belongsTo(Media::class, "video_file_id");
-    }
-
-    public function brochure(): BelongsTo
-    {
-        return $this->belongsTo(Media::class, "brochure_id");
-    }
-
-    public function factsheet(): BelongsTo
-    {
-        return $this->belongsTo(Media::class, "factsheet_id");
-    }
-
     public function unitTypes(): HasMany
     {
         return $this->hasMany(ProjectUnitType::class);
@@ -176,6 +156,14 @@ class Project extends Model implements HasMedia
                 "application/pdf",
                 "application/msword",
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ])
+            ->singleFile();
+
+        $this->addMediaCollection("video_preview")
+            ->acceptsMimeTypes([
+                "video/mp4",
+                "video/webm",
+                "video/ogg",
             ])
             ->singleFile();
     }

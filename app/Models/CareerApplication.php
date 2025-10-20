@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 // use Spatie\Activitylog\LogOptions;
 // use Spatie\Activitylog\// LogsActivity;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class CareerApplication extends Model
+class CareerApplication extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
         'career_id',
@@ -38,6 +40,14 @@ class CareerApplication extends Model
     public function cvFile(): BelongsTo
     {
         return $this->belongsTo(Media::class, 'cv_file_id');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('cv_files')
+            ->singleFile()
+            ->acceptsMimeTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
+            ->maxFileSize(5 * 1024 * 1024); // 5MB
     }
 
     public function scopeStatus($query, $status)
@@ -75,5 +85,30 @@ class CareerApplication extends Model
     public function isRejected(): bool
     {
         return $this->status === 'rejected';
+    }
+
+    public function review(): void
+    {
+        $this->update(['status' => 'reviewing']);
+    }
+
+    public function shortlist(): void
+    {
+        $this->update(['status' => 'shortlisted']);
+    }
+
+    public function interview(): void
+    {
+        $this->update(['status' => 'interviewed']);
+    }
+
+    public function hire(): void
+    {
+        $this->update(['status' => 'hired']);
+    }
+
+    public function reject(): void
+    {
+        $this->update(['status' => 'rejected']);
     }
 }

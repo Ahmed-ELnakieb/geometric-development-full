@@ -16,14 +16,14 @@ class BlogController extends Controller
         $featuredPosts = BlogPost::published()
             ->featured()
             ->recent()
-            ->with(['author', 'categories', 'tags', 'featuredImage'])
+            ->with(['author', 'categories', 'tags'])
             ->get();
 
         // Get regular posts (paginated)
         $posts = BlogPost::published()
             ->where('is_featured', false)
             ->recent()
-            ->with(['author', 'categories', 'tags', 'featuredImage'])
+            ->with(['author', 'categories', 'tags'])
             ->paginate(6);
 
         $categories = BlogCategory::withCount('publishedPosts')
@@ -43,7 +43,7 @@ class BlogController extends Controller
         $category = BlogCategory::where('slug', $slug)->firstOrFail();
 
         $posts = $category->publishedPosts()
-            ->with(['author', 'categories', 'tags', 'featuredImage'])
+            ->with(['author', 'categories', 'tags'])
             ->recent()
             ->paginate(8);
 
@@ -64,7 +64,7 @@ class BlogController extends Controller
         $tag = BlogTag::where('slug', $slug)->firstOrFail();
 
         $posts = $tag->publishedPosts()
-            ->with(['author', 'categories', 'tags', 'featuredImage'])
+            ->with(['author', 'categories', 'tags'])
             ->recent()
             ->paginate(8);
 
@@ -88,7 +88,6 @@ class BlogController extends Controller
                 'author',
                 'categories',
                 'tags',
-                'featuredImage',
                 'approvedComments' => function ($query) {
                     $query->with('user');
                 }
@@ -100,7 +99,7 @@ class BlogController extends Controller
                 $q->whereIn('blog_categories.id', $post->categories->pluck('id'));
             })
             ->where('id', '!=', $post->id)
-            ->with(['author', 'categories', 'tags', 'featuredImage'])
+            ->with(['author', 'categories', 'tags'])
             ->take(3)
             ->get();
 

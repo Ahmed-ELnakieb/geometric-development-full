@@ -25,7 +25,6 @@ class BlogPost extends Model implements HasMedia
         'slug',
         'excerpt',
         'content',
-        'featured_image_id',
         'author_id',
         'read_time',
         'is_featured',
@@ -44,11 +43,6 @@ class BlogPost extends Model implements HasMedia
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
-    }
-
-    public function featuredImage(): BelongsTo
-    {
-        return $this->belongsTo(Media::class, 'featured_image_id');
     }
 
     public function comments(): HasMany

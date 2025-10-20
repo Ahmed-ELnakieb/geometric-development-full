@@ -10,7 +10,7 @@
 <!-- breadcrumb-start -->
 <section class="breadcrumb-area has-blog-details wa-p-relative">
     <div class="breadcrumb-bg-img wa-fix wa-img-cover">
-        <img class="wa-parallax-img" src="{{ $post->featuredImage ? $post->featuredImage->getUrl() : asset('assets/img/random/random (2).png') }}" alt="">
+        <img class="wa-parallax-img" src="{{ $post->getFirstMediaUrl('featured_image') ?: asset('assets/img/random/random (2).png') }}" alt="">
     </div>
 
     <div class="container bs-container-1">
@@ -163,7 +163,7 @@
                 <div class="bs-blog-item mb-30">
                     <div class="bs-blog-thumb wa-img-cover">
                         <a href="{{ route('blog.show', $relatedPost->slug) }}">
-                            <img src="{{ $relatedPost->featuredImage ? $relatedPost->featuredImage->getUrl() : asset('assets/img/random/random (2).png') }}" alt="{{ $relatedPost->title }}">
+                            <img src="{{ $relatedPost->getFirstMediaUrl('featured_image') ?: asset('assets/img/random/random (2).png') }}" alt="{{ $relatedPost->title }}">
                         </a>
                     </div>
                     <div class="bs-blog-content">

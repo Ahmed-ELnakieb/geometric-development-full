@@ -11,10 +11,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 // use Spatie\Activitylog\// LogsActivity;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Career extends Model
+class Career extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, HasSlug;
+    use HasFactory, SoftDeletes, HasSlug, InteractsWithMedia;
 
     protected $fillable = [
         'title',
@@ -96,5 +98,25 @@ class Career extends Model
     public function isActive(): bool
     {
         return $this->is_active && !$this->isExpired();
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('job_description')
+            ->acceptsMimeTypes([
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            ])
+            ->singleFile();
+
+        $this->addMediaCollection('department_image')
+            ->acceptsMimeTypes([
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'image/webp',
+            ])
+            ->singleFile();
     }
 }

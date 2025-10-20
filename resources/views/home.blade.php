@@ -771,7 +771,7 @@
                 <div class="bs-blog-3-item-single wa-skew-1">
                     <div class="item-img wa-fix wa-img-cover">
                         <a href="{{ route('blog.show', $post->slug) }}" aria-label="name" data-cursor-text="View">
-                            <img src="{{ $post->featuredImage ? $post->featuredImage->getUrl() : asset('assets/img/random/random (10).png') }}" alt="">
+                            <img src="{{ $post->getFirstMediaUrl('featured_image') ?: asset('assets/img/random/random (10).png') }}" alt="">
                         </a>
                     </div>
                     <p class="bs-p-1 item-date">{{ $post->published_at->format('d M Y') }}</p>

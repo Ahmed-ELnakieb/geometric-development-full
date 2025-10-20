@@ -25,7 +25,7 @@ class HomeController extends Controller
         $blogPosts = BlogPost::published()
             ->recent()
             ->take(3)
-            ->with('author', 'categories', 'featuredImage')
+            ->with('author', 'categories')
             ->get();
 
         $careers = Career::active()

@@ -71,7 +71,7 @@
                     <div class="bs-blog-1-item wa-3dUp">
                         <div class="item-img wa-fix wa-img-cover">
                             <a href="{{ route('blog.show', $post->slug) }}" aria-label="name" data-cursor-text="View">
-                                <img src="{{ $post->featuredImage ? $post->featuredImage->getUrl() : asset('assets/img/random/random (10).png') }}" alt="">
+                                <img src="{{ $post->getFirstMediaUrl('featured_image') ?: asset('assets/img/random/random (10).png') }}" alt="">
                             </a>
                         </div>
                         <p class="item-date bs-p-1">
@@ -125,7 +125,7 @@
                     <div class="bs-blog-4-item wow fadeInRight">
                         <div class="item-img wa-fix wa-img-cover">
                             <a href="{{ route('blog.show', $post->slug) }}" aria-label="name" data-cursor-text="View">
-                                <img src="{{ $post->featuredImage ? $post->featuredImage->getUrl() : asset('assets/img/random/random (12).png') }}" alt="">
+                                <img src="{{ $post->getFirstMediaUrl('featured_image') ?: asset('assets/img/random/random (12).png') }}" alt="">
                             </a>
                         </div>
                         <div class="content">
