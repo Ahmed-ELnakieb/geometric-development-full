@@ -783,6 +783,100 @@ class PageResource extends Resource
                                     ])->collapsible()->collapsed(),
                             ]),
                         
+                        // BLOG TAB
+                        Forms\Components\Tabs\Tab::make('📝 Blog')
+                            ->schema([
+                                Forms\Components\Section::make('Blog Posts Section')
+                                    ->description('Configure the latest blog posts display on homepage')
+                                    ->schema([
+                                        // Visibility Toggle
+                                        Forms\Components\Toggle::make('sections.blog.is_active')
+                                            ->label('Show Blog Section')
+                                            ->default(true)
+                                            ->helperText('Toggle to show/hide the entire blog section on homepage')
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.blog.section_subtitle')
+                                            ->label('Section Subtitle')
+                                            ->default('recent blog')
+                                            ->placeholder('recent blog')
+                                            ->helperText('Small text above the main title')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.blog.section_title')
+                                            ->label('Section Title')
+                                            ->default('news & ideas')
+                                            ->placeholder('news & ideas')
+                                            ->helperText('Main heading for the blog section')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.blog.icon_image')
+                                            ->label('Icon Image (Optional)')
+                                            ->image()
+                                            ->directory('blog/icons')
+                                            ->visibility('public')
+                                            ->helperText('Small decorative icon shown before subtitle')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\Select::make('sections.blog.post_limit')
+                                                    ->label('Number of Posts to Display')
+                                                    ->options([
+                                                        2 => '2 Posts',
+                                                        3 => '3 Posts (Default)',
+                                                        4 => '4 Posts',
+                                                        6 => '6 Posts',
+                                                        8 => '8 Posts',
+                                                    ])
+                                                    ->default(3)
+                                                    ->helperText('Maximum number of latest blog posts to show')
+                                                    ->native(false),
+                                                
+                                                Forms\Components\Toggle::make('sections.blog.show_button')
+                                                    ->label('Show "View All" Button')
+                                                    ->default(true)
+                                                    ->helperText('Display button to view all blog posts page')
+                                                    ->inline(false),
+                                            ]),
+                                        
+                                        Forms\Components\TextInput::make('sections.blog.button_text')
+                                            ->label('Button Text')
+                                            ->default('view all blogs')
+                                            ->placeholder('view all blogs')
+                                            ->helperText('Text for the "View All Blogs" button')
+                                            ->visible(fn (callable $get) => $get('sections.blog.show_button'))
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Toggle::make('sections.blog.show_date')
+                                            ->label('Show Publication Date')
+                                            ->default(true)
+                                            ->helperText('Display date on each blog post')
+                                            ->inline(false),
+                                        
+                                        Forms\Components\Toggle::make('sections.blog.show_excerpt')
+                                            ->label('Show Excerpt')
+                                            ->default(true)
+                                            ->helperText('Display short description/excerpt on each blog post')
+                                            ->inline(false),
+                                        
+                                        Forms\Components\Placeholder::make('blog_note')
+                                            ->label('📌 Important Notes')
+                                            ->content(new \Illuminate\Support\HtmlString('
+                                                <div style="padding: 12px; background: #f3f4f6; border-radius: 6px; font-size: 14px;">
+                                                    <ul style="margin: 0; padding-left: 20px; line-height: 2;">
+                                                        <li><strong>Posts Source:</strong> Shows published blog posts from Blog Posts menu</li>
+                                                        <li><strong>Order:</strong> Posts sorted by publication date (newest first)</li>
+                                                        <li><strong>To Add Posts:</strong> Go to Blog Posts menu → Create/Edit → Publish</li>
+                                                        <li><strong>Featured Image:</strong> Uses the featured image from each post</li>
+                                                        <li><strong>Excerpt:</strong> Short description shown on homepage (editable in post)</li>
+                                                    </ul>
+                                                </div>
+                                            ')),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
                         // SEO TAB
                         Forms\Components\Tabs\Tab::make('🔍 SEO')
                             ->schema([

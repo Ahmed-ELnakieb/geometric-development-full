@@ -13,6 +13,9 @@
     // Get project limit from sections config or default to 6
     $projectLimit = $homePage->sections['projects']['project_limit'] ?? 6;
     
+    // Get blog post limit from sections config or default to 3
+    $blogPostLimit = $homePage->sections['blog']['post_limit'] ?? 3;
+    
     $projects = \App\Models\Project::where('is_published', true)
         ->where('is_featured', true)
         ->orderBy('display_order')
@@ -21,7 +24,7 @@
     
     $blogPosts = \App\Models\BlogPost::where('is_published', true)
         ->orderBy('published_at', 'desc')
-        ->limit(3)
+        ->limit($blogPostLimit)
         ->get();
 @endphp
 

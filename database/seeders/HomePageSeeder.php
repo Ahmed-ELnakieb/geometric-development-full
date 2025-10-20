@@ -328,18 +328,18 @@ class HomePageSeeder extends Seeder
                 ],
             ],
 
-            // BLOG SECTION (Lines 750-802 in home.blade.php)
-            // This section uses dynamic $blogPosts from database
+            // BLOG SECTION - Latest blog posts
+            // Uses dynamic $blogPosts from database (is_published, ordered by published_at)
             'blog' => [
                 'is_active' => true,
                 'section_subtitle' => 'recent blog',
                 'section_title' => 'news & ideas',
-                'star_icon' => 'assets/img/hero/h3-start.png',
+                'icon_image' => 'assets/img/hero/h3-start.png', // Decorative icon
+                'post_limit' => 3, // Number of posts to display (2, 3, 4, 6, or 8)
+                'show_button' => true, // Show "View All Blogs" button
                 'button_text' => 'view all blogs',
-                'button_link' => '/blog',
-                'max_posts' => 3,
-                'show_fallback_image' => true,
-                'fallback_image' => 'assets/img/random/random (10).png',
+                'show_date' => true, // Show publication date on each post
+                'show_excerpt' => true, // Show excerpt/description on each post
             ],
         ];
     }
