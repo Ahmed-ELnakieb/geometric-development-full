@@ -211,6 +211,39 @@
   - ✅ Backward compatible with existing data
 - **Status**: ✅ Implemented - video preview now uses media library with proper fallbacks
 
+### 2025-10-20 - Installed and Enabled Filament Media Manager Sidebar GUI
+- **Issue**: Media Library sidebar menu with folder management GUI was not visible in admin panel
+- **Root Cause**: Package was in `composer.json` but not actually installed (missing from `composer.lock`)
+- **Fix Applied**:
+  1. **Installed package**: `composer require tomatophp/filament-media-manager` (v1.1.6)
+  2. **Published config**: `filament-media-manager.php` configuration file
+  3. **Ran migrations**: Created 4 new tables:
+     - `folders` - For organizing media into folders
+     - `media_has_models` - For polymorphic media relationships  
+     - `folder_has_models` - For polymorphic folder relationships
+     - Updated folders table with additional columns
+  4. **Enabled plugin**: Added `FilamentMediaManagerPlugin::make()` to `AdminPanelProvider.php`
+- **Package Dependencies Installed**:
+  - `calebporzio/sushi` (v2.5.3) - For in-memory models
+  - `tomatophp/console-helpers` (v1.1.0) - Console utilities
+  - `tomatophp/filament-icons` (v1.1.5) - Icon management
+  - `tomatophp/filament-media-manager` (v1.1.6) - Main package
+- **Features Available**:
+  - 📁 **Folders**: Create, rename, delete, organize folders (enabled in config)
+  - 👤 **User Access**: Per-user media access control (enabled in config)
+  - 🖼️ **Visual Browser**: Grid/list view with thumbnails
+  - ⬆️ **Bulk Upload**: Multiple file upload support
+  - 🔍 **Search & Filter**: Find media by name, type, folder
+  - 🗑️ **Media Management**: Full CRUD operations
+- **Config Settings** (`config/filament-media-manager.php`):
+  - Allowed MIME types: images, videos, documents
+  - Max file size: 100MB
+  - API: Disabled
+  - Folders: Enabled
+  - User access control: Enabled
+  - Password protection: Disabled
+- **Status**: ✅ Installed and configured - refresh admin panel to see "Media" menu in sidebar
+
 ## Notes
 - Video preview uses local MP4 file for background animation
 - Video URL opens in popup overlay when play button clicked
