@@ -456,6 +456,89 @@ class PageResource extends Resource
                                     ])->collapsible()->collapsed(),
                             ]),
                         
+                        // PROJECTS TAB
+                        Forms\Components\Tabs\Tab::make('🏘️ Projects')
+                            ->schema([
+                                Forms\Components\Section::make('Featured Projects Section')
+                                    ->description('Configure the featured projects display on homepage')
+                                    ->schema([
+                                        // Visibility Toggle
+                                        Forms\Components\Toggle::make('sections.projects.is_active')
+                                            ->label('Show Projects Section')
+                                            ->default(true)
+                                            ->helperText('Toggle to show/hide the entire projects section on homepage')
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.projects.section_title')
+                                            ->label('Section Title')
+                                            ->default('RESIDENTIAL PROPERTIES')
+                                            ->placeholder('RESIDENTIAL PROPERTIES')
+                                            ->helperText('Main heading for the projects section')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.projects.section_subtitle')
+                                            ->label('Section Subtitle (Optional)')
+                                            ->placeholder('Discover our exclusive properties')
+                                            ->helperText('Optional subtitle text below the main title')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\Select::make('sections.projects.project_limit')
+                                                    ->label('Number of Projects to Display')
+                                                    ->options([
+                                                        3 => '3 Projects',
+                                                        4 => '4 Projects',
+                                                        6 => '6 Projects (Default)',
+                                                        8 => '8 Projects',
+                                                        9 => '9 Projects',
+                                                        12 => '12 Projects',
+                                                    ])
+                                                    ->default(6)
+                                                    ->helperText('Maximum number of featured projects to show')
+                                                    ->native(false),
+                                                
+                                                Forms\Components\Toggle::make('sections.projects.show_button')
+                                                    ->label('Show "View All" Button')
+                                                    ->default(true)
+                                                    ->helperText('Display button to view all projects page')
+                                                    ->inline(false),
+                                            ]),
+                                        
+                                        Forms\Components\TextInput::make('sections.projects.button_text')
+                                            ->label('Button Text')
+                                            ->default('view all projects')
+                                            ->placeholder('view all projects')
+                                            ->helperText('Text for the "View All Projects" button')
+                                            ->visible(fn (callable $get) => $get('sections.projects.show_button'))
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.projects.button_bg_image')
+                                            ->label('Button Background Shape (Optional)')
+                                            ->image()
+                                            ->directory('projects/button-bg')
+                                            ->visibility('public')
+                                            ->helperText('Background decorative image for the button area')
+                                            ->visible(fn (callable $get) => $get('sections.projects.show_button'))
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Placeholder::make('projects_note')
+                                            ->label('📌 Important Notes')
+                                            ->content(new \Illuminate\Support\HtmlString('
+                                                <div style="padding: 12px; background: #f3f4f6; border-radius: 6px; font-size: 14px;">
+                                                    <ul style="margin: 0; padding-left: 20px; line-height: 2;">
+                                                        <li><strong>Projects Source:</strong> Shows published projects marked as "Featured" from Projects menu</li>
+                                                        <li><strong>Order:</strong> Projects are sorted by "Display Order" field</li>
+                                                        <li><strong>To Add Projects:</strong> Go to Projects menu → Create/Edit → Toggle "Is Featured" → Set "Display Order"</li>
+                                                        <li><strong>Layout:</strong> Grid layout automatically adjusts based on number of projects</li>
+                                                        <li><strong>Images:</strong> Uses first image from project gallery</li>
+                                                    </ul>
+                                                </div>
+                                            ')),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
                         // SHOWCASE TAB
                         Forms\Components\Tabs\Tab::make('📸 Showcase')
                             ->schema([

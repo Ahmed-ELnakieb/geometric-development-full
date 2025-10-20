@@ -242,17 +242,16 @@ class HomePageSeeder extends Seeder
                 ],
             ],
 
-            // RESIDENTIAL PROPERTIES SECTION (Lines 467-594 in home.blade.php)
-            // This section uses dynamic $projects from database
-            'residential_properties' => [
+            // PROJECTS SECTION - Featured projects grid
+            // Uses dynamic $projects from database (is_featured + display_order)
+            'projects' => [
                 'is_active' => true,
                 'section_title' => 'RESIDENTIAL PROPERTIES',
+                'section_subtitle' => '', // Optional subtitle
+                'project_limit' => 6, // Number of projects to display (3, 4, 6, 8, 9, or 12)
+                'show_button' => true, // Show "View All Projects" button
                 'button_text' => 'view all projects',
-                'button_link' => '/projects',
-                'button_background' => 'assets/img/projects/p5-btn-bg-shape.png',
-                'max_projects' => 6,
-                'show_fallback_image' => true,
-                'fallback_image' => 'assets/img/random/random (10).png',
+                'button_bg_image' => 'assets/img/projects/p5-btn-bg-shape.png',
             ],
 
             // SHOWCASE CAROUSEL SECTION (Lines 596-648 in home.blade.php)

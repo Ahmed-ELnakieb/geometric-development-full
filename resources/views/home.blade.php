@@ -9,11 +9,16 @@
 @php
     // Get homepage data once for all sections
     $homePage = \App\Models\Page::where('slug', 'home')->first();
+    
+    // Get project limit from sections config or default to 6
+    $projectLimit = $homePage->sections['projects']['project_limit'] ?? 6;
+    
     $projects = \App\Models\Project::where('is_published', true)
         ->where('is_featured', true)
         ->orderBy('display_order')
-        ->limit(6)
+        ->limit($projectLimit)
         ->get();
+    
     $blogPosts = \App\Models\BlogPost::where('is_published', true)
         ->orderBy('published_at', 'desc')
         ->limit(3)
