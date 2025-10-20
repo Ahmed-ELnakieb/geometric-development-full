@@ -412,17 +412,69 @@ class PageResource extends Resource
                         Forms\Components\Tabs\Tab::make('🖼️ Gallery')
                             ->schema([
                                 Forms\Components\Section::make('Instagram Gallery')
-                                    ->description('Social gallery - Lines 650-748')
+                                    ->description('Social gallery grid with individual Instagram links')
                                     ->schema([
-                                        Forms\Components\TextInput::make('sections.gallery.section_subtitle')
-                                            ->label('Section Subtitle')
-                                            ->columnSpanFull(),
-                                        Forms\Components\TextInput::make('sections.gallery.instagram_link')
-                                            ->label('Instagram URL')
-                                            ->placeholder('https://instagram.com/...'),
-                                        Forms\Components\TextInput::make('sections.gallery.button_text')
-                                            ->label('Button Text'),
-                                    ])->columns(2)->collapsible(),
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('sections.gallery.section_subtitle')
+                                                    ->label('Section Subtitle')
+                                                    ->default('Stay Inspired with Instagram')
+                                                    ->columnSpan(1),
+                                                Forms\Components\TextInput::make('sections.gallery.section_title')
+                                                    ->label('Section Title')
+                                                    ->default('<i class="fa-brands fa-instagram"></i> Instagram')
+                                                    ->columnSpan(1),
+                                            ]),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('sections.gallery.button_text')
+                                                    ->label('Follow Button Text')
+                                                    ->default('Follow Us'),
+                                                Forms\Components\TextInput::make('sections.gallery.button_link')
+                                                    ->label('Follow Button Link')
+                                                    ->default('https://instagram.com/geometric_development')
+                                                    ->placeholder('https://instagram.com/...'),
+                                            ]),
+                                        
+                                        Forms\Components\Repeater::make('sections.gallery.items')
+                                            ->label('Gallery Images')
+                                            ->schema([
+                                                Forms\Components\FileUpload::make('image')
+                                                    ->label('Image')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('gallery')
+                                                    ->visibility('public')
+                                                    ->maxSize(5120)
+                                                    ->helperText('Upload gallery image (max 5MB)')
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\TextInput::make('instagram_url')
+                                                    ->label('Instagram Post URL')
+                                                    ->placeholder('https://instagram.com/p/...')
+                                                    ->helperText('Link to specific Instagram post')
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\Select::make('size')
+                                                    ->label('Image Size')
+                                                    ->options([
+                                                        'normal' => 'Normal',
+                                                        'xs-size' => 'Extra Small',
+                                                        'sm-size' => 'Small',
+                                                    ])
+                                                    ->default('normal')
+                                                    ->helperText('Display size in gallery grid')
+                                                    ->columnSpanFull(),
+                                            ])
+                                            ->collapsible()
+                                            ->collapsed()
+                                            ->itemLabel(fn (array $state): ?string => 'Gallery Image #' . ($state['image'] ? '✓' : ''))
+                                            ->defaultItems(0)
+                                            ->reorderable()
+                                            ->columnSpanFull()
+                                            ->addActionLabel('Add Gallery Image'),
+                                    ])->collapsible(),
                             ]),
                         
                         // SEO TAB

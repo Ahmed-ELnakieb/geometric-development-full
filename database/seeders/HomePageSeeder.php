@@ -288,16 +288,44 @@ class HomePageSeeder extends Seeder
                 'section_subtitle' => 'Stay Inspired with Instagram',
                 'section_title' => '<i class="fa-brands fa-instagram"></i> Instagram',
                 'star_icon' => 'assets/img/illus/star-shape.png',
-                'instagram_link' => '#',
                 'button_text' => 'Follow Us',
-                'images' => [
-                    'assets/img/gallery/g2-img-1.png',
-                    'assets/img/gallery/g2-img-2.png',
-                    'assets/img/gallery/g2-img-3.png',
-                    'assets/img/gallery/g2-img-4.png',
-                    'assets/img/gallery/g2-img-5.png',
-                    'assets/img/gallery/g2-img-6.png',
-                    'assets/img/gallery/g2-img-7.png',
+                'button_link' => 'https://instagram.com/geometric_development',
+                'items' => [
+                    [
+                        'image' => 'assets/img/gallery/g2-img-1.png',
+                        'instagram_url' => 'https://instagram.com/p/example1',
+                        'size' => 'normal',
+                    ],
+                    [
+                        'image' => 'assets/img/gallery/g2-img-2.png',
+                        'instagram_url' => 'https://instagram.com/p/example2',
+                        'size' => 'xs-size',
+                    ],
+                    [
+                        'image' => 'assets/img/gallery/g2-img-3.png',
+                        'instagram_url' => 'https://instagram.com/p/example3',
+                        'size' => 'normal',
+                    ],
+                    [
+                        'image' => 'assets/img/gallery/g2-img-4.png',
+                        'instagram_url' => 'https://instagram.com/p/example4',
+                        'size' => 'xs-size',
+                    ],
+                    [
+                        'image' => 'assets/img/gallery/g2-img-5.png',
+                        'instagram_url' => 'https://instagram.com/p/example5',
+                        'size' => 'sm-size',
+                    ],
+                    [
+                        'image' => 'assets/img/gallery/g2-img-6.png',
+                        'instagram_url' => 'https://instagram.com/p/example6',
+                        'size' => 'sm-size',
+                    ],
+                    [
+                        'image' => 'assets/img/gallery/g2-img-7.png',
+                        'instagram_url' => 'https://instagram.com/p/example7',
+                        'size' => 'sm-size',
+                    ],
                 ],
             ],
 
