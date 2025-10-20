@@ -24,15 +24,48 @@ class MediaLibraryResource extends Resource
 
     protected static ?string $navigationLabel = 'Media Library';
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?string $navigationGroup = 'Media Management';
 
-    protected static ?int $navigationSort = 99;
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $recordTitleAttribute = 'name';
+    
+    protected static ?string $modelLabel = 'Media File';
+    
+    protected static ?string $pluralModelLabel = 'Media Files';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Section::make('Media Information')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(191)
+                            ->label('Media Name'),
+                        Forms\Components\TextInput::make('file_name')
+                            ->required()
+                            ->maxLength(191)
+                            ->label('File Name')
+                            ->disabled(),
+                        Forms\Components\TextInput::make('collection_name')
+                            ->required()
+                            ->maxLength(191)
+                            ->label('Collection'),
+                        Forms\Components\TextInput::make('mime_type')
+                            ->disabled()
+                            ->label('MIME Type'),
+                        Forms\Components\TextInput::make('size')
+                            ->disabled()
+                            ->formatStateUsing(fn ($state) => number_format($state / 1024, 2) . ' KB')
+                            ->label('File Size'),
+                        Forms\Components\ViewField::make('preview')
+                            ->label('Preview')
+                            ->view('filament.forms.components.media-preview')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -96,6 +129,12 @@ class MediaLibraryResource extends Resource
                     ->label('File Type'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->url(fn ($record) => $record->getUrl())
+                    ->openUrlInNewTab()
+                    ->label('View File')
+                    ->icon('heroicon-o-eye'),
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('download')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->url(fn ($record) => $record->getUrl())
@@ -121,11 +160,12 @@ class MediaLibraryResource extends Resource
     {
         return [
             'index' => Pages\ListMediaLibraries::route('/'),
+            'edit' => Pages\EditMediaLibrary::route('/{record}/edit'),
         ];
     }
 
     public static function canCreate(): bool
     {
-        return false; // Media is created through model uploads
+        return false; // Media is created through model uploads only
     }
 }

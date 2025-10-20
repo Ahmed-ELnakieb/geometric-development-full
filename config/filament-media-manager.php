@@ -42,7 +42,20 @@ return [
         "column_name" => "name",
     ],
 
-    "navigation_sort" => 0,
+    "navigation" => [
+        "sort" => 2,
+        "group" => "Media Management",
+        "folder" => [
+            "label" => "Folders",
+            "icon" => "heroicon-o-folder",
+            "sort" => 2,
+        ],
+        "media" => [
+            "label" => "Media Browser",
+            "icon" => "heroicon-o-film",
+            "sort" => 3,
+        ],
+    ],
 
     'features' => [
         'folders' => true,
