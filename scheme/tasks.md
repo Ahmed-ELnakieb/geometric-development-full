@@ -244,6 +244,39 @@
   - Password protection: Disabled
 - **Status**: ✅ Installed and configured - refresh admin panel to see "Media" menu in sidebar
 
+### 2025-10-20 - Project Hero Media with Enhanced Controls
+- **Issue**: Need enhanced media management for hero_slider and hero_thumbnails with upload, reordering, preview, and deletion capabilities
+- **Requirements**: 
+  1. Full control over media items (upload, reorder, preview, download, delete)
+  2. Limit hero_thumbnails to maximum 3 images with enforcement
+  3. Auto-generate thumbnails from hero_slider images when empty
+  4. Drag-and-drop reordering for all media fields
+- **Changes Applied**:
+  1. **ProjectResource.php**:
+     - Enhanced `SpatieMediaLibraryFileUpload` for hero_slider and hero_thumbnails
+     - Added `->previewable()` - click to preview images in modal
+     - Added `->openable()` - click to open images in new tab
+     - Added `->downloadable()` - click to download images
+     - Added `->moveFiles()` - enable moving files between locations
+     - Added `->reorderable()` - drag and drop to reorder images
+     - Set `maxFiles(3)` for hero_thumbnails
+     - Applied same enhancements to gallery field
+     - Updated helper text to indicate reordering capability
+  2. **Project.php Model**:
+     - Added `booted()` method with `saved` event listener
+     - **Enforces 3-file limit**: Automatically deletes excess thumbnails beyond 3 (model-level validation)
+     - **Auto-generates thumbnails**: Copies first 3 hero_slider images when hero_thumbnails is empty
+     - Uses `addMediaFromDisk()` to copy images between collections
+     - Works seamlessly with existing `InteractsWithMedia` trait from Spatie
+- **Benefits**:
+  - ✅ Full media control with preview, open, download, and delete
+  - ✅ Drag-and-drop reordering for intuitive media management
+  - ✅ Enforces 3 image maximum for thumbnails (both UI and model-level)
+  - ✅ Auto-generates thumbnails from hero slider when not manually uploaded
+  - ✅ Visual preview modal for all images
+  - ✅ Consistent enhanced controls across all media fields
+- **Status**: ✅ Implemented - test at /admin/projects/1/edit
+
 ## Notes
 - Video preview uses local MP4 file for background animation
 - Video URL opens in popup overlay when play button clicked
@@ -251,3 +284,5 @@
 - Legacy media FKs have been removed - all media now managed through Spatie Media Library collections
 - Career applications now support optional CV uploads after migration is applied
 - CV file ID is automatically synced with Spatie Media Library on save
+- Hero slider and thumbnails use enhanced SpatieMediaLibraryFileUpload with previewable, openable, downloadable, moveFiles, and reorderable features
+- Hero thumbnails enforced to 3 images maximum with both UI (maxFiles) and model-level validation, plus auto-generation from hero slider

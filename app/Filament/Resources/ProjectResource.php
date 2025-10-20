@@ -98,14 +98,22 @@ class ProjectResource extends Resource
                                             ->reorderable()
                                             ->maxFiles(10)
                                             ->visibility('public')
-                                            ->helperText('Upload images for the hero slider. Recommended size: 1920x1080px'),
+                                            ->previewable()
+                                            ->openable()
+                                            ->downloadable()
+                                            ->moveFiles()
+                                            ->helperText('Upload images for the hero slider. Recommended size: 1920x1080px. You can drag to reorder images.'),
                                         SpatieMediaLibraryFileUpload::make('hero_thumbnails')
                                             ->collection('hero_thumbnails')
                                             ->multiple()
                                             ->reorderable()
-                                            ->maxFiles(10)
+                                            ->maxFiles(3)
                                             ->visibility('public')
-                                            ->helperText('Upload thumbnail images for the hero slider navigation'),
+                                            ->previewable()
+                                            ->openable()
+                                            ->downloadable()
+                                            ->moveFiles()
+                                            ->helperText('Upload up to 3 thumbnail images (max enforced). If not uploaded, thumbnails will be auto-generated from hero slider. You can drag to reorder.'),
                                     ]),
                                 Section::make('Gallery & About')
                                     ->schema([
@@ -114,7 +122,11 @@ class ProjectResource extends Resource
                                             ->multiple()
                                             ->reorderable()
                                             ->visibility('public')
-                                            ->helperText('Upload project gallery images'),
+                                            ->previewable()
+                                            ->openable()
+                                            ->downloadable()
+                                            ->moveFiles()
+                                            ->helperText('Upload project gallery images. You can drag to reorder.'),
                                         SpatieMediaLibraryFileUpload::make('about_image')
                                             ->collection('about_image')
                                             ->visibility('public')

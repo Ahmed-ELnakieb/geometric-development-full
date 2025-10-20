@@ -22,6 +22,37 @@ class Project extends Model implements HasMedia
 {
     use HasFactory, SoftDeletes, HasSlug, InteractsWithMedia;
 
+    /**
+     * Boot the model and register model events
+     */
+    protected static function booted(): void
+    {
+        // Auto-generate thumbnails from hero slider images if thumbnails are empty
+        static::saved(function (Project $project) {
+            $thumbnails = $project->getMedia('hero_thumbnails');
+            $heroSliderImages = $project->getMedia('hero_slider');
+            
+            // Enforce max 3 thumbnails - remove excess if more than 3
+            if ($thumbnails->count() > 3) {
+                $excess = $thumbnails->slice(3);
+                foreach ($excess as $media) {
+                    $media->delete();
+                }
+                // Refresh thumbnails after deletion
+                $thumbnails = $project->getMedia('hero_thumbnails');
+            }
+            
+            // Only auto-generate if thumbnails are empty and hero slider has images
+            if ($thumbnails->isEmpty() && $heroSliderImages->isNotEmpty()) {
+                $imagesToCopy = $heroSliderImages->take(3);
+                
+                foreach ($imagesToCopy as $media) {
+                    $media->copy($project, 'hero_thumbnails');
+                }
+            }
+        });
+    }
+
     protected $fillable = [
         "title",
         "slug",
