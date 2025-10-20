@@ -10,6 +10,7 @@
 @php
     $homePage = \App\Models\Page::where('slug', 'home')->first();
     $hero = $homePage->sections['hero'] ?? [];
+    $heroIsActive = $hero['is_active'] ?? true;
     $mainTitle = $hero['main_title'] ?? 'Leading Community Developer in MUROJ';
     $subtitle = $hero['subtitle'] ?? 'Inspiration of MUROJ in EGYPT';
     $rotatingTexts = $hero['rotating_texts'] ?? ['Luxury Living', 'Invest Smart', 'Buy Quality', 'Dream Home'];
@@ -43,6 +44,7 @@
         : asset('assets/img/hero/h5-img-3.png');
 @endphp
 
+@if($heroIsActive)
 <section class="bs-hero-5-area wa-bg-default wa-p-relative wa-fix wa-bg-parallax" data-background="{{ $backgroundImage }}">
     <div class="container bs-container-2">
         <div class="bs-hero-5-wrap">
@@ -83,11 +85,13 @@
 
     <div class="bs-hero-5-bg-circle"></div>
 </section>
+@endif
 <!-- hero-end -->
 
 <!-- about-start -->
 @php
     $about = $homePage->sections['about'] ?? [];
+    $aboutIsActive = $about['is_active'] ?? true;
     $sectionNumber = $about['section_number'] ?? '01';
     $sectionSubtitle = $about['section_subtitle'] ?? 'about us';
     $sectionTitle = $about['section_title'] ?? 'Your trusted partner in finding properties and investment opportunities in Egypt\'s most desirable locations.';
@@ -130,6 +134,7 @@
         : asset('assets/img/about/a5-img-2.png');
 @endphp
 
+@if($aboutIsActive)
 <section class="bs-about-5-area pt-135 pb-100 wa-fix wa-p-relative">
     <div class="bs-about-5-bg-shape">
         <img src="{{ $bgShape1 }}" alt="Background shape">
@@ -221,9 +226,11 @@
         </div>
     </div>
 </section>
+@endif
 <!-- about-end -->
 
 <!-- counter-start -->
+@if(($homePage->sections['counters']['is_active'] ?? true))
 <section class="bs-core-feature-5-area">
     <div class="container bs-container-2">
         <div class="bs-core-feature-4-line wa-scaleXInUp"></div>
@@ -281,9 +288,11 @@
         <div class="bs-core-feature-4-line wa-scaleXInUp"></div>
     </div>
 </section>
+@endif
 <!-- counter-end -->
 
 <!-- video-start -->
+@if(($homePage->sections['video']['is_active'] ?? true))
 <div class="bs-video-1-area wa-fix">
     <div class="bs-video-1-content wa-p-relative">
         <div class="bs-video-1-content-img has-video-2  wa-p-relative wa-fix wa-img-cover">
@@ -302,11 +311,12 @@
         </div>
     </div>
 </div>
+@endif
 <!-- video-end -->
 
 <!-- services-start -->
- <!-- projects-start -->
-<section class="bs-projects-1-area pt-90 pb-145 wa-p-relative wa-fix">
+@if(($homePage->sections['services']['is_active'] ?? true))
+<section class="bs-product-5-area pt-85 pb-85 wa-bg-default wa-p-relative wa-fix">
     <div class="container bs-container-1">
 
         <!-- section-title -->
@@ -546,6 +556,7 @@
         <img src="{{ asset('assets/img/projects/p1-bg-img-1.png') }}" alt="">
     </div>
 </section>
+@endif
 <!-- projects-end -->
 <!-- services-end -->
 
@@ -680,8 +691,8 @@
 
  <!-- showcase-start -->
 @php
-    $homePage = \App\Models\Page::where('slug', 'home')->first();
     $showcase = $homePage->sections['showcase'] ?? [];
+    $showcaseIsActive = $showcase['is_active'] ?? true;
     $showcaseItems = $showcase['items'] ?? [];
     // Filter only items with showcase enabled
     $activeShowcaseItems = collect($showcaseItems)->filter(function($item) {
@@ -689,7 +700,7 @@
     });
 @endphp
 
-@if($activeShowcaseItems->isNotEmpty())
+@if($showcaseIsActive && $activeShowcaseItems->isNotEmpty())
 <section class="bs-showcase-1-area pb-80 wa-fix">
     <div class="bs-showcase-1-slider wa-fix wa-p-relative">
         <div class="swiper-container bs-sh1-active">
@@ -762,8 +773,8 @@
 
 <!-- gallery-start -->
 @php
-    $homePage = \App\Models\Page::where('slug', 'home')->first();
     $gallery = $homePage->sections['gallery'] ?? [];
+    $galleryIsActive = $gallery['is_active'] ?? true;
     $galleryItems = $gallery['items'] ?? [];
     $sectionSubtitle = $gallery['section_subtitle'] ?? 'Stay Inspired with Instagram';
     $sectionTitle = $gallery['section_title'] ?? '<i class="fa-brands fa-instagram"></i> Instagram';
@@ -772,7 +783,7 @@
     $starIcon = $gallery['star_icon'] ?? 'assets/img/illus/star-shape.png';
 @endphp
 
-@if(!empty($galleryItems))
+@if($galleryIsActive && !empty($galleryItems))
 <section class="bs-gallery-2-area pt-100 pb-145">
     <div class="container bs-container-1">
         <div class="bs-gallery-2-wrap">

@@ -58,6 +58,14 @@ class PageResource extends Resource
                                 Forms\Components\Section::make('Hero Section')
                                     ->description('Main banner with background, foreground image, and rotating text')
                                     ->schema([
+                                        // Visibility Toggle
+                                        Forms\Components\Toggle::make('sections.hero.is_active')
+                                            ->label('Show Hero Section')
+                                            ->default(true)
+                                            ->helperText('Toggle to show/hide entire hero section on homepage')
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
                                         // Text Content
                                         Forms\Components\TextInput::make('sections.hero.main_title')
                                             ->label('Main Title')
@@ -144,6 +152,14 @@ class PageResource extends Resource
                                 Forms\Components\Section::make('About Section')
                                     ->description('Company intro with text and images')
                                     ->schema([
+                                        // Visibility Toggle
+                                        Forms\Components\Toggle::make('sections.about.is_active')
+                                            ->label('Show About Section')
+                                            ->default(true)
+                                            ->helperText('Toggle to show/hide entire about section on homepage')
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
                                         Forms\Components\Grid::make(2)
                                             ->schema([
                                                 Forms\Components\TextInput::make('sections.about.section_number')
@@ -248,6 +264,14 @@ class PageResource extends Resource
                                 Forms\Components\Section::make('Statistics')
                                     ->description('Achievement counters - Lines 141-199')
                                     ->schema([
+                                        // Visibility Toggle
+                                        Forms\Components\Toggle::make('sections.counters.is_active')
+                                            ->label('Show Counters Section')
+                                            ->default(true)
+                                            ->helperText('Toggle to show/hide entire counters section on homepage')
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
                                         Forms\Components\Repeater::make('sections.counters.items')
                                             ->label('Counter Items')
                                             ->schema([
@@ -268,6 +292,14 @@ class PageResource extends Resource
                                 Forms\Components\Section::make('Video Section')
                                     ->description('Promotional video - Lines 201-221')
                                     ->schema([
+                                        // Visibility Toggle
+                                        Forms\Components\Toggle::make('sections.video.is_active')
+                                            ->label('Show Video Section')
+                                            ->default(true)
+                                            ->helperText('Toggle to show/hide entire video section on homepage')
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
                                         Forms\Components\TextInput::make('sections.video.youtube_url')
                                             ->label('YouTube URL')
                                             ->placeholder('https://www.youtube.com/watch?v=...')
@@ -281,9 +313,17 @@ class PageResource extends Resource
                         // SERVICES TABS
                         Forms\Components\Tabs\Tab::make('💼 Services')
                             ->schema([
-                                Forms\Components\Section::make('Service Tabs')
-                                    ->description('Project tabs - Lines 222-464')
+                                Forms\Components\Section::make('Services/Projects Tabs')
+                                    ->description('Tabbed services section - Lines 223-466')
                                     ->schema([
+                                        // Visibility Toggle
+                                        Forms\Components\Toggle::make('sections.services.is_active')
+                                            ->label('Show Services Section')
+                                            ->default(true)
+                                            ->helperText('Toggle to show/hide entire services section on homepage')
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
                                         Forms\Components\TextInput::make('sections.services.section_title')
                                             ->label('Section Title')
                                             ->columnSpanFull(),
@@ -399,6 +439,14 @@ class PageResource extends Resource
                                 Forms\Components\Section::make('Showcase Carousel')
                                     ->description('Select up to 2 projects. Auto-fills data, but all fields are editable.')
                                     ->schema([
+                                        // Visibility Toggle
+                                        Forms\Components\Toggle::make('sections.showcase.is_active')
+                                            ->label('Show Showcase Section')
+                                            ->default(true)
+                                            ->helperText('Toggle to show/hide entire showcase section on homepage')
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
                                         Forms\Components\Repeater::make('sections.showcase.items')
                                             ->label('Showcase Items')
                                             ->schema([
@@ -558,6 +606,14 @@ class PageResource extends Resource
                                 Forms\Components\Section::make('Instagram Gallery')
                                     ->description('Social gallery grid with individual Instagram links')
                                     ->schema([
+                                        // Visibility Toggle
+                                        Forms\Components\Toggle::make('sections.gallery.is_active')
+                                            ->label('Show Gallery Section')
+                                            ->default(true)
+                                            ->helperText('Toggle to show/hide entire gallery section on homepage')
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
                                         Forms\Components\Grid::make(2)
                                             ->schema([
                                                 Forms\Components\TextInput::make('sections.gallery.section_subtitle')
