@@ -65,7 +65,14 @@ class CareerApplicationResource extends Resource
                 SpatieMediaLibraryFileUpload::make('cv_files')
                     ->collection('cv_files')
                     ->maxSize(10240)
+                    ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
                     ->visibility('public')
+                    ->afterStateHydrated(function ($component, $state) {
+                        if (is_array($state)) {
+                            $component->state(array_filter($state, fn($item) => !empty($item)));
+                        }
+                    })
+                    ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                     ->label('CV/Resume'),
                 Forms\Components\TextInput::make('portfolio_url')
                     ->url()

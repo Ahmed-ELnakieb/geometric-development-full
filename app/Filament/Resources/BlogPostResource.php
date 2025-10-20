@@ -85,7 +85,14 @@ class BlogPostResource extends Resource
                                         SpatieMediaLibraryFileUpload::make('featured_image')
                                             ->collection('featured_image')
                                             ->required()
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
                                             ->visibility('public')
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Main image displayed in blog listings and post header. Recommended size: 1200x630px'),
                                     ]),
                                 Section::make('Content Images')
@@ -93,7 +100,14 @@ class BlogPostResource extends Resource
                                         SpatieMediaLibraryFileUpload::make('content_images')
                                             ->collection('content_images')
                                             ->multiple()
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
                                             ->visibility('public')
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Additional images that can be referenced in the post content'),
                                     ]),
                             ]),

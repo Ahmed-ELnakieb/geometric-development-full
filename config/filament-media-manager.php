@@ -22,7 +22,7 @@ return [
 
     'features' => [
         'folders' => true,
-        'user_access' => true,
+        'user_access' => false,
         'password_protection' => false,
     ],
 ];

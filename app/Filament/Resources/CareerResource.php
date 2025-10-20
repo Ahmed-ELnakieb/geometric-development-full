@@ -99,11 +99,25 @@ class CareerResource extends Resource
                                         SpatieMediaLibraryFileUpload::make('job_description')
                                             ->collection('job_description')
                                             ->maxSize(10240)
+                                            ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
                                             ->visibility('public')
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Optional: Upload a detailed job description document'),
                                         SpatieMediaLibraryFileUpload::make('department_image')
                                             ->collection('department_image')
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
                                             ->visibility('public')
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Optional: Upload a department or team photo'),
                                     ]),
                             ]),

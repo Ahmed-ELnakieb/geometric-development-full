@@ -97,22 +97,36 @@ class ProjectResource extends Resource
                                             ->multiple()
                                             ->reorderable()
                                             ->maxFiles(10)
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
                                             ->visibility('public')
                                             ->previewable()
                                             ->openable()
                                             ->downloadable()
                                             ->moveFiles()
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Upload images for the hero slider. Recommended size: 1920x1080px. You can drag to reorder images.'),
                                         SpatieMediaLibraryFileUpload::make('hero_thumbnails')
                                             ->collection('hero_thumbnails')
                                             ->multiple()
                                             ->reorderable()
                                             ->maxFiles(3)
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
                                             ->visibility('public')
                                             ->previewable()
                                             ->openable()
                                             ->downloadable()
                                             ->moveFiles()
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Upload up to 3 thumbnail images (max enforced). If not uploaded, thumbnails will be auto-generated from hero slider. You can drag to reorder.'),
                                     ]),
                                 Section::make('Gallery & About')
@@ -121,15 +135,29 @@ class ProjectResource extends Resource
                                             ->collection('gallery')
                                             ->multiple()
                                             ->reorderable()
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
                                             ->visibility('public')
                                             ->previewable()
                                             ->openable()
                                             ->downloadable()
                                             ->moveFiles()
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Upload project gallery images. You can drag to reorder.'),
                                         SpatieMediaLibraryFileUpload::make('about_image')
                                             ->collection('about_image')
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
                                             ->visibility('public')
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Upload a single image for the About section'),
                                     ]),
                                 Section::make('Video')
@@ -143,8 +171,15 @@ class ProjectResource extends Resource
                                         SpatieMediaLibraryFileUpload::make('video_preview')
                                             ->collection('video_preview')
                                             ->maxSize(51200)
+                                            ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/ogg'])
                                             ->visibility('public')
                                             ->label('Video Preview File')
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Upload a preview/background video (MP4, WebM, OGG). Max 50MB.')
                                             ->columnSpanFull(),
                                     ]),
@@ -153,18 +188,39 @@ class ProjectResource extends Resource
                                         SpatieMediaLibraryFileUpload::make('brochure')
                                             ->collection('brochure')
                                             ->maxSize(10240)
+                                            ->acceptedFileTypes(['application/pdf'])
                                             ->visibility('public')
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Upload project brochure (PDF only)'),
                                         SpatieMediaLibraryFileUpload::make('factsheet')
                                             ->collection('factsheet')
                                             ->maxSize(10240)
+                                            ->acceptedFileTypes(['application/pdf'])
                                             ->visibility('public')
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Upload project factsheet (PDF only)'),
                                         SpatieMediaLibraryFileUpload::make('documents')
                                             ->collection('documents')
                                             ->multiple()
                                             ->maxSize(10240)
+                                            ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
                                             ->visibility('public')
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_array($state)) {
+                                                    $component->state(array_filter($state, fn($item) => !empty($item)));
+                                                }
+                                            })
+                                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter($state, fn($item) => !empty($item))) : $state)
                                             ->helperText('Upload additional project documents'),
                                     ]),
                             ]),
