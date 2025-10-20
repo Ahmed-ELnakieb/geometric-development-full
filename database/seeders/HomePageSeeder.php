@@ -73,8 +73,8 @@ class HomePageSeeder extends Seeder
                 'description' => 'Discover your perfect property with Geometric Development. We specialize in premium real estate sales across Egypt\'s most sought-after destinations, including exclusive residential communities in Muroj. Our expert team guides you through every step of your property buying journey.',
                 'button_text' => 'know about us',
                 'button_link' => '/about',
-                'background_shape_1' => 'assets/img/about/a5-bg-shape.png',
-                'background_shape_2' => 'assets/img/about/a5-bg-shape-2.png',
+                'bg_shape_1' => 'assets/img/about/a5-bg-shape.png',
+                'bg_shape_2' => 'assets/img/about/a5-bg-shape-2.png',
                 'image_1' => 'assets/img/about/a5-img-1.png',
                 'image_2' => 'assets/img/about/a5-img-2.png',
                 'features' => [

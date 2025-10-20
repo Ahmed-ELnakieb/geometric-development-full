@@ -142,23 +142,103 @@ class PageResource extends Resource
                         Forms\Components\Tabs\Tab::make('ℹ️ About')
                             ->schema([
                                 Forms\Components\Section::make('About Section')
-                                    ->description('Company intro - Lines 58-139')
+                                    ->description('Company intro with text and images')
                                     ->schema([
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('sections.about.section_number')
+                                                    ->label('Section Number')
+                                                    ->default('01')
+                                                    ->maxLength(5),
+                                                
+                                                Forms\Components\TextInput::make('sections.about.section_subtitle')
+                                                    ->label('Section Subtitle')
+                                                    ->default('about us'),
+                                            ]),
+                                        
                                         Forms\Components\TextInput::make('sections.about.section_title')
                                             ->label('Section Title')
+                                            ->default('Your trusted partner in finding properties...')
                                             ->columnSpanFull(),
-                                        Forms\Components\RichEditor::make('sections.about.description')
+                                        
+                                        Forms\Components\Textarea::make('sections.about.description')
                                             ->label('Description')
+                                            ->rows(4)
                                             ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('sections.about.button_text')
+                                                    ->label('Button Text')
+                                                    ->default('know about us'),
+                                                
+                                                Forms\Components\TextInput::make('sections.about.button_link')
+                                                    ->label('Button Link')
+                                                    ->default('/about')
+                                                    ->placeholder('/about'),
+                                            ]),
+                                        
                                         Forms\Components\Repeater::make('sections.about.features')
                                             ->label('Features')
                                             ->schema([
-                                                Forms\Components\TextInput::make('title'),
-                                                Forms\Components\TextInput::make('icon')->default('fa-solid fa-plus'),
+                                                Forms\Components\TextInput::make('title')
+                                                    ->label('Feature Title')
+                                                    ->placeholder('Prime Locations'),
+                                                Forms\Components\TextInput::make('icon')
+                                                    ->label('Icon Class')
+                                                    ->default('fa-solid fa-plus'),
                                             ])
                                             ->columns(2)
                                             ->collapsible()
+                                            ->defaultItems(0)
                                             ->columnSpanFull(),
+                                        
+                                        // Images Section
+                                        Forms\Components\Section::make('About Images')
+                                            ->description('Upload background shapes and content images')
+                                            ->schema([
+                                                Forms\Components\FileUpload::make('sections.about.bg_shape_1')
+                                                    ->label('Background Shape 1')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('about/shapes')
+                                                    ->visibility('public')
+                                                    ->maxSize(2048)
+                                                    ->helperText('Decorative background shape (a5-bg-shape.png)')
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\FileUpload::make('sections.about.bg_shape_2')
+                                                    ->label('Background Shape 2')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('about/shapes')
+                                                    ->visibility('public')
+                                                    ->maxSize(2048)
+                                                    ->helperText('Second decorative background shape (a5-bg-shape-2.png)')
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\FileUpload::make('sections.about.image_1')
+                                                    ->label('Content Image 1 (Left)')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('about/images')
+                                                    ->visibility('public')
+                                                    ->maxSize(5120)
+                                                    ->helperText('Main content image on left side (a5-img-1.png)')
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\FileUpload::make('sections.about.image_2')
+                                                    ->label('Content Image 2 (Right)')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('about/images')
+                                                    ->visibility('public')
+                                                    ->maxSize(5120)
+                                                    ->helperText('Main content image on right side (a5-img-2.png)')
+                                                    ->columnSpanFull(),
+                                            ])
+                                            ->collapsed()
+                                            ->collapsible(),
                                     ])->collapsible(),
                             ]),
                         
