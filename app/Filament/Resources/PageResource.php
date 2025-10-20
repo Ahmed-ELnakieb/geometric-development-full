@@ -56,22 +56,86 @@ class PageResource extends Resource
                         Forms\Components\Tabs\Tab::make('🌟 Hero')
                             ->schema([
                                 Forms\Components\Section::make('Hero Section')
-                                    ->description('Main banner - Lines 9-56')
+                                    ->description('Main banner with background, foreground image, and rotating text')
                                     ->schema([
+                                        // Text Content
                                         Forms\Components\TextInput::make('sections.hero.main_title')
                                             ->label('Main Title')
+                                            ->default('Leading Community Developer in MUROJ')
                                             ->columnSpanFull(),
+                                        
                                         Forms\Components\TextInput::make('sections.hero.subtitle')
                                             ->label('Subtitle')
+                                            ->default('Inspiration of MUROJ in EGYPT')
                                             ->columnSpanFull(),
+                                        
                                         Forms\Components\TagsInput::make('sections.hero.rotating_texts')
                                             ->label('Rotating Texts')
+                                            ->helperText('Add multiple texts that rotate/animate')
+                                            ->placeholder('Luxury Living, Invest Smart, etc.')
                                             ->columnSpanFull(),
-                                        Forms\Components\TextInput::make('sections.hero.button_text')
-                                            ->label('Button Text'),
-                                        Forms\Components\TextInput::make('sections.hero.button_link')
-                                            ->label('Button Link'),
-                                    ])->columns(2)->collapsible(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('sections.hero.button_text')
+                                                    ->label('Button Text')
+                                                    ->default('IN GEOMETRIC'),
+                                                
+                                                Forms\Components\TextInput::make('sections.hero.button_link')
+                                                    ->label('Button Link')
+                                                    ->default('/projects')
+                                                    ->placeholder('/projects'),
+                                            ]),
+                                        
+                                        Forms\Components\TextInput::make('sections.hero.icon_class')
+                                            ->label('Button Icon Class')
+                                            ->default('flaticon-next-1')
+                                            ->helperText('Font icon class for button')
+                                            ->columnSpanFull(),
+                                        
+                                        // Images Section
+                                        Forms\Components\Section::make('Hero Images')
+                                            ->description('Upload images for background, foreground, and button icon')
+                                            ->schema([
+                                                Forms\Components\FileUpload::make('sections.hero.background_image')
+                                                    ->label('Background Image (Parallax)')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('hero/backgrounds')
+                                                    ->visibility('public')
+                                                    ->maxSize(5120)
+                                                    ->helperText('Large background image for parallax effect (h5-bg-img-1.png)')
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\FileUpload::make('sections.hero.foreground_image')
+                                                    ->label('Foreground Image (Main)')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('hero/foreground')
+                                                    ->visibility('public')
+                                                    ->maxSize(5120)
+                                                    ->helperText('Large image displayed in front (h5-img-1.png)')
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\FileUpload::make('sections.hero.icon_image')
+                                                    ->label('Button Icon Background Image')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('hero/icons')
+                                                    ->visibility('public')
+                                                    ->maxSize(2048)
+                                                    ->helperText('Small icon background image (h5-img-3.png)')
+                                                    ->columnSpanFull(),
+                                            ])
+                                            ->collapsed()
+                                            ->collapsible(),
+                                        
+                                        // Background Color
+                                        Forms\Components\ColorPicker::make('sections.hero.background_color')
+                                            ->label('Background Color')
+                                            ->default('#ffffff')
+                                            ->helperText('Fallback background color'),
+                                    ])->collapsible(),
                             ]),
                         
                         // ABOUT SECTION TAB
