@@ -265,6 +265,8 @@ class HomePageSeeder extends Seeder
                         'image' => 'assets/img/showcase/sh1-img-1.png',
                         'link' => '/projects',
                         'button_text' => 'more details',
+                        'showcase' => true, // Enabled by default
+                        'project_id' => null,
                     ],
                     [
                         'subtitle' => 'Rich Hills',
@@ -272,6 +274,8 @@ class HomePageSeeder extends Seeder
                         'image' => 'assets/img/showcase/sh1-img-2.png',
                         'link' => '/projects',
                         'button_text' => 'more details',
+                        'showcase' => true, // Enabled by default
+                        'project_id' => null,
                     ],
                 ],
                 'left_arrow' => 'assets/img/illus/left-arrow.png',
