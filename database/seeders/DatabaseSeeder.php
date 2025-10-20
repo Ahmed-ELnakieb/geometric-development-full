@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             BlogCategorySeeder::class,
             BlogTagSeeder::class,
             PageSeeder::class,
+            HomePageSeeder::class, // Homepage with all sections
             CareerSeeder::class,
             BlogPostSeeder::class,
             ProjectSeeder::class,

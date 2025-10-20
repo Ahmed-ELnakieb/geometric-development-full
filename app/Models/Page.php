@@ -43,6 +43,26 @@ class Page extends Model implements HasMedia
     {
         return $this->morphMany(Message::class, 'messageable');
     }
+    
+    public function pageSections()
+    {
+        return $this->hasMany(PageSection::class)->orderBy('order');
+    }
+    
+    // Get section by key
+    public function getSection(string $key)
+    {
+        return $this->pageSections()->where('section_key', $key)->first();
+    }
+    
+    // Get or create section
+    public function getOrCreateSection(string $key, array $default = [])
+    {
+        return $this->pageSections()->firstOrCreate(
+            ['section_key' => $key],
+            ['content' => $default, 'is_active' => true]
+        );
+    }
 
     // Scopes
     public function scopePublished($query)
