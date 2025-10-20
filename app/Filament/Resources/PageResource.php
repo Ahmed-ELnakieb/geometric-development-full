@@ -178,21 +178,6 @@ class PageResource extends Resource
                                                     ->placeholder('/about'),
                                             ]),
                                         
-                                        Forms\Components\Repeater::make('sections.about.features')
-                                            ->label('Features')
-                                            ->schema([
-                                                Forms\Components\TextInput::make('title')
-                                                    ->label('Feature Title')
-                                                    ->placeholder('Prime Locations'),
-                                                Forms\Components\TextInput::make('icon')
-                                                    ->label('Icon Class')
-                                                    ->default('fa-solid fa-plus'),
-                                            ])
-                                            ->columns(2)
-                                            ->collapsible()
-                                            ->defaultItems(0)
-                                            ->columnSpanFull(),
-                                        
                                         // Images Section
                                         Forms\Components\Section::make('About Images')
                                             ->description('Upload background shapes and content images')
@@ -239,6 +224,21 @@ class PageResource extends Resource
                                             ])
                                             ->collapsed()
                                             ->collapsible(),
+                                        
+                                        Forms\Components\Repeater::make('sections.about.features')
+                                            ->label('Features')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('title')
+                                                    ->label('Feature Title')
+                                                    ->placeholder('Prime Locations'),
+                                                Forms\Components\TextInput::make('icon')
+                                                    ->label('Icon Class')
+                                                    ->default('fa-solid fa-plus'),
+                                            ])
+                                            ->columns(2)
+                                            ->collapsible()
+                                            ->defaultItems(0)
+                                            ->columnSpanFull(),
                                     ])->collapsible(),
                             ]),
                         
