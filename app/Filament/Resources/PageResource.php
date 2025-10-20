@@ -89,7 +89,7 @@ class PageResource extends Resource
                                         Forms\Components\Repeater::make('sections.about.features')
                                             ->label('Features')
                                             ->schema([
-                                                Forms\Components\TextInput::make('title')->required(),
+                                                Forms\Components\TextInput::make('title'),
                                                 Forms\Components\TextInput::make('icon')->default('fa-solid fa-plus'),
                                             ])
                                             ->columns(2)
@@ -107,8 +107,8 @@ class PageResource extends Resource
                                         Forms\Components\Repeater::make('sections.counters.items')
                                             ->label('Counter Items')
                                             ->schema([
-                                                Forms\Components\TextInput::make('title')->required(),
-                                                Forms\Components\TextInput::make('value')->numeric()->required(),
+                                                Forms\Components\TextInput::make('title'),
+                                                Forms\Components\TextInput::make('value')->numeric(),
                                                 Forms\Components\TextInput::make('suffix')->placeholder('k+, %, st'),
                                                 Forms\Components\Textarea::make('description')->rows(2)->columnSpanFull(),
                                             ])
@@ -126,7 +126,7 @@ class PageResource extends Resource
                                     ->schema([
                                         Forms\Components\TextInput::make('sections.video.youtube_url')
                                             ->label('YouTube URL')
-                                            ->url()
+                                            ->placeholder('https://www.youtube.com/watch?v=...')
                                             ->columnSpanFull(),
                                         Forms\Components\Toggle::make('sections.video.autoplay')->inline(false),
                                         Forms\Components\Toggle::make('sections.video.loop')->inline(false),
@@ -156,7 +156,6 @@ class PageResource extends Resource
                                             ->schema([
                                                 Forms\Components\TextInput::make('name')
                                                     ->label('Project Name')
-                                                    ->required()
                                                     ->columnSpanFull(),
                                                 Forms\Components\Grid::make(2)
                                                     ->schema([
@@ -181,8 +180,8 @@ class PageResource extends Resource
                                                     ]),
                                                 Forms\Components\TextInput::make('link')
                                                     ->label('Project Link')
-                                                    ->url()
                                                     ->default('/projects')
+                                                    ->placeholder('/projects')
                                                     ->columnSpanFull(),
                                                 
                                                 // Project Image
@@ -212,7 +211,6 @@ class PageResource extends Resource
                                                                         'instagram' => 'Instagram',
                                                                         'youtube' => 'YouTube',
                                                                     ])
-                                                                    ->required()
                                                                     ->live()
                                                                     ->afterStateUpdated(function ($state, callable $set) {
                                                                         $icons = [
@@ -231,13 +229,12 @@ class PageResource extends Resource
                                                                     ->helperText('FontAwesome icon class'),
                                                                 Forms\Components\TextInput::make('url')
                                                                     ->label('URL')
-                                                                    ->url()
                                                                     ->default('#')
-                                                                    ->required()
+                                                                    ->placeholder('https://facebook.com/...')
                                                                     ->columnSpanFull(),
                                                             ])
                                                             ->columns(2)
-                                                            ->defaultItems(4)
+                                                            ->defaultItems(0)
                                                             ->collapsible()
                                                             ->itemLabel(fn (array $state): ?string => $state['platform'] ?? null)
                                                             ->columnSpanFull(),
@@ -256,16 +253,158 @@ class PageResource extends Resource
                         Forms\Components\Tabs\Tab::make('📸 Showcase')
                             ->schema([
                                 Forms\Components\Section::make('Showcase Carousel')
-                                    ->description('Featured projects - Lines 596-648')
+                                    ->description('Select up to 2 projects. Auto-fills data, but all fields are editable.')
                                     ->schema([
                                         Forms\Components\Repeater::make('sections.showcase.items')
+                                            ->label('Showcase Items')
                                             ->schema([
-                                                Forms\Components\TextInput::make('subtitle')->required(),
-                                                Forms\Components\TextInput::make('title')->required()->columnSpanFull(),
-                                                Forms\Components\TextInput::make('button_text')->default('more details'),
+                                                // Project Selection
+                                                Forms\Components\Select::make('project_id')
+                                                    ->label('Select Project')
+                                                    ->options(function () {
+                                                        return \App\Models\Project::query()
+                                                            ->where('is_published', true)
+                                                            ->orderBy('title')
+                                                            ->pluck('title', 'id');
+                                                    })
+                                                    ->searchable()
+                                                    ->live()
+                                                    ->helperText('Select a published project')
+                                                    ->afterStateUpdated(function ($state, callable $set) {
+                                                        if ($state) {
+                                                            $project = \App\Models\Project::with('media')->find($state);
+                                                            if ($project) {
+                                                                $set('subtitle', $project->title);
+                                                                $set('title', $project->excerpt ?? 'Luxury living experience');
+                                                                $set('link', '/projects/' . $project->slug);
+                                                                // Don't set image - let user upload or it will cause errors
+                                                            }
+                                                        }
+                                                    })
+                                                    ->columnSpanFull(),
+                                                
+                                                // Visibility Toggle
+                                                Forms\Components\Toggle::make('showcase')
+                                                    ->label('Show in Showcase')
+                                                    ->default(true)
+                                                    ->helperText('Controls visibility on homepage')
+                                                    ->columnSpanFull(),
+                                                
+                                                // Subtitle (Project Name) - Editable
+                                                Forms\Components\TextInput::make('subtitle')
+                                                    ->label('Subtitle (Project Name)')
+                                                    ->placeholder('Muroj Villa')
+                                                    ->helperText('Display name for this showcase item')
+                                                    ->columnSpanFull(),
+                                                
+                                                // Title (Description) - Editable
+                                                Forms\Components\Textarea::make('title')
+                                                    ->label('Title/Description')
+                                                    ->rows(2)
+                                                    ->placeholder('Luxury waterfront living with muroj views')
+                                                    ->helperText('Showcase description text')
+                                                    ->columnSpanFull(),
+                                                
+                                                // Link Preview - Clickable
+                                                Forms\Components\Placeholder::make('link_preview')
+                                                    ->label('Project Link (Auto-synced)')
+                                                    ->content(function (callable $get) {
+                                                        $link = $get('link') ?? '/projects';
+                                                        $fullUrl = 'http://127.0.0.1:8000' . $link;
+                                                        return new \Illuminate\Support\HtmlString('
+                                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                                <a href="' . $fullUrl . '" 
+                                                                   target="_blank" 
+                                                                   style="color: #3b82f6; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 5px;">
+                                                                    ' . $link . '
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                                                        <polyline points="15 3 21 3 21 9"></polyline>
+                                                                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                                                                    </svg>
+                                                                </a>
+                                                                <span style="color: #6b7280; font-size: 12px;">Click to preview project</span>
+                                                            </div>
+                                                        ');
+                                                    })
+                                                    ->columnSpanFull(),
+                                                
+                                                // Hidden field to store link value
+                                                Forms\Components\Hidden::make('link')
+                                                    ->default('/projects'),
+                                                
+                                                Forms\Components\TextInput::make('button_text')
+                                                    ->label('Button Text')
+                                                    ->default('more details')
+                                                    ->columnSpanFull(),
+                                                
+                                                // Image Upload - Now Editable!
+                                                Forms\Components\FileUpload::make('image')
+                                                    ->label('Showcase Image')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('showcase')
+                                                    ->visibility('public')
+                                                    ->maxSize(5120)
+                                                    ->helperText('Upload custom image or it will use project thumbnail')
+                                                    ->columnSpanFull(),
+                                                
+                                                // Info about synced data with image preview
+                                                Forms\Components\Placeholder::make('sync_info')
+                                                    ->label('ℹ️ Project Info & Image Preview')
+                                                    ->content(function (callable $get) {
+                                                        $projectId = $get('project_id');
+                                                        if ($projectId) {
+                                                            $project = \App\Models\Project::with('media')->find($projectId);
+                                                            if ($project) {
+                                                                $imageUrl = $project->getFirstMediaUrl('hero_thumbnails');
+                                                                $imageHtml = $imageUrl 
+                                                                    ? '<img src="' . $imageUrl . '" style="max-width: 200px; border-radius: 8px; margin-top: 10px;" />' 
+                                                                    : '<p style="color: #999;">No project image available</p>';
+                                                                
+                                                                return new \Illuminate\Support\HtmlString('
+                                                                    <div style="padding: 10px; background: #f3f4f6; border-radius: 6px;">
+                                                                        <strong>Selected Project:</strong> ' . $project->title . '<br>
+                                                                        <strong>Type:</strong> ' . ($project->type ?? 'N/A') . '<br>
+                                                                        <strong>Auto Link:</strong> /projects/' . $project->slug . '<br>
+                                                                        <strong>Project Image:</strong><br>
+                                                                        ' . $imageHtml . '
+                                                                        <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                                                                            💡 Tip: Upload a custom image above or this project image will be used
+                                                                        </p>
+                                                                    </div>
+                                                                ');
+                                                            }
+                                                        }
+                                                        return 'Select a project to see details and image preview';
+                                                    })
+                                                    ->columnSpanFull(),
                                             ])
                                             ->collapsible()
-                                            ->columnSpanFull(),
+                                            ->collapsed()
+                                            ->itemLabel(fn (array $state): ?string => 
+                                                ($state['showcase'] ?? true ? '✓ ' : '✗ ') . 
+                                                ($state['subtitle'] ?? 'New Showcase Item')
+                                            )
+                                            ->defaultItems(0)
+                                            ->maxItems(2)
+                                            ->reorderable()
+                                            ->columnSpanFull()
+                                            ->addActionLabel('Add Project to Showcase'),
+                                        
+                                        Forms\Components\Placeholder::make('showcase_info')
+                                            ->label('ℹ️ How It Works')
+                                            ->content(new \Illuminate\Support\HtmlString('
+                                                <ul style="line-height: 1.8;">
+                                                    <li><strong>Select Project:</strong> Choose from published projects - auto-fills fields</li>
+                                                    <li><strong>Link URL:</strong> Auto-synced from project slug (disabled - changes when project changes)</li>
+                                                    <li><strong>Editable Fields:</strong> Subtitle, title, button text, and image</li>
+                                                    <li><strong>Image Upload:</strong> Upload custom image or use project thumbnail</li>
+                                                    <li><strong>Showcase Toggle:</strong> Control visibility on homepage</li>
+                                                    <li><strong>Item Label:</strong> Shows subtitle (project name) in collapsed view</li>
+                                                    <li><strong>Limit:</strong> Maximum 2 projects in showcase</li>
+                                                </ul>
+                                            ')),
                                     ])->collapsible(),
                             ]),
                         
@@ -280,7 +419,7 @@ class PageResource extends Resource
                                             ->columnSpanFull(),
                                         Forms\Components\TextInput::make('sections.gallery.instagram_link')
                                             ->label('Instagram URL')
-                                            ->url(),
+                                            ->placeholder('https://instagram.com/...'),
                                         Forms\Components\TextInput::make('sections.gallery.button_text')
                                             ->label('Button Text'),
                                     ])->columns(2)->collapsible(),

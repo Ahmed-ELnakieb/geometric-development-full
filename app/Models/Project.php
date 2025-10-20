@@ -68,6 +68,8 @@ class Project extends Model implements HasMedia
         "property_size_max",
         "completion_date",
         "is_featured",
+        "showcase",
+        "showcase_order",
         "display_order",
         "meta_title",
         "meta_description",
@@ -80,6 +82,7 @@ class Project extends Model implements HasMedia
         "property_size_min" => "decimal:2",
         "property_size_max" => "decimal:2",
         "is_featured" => "boolean",
+        "showcase" => "boolean",
         "is_published" => "boolean",
         "published_at" => "datetime",
     ];
