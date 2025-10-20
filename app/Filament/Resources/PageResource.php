@@ -143,7 +143,7 @@ class PageResource extends Resource
                                             ->label('Background Color')
                                             ->default('#ffffff')
                                             ->helperText('Fallback background color'),
-                                    ])->collapsible(),
+                                    ])->collapsible()->collapsed(),
                             ]),
                         
                         // ABOUT SECTION TAB
@@ -255,7 +255,7 @@ class PageResource extends Resource
                                             ->collapsible()
                                             ->defaultItems(0)
                                             ->columnSpanFull(),
-                                    ])->collapsible(),
+                                    ])->collapsible()->collapsed(),
                             ]),
                         
                         // COUNTERS TAB
@@ -283,7 +283,7 @@ class PageResource extends Resource
                                             ->columns(3)
                                             ->collapsible()
                                             ->columnSpanFull(),
-                                    ])->collapsible(),
+                                    ])->collapsible()->collapsed(),
                             ]),
                         
                         // VIDEO TAB
@@ -330,7 +330,7 @@ class PageResource extends Resource
                                                     ->default(true)
                                                     ->inline(false),
                                             ]),
-                                    ])->collapsible(),
+                                    ])->collapsible()->collapsed(),
                             ]),
                         
                         // SERVICES TABS
@@ -453,7 +453,7 @@ class PageResource extends Resource
                                             ->collapsible()
                                             ->itemLabel(fn (array $state): ?string => $state['name'] ?? 'New Service')
                                             ->columnSpanFull(),
-                                    ])->collapsible(),
+                                    ])->collapsible()->collapsed(),
                             ]),
                         
                         // SHOWCASE TAB
@@ -620,7 +620,7 @@ class PageResource extends Resource
                                                     <li><strong>Limit:</strong> Maximum 2 projects in showcase</li>
                                                 </ul>
                                             ')),
-                                    ])->collapsible(),
+                                    ])->collapsible()->collapsed(),
                             ]),
                         
                         // GALLERY TAB
@@ -697,7 +697,7 @@ class PageResource extends Resource
                                             ->reorderable()
                                             ->columnSpanFull()
                                             ->addActionLabel('Add Gallery Image'),
-                                    ])->collapsible(),
+                                    ])->collapsible()->collapsed(),
                             ]),
                         
                         // SEO TAB
