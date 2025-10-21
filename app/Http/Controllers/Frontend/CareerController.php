@@ -5,12 +5,21 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Career;
 use App\Models\CareerApplication;
+use App\Models\Page;
 use Illuminate\Http\Request;
 
 class CareerController extends Controller
 {
+    /**
+     * Display careers listing page with dynamic content
+     */
     public function index(Request $request)
     {
+        // Load careers page content
+        $careersPage = Page::where('slug', 'careers')
+            ->orWhere('template', 'careers')
+            ->first();
+
         $query = Career::active()->notExpired()->ordered();
 
         if ($request->has('location') && $request->location) {
@@ -26,7 +35,7 @@ class CareerController extends Controller
         $locations = Career::active()->notExpired()->distinct()->pluck('location');
         $jobTypes = Career::active()->notExpired()->distinct()->pluck('job_type');
 
-        return view('careers.index', compact('careers', 'locations', 'jobTypes'));
+        return view('careers.index', compact('careersPage', 'careers', 'locations', 'jobTypes'));
     }
 
     public function show($slug)

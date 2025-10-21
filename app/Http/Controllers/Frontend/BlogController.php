@@ -6,12 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\BlogPost;
 use App\Models\BlogCategory;
 use App\Models\BlogTag;
+use App\Models\Page;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
+    /**
+     * Display blog listing page with dynamic content
+     */
     public function index()
     {
+        // Load blog page content
+        $blogPage = Page::where('slug', 'blog')
+            ->orWhere('template', 'blog')
+            ->first();
+
         // Get featured posts (not paginated)
         $featuredPosts = BlogPost::published()
             ->featured()
@@ -35,7 +44,7 @@ class BlogController extends Controller
             ->take(10)
             ->get();
 
-        return view('blog.index', compact('posts', 'featuredPosts', 'categories', 'tags'));
+        return view('blog.index', compact('blogPage', 'posts', 'featuredPosts', 'categories', 'tags'));
     }
 
     public function category($slug)

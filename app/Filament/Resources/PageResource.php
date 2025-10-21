@@ -41,14 +41,18 @@ class PageResource extends Resource
                                     ->columnSpan(1),
                                 Forms\Components\Select::make('template')
                                     ->options([
-                                        'default' => 'Default',
-                                        'home' => 'Homepage',
-                                        'about' => 'About',
-                                        'contact' => 'Contact',
+                                        'default' => 'Default Page',
+                                        'home' => 'Homepage (with sections)',
+                                        'about' => 'About Page (with sections)',
+                                        'contact' => 'Contact Page (with sections)',
+                                        'careers' => 'Careers Page (with sections)',
+                                        'blog' => 'Blog Page (with sections)',
+                                        'custom' => 'Custom Page',
                                     ])
                                     ->default('default')
                                     ->live()
-                                    ->required(),
+                                    ->required()
+                                    ->helperText('⚠️ Changing template will show/hide section tabs'),
                                 Forms\Components\Toggle::make('is_published')
                                     ->label('Published'),
                             ])->columns(2),
@@ -1375,6 +1379,316 @@ class PageResource extends Resource
                                             ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Feature')
                                             ->defaultItems(4)
                                             ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // ========================================
+                        // CAREERS PAGE SECTIONS
+                        // ========================================
+                        
+                        // HERO TAB (Careers Page)
+                        Forms\Components\Tabs\Tab::make('🌟 Hero')
+                            ->visible(fn (callable $get) => $get('template') === 'careers')
+                            ->schema([
+                                Forms\Components\Section::make('Hero Section')
+                                    ->description('Header banner with title, description, button, and images')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.hero.is_active')
+                                            ->label('Show Hero Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.hero.title')
+                                            ->label('Main Title')
+                                            ->default('Build Your Career in Real Estate Development.')
+                                            ->required()
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Textarea::make('sections.hero.description')
+                                            ->label('Description')
+                                            ->rows(3)
+                                            ->default('Join a developer shaping communities across Egypt & UAE.')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('sections.hero.button_text')
+                                                    ->label('Button Text')
+                                                    ->default('View Openings'),
+                                                
+                                                Forms\Components\TextInput::make('sections.hero.button_link')
+                                                    ->label('Button Link')
+                                                    ->default('#positions')
+                                                    ->helperText('Use #positions to scroll to jobs section'),
+                                            ]),
+                                        
+                                        Forms\Components\FileUpload::make('sections.hero.background_image')
+                                            ->label('Background Image')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->directory('careers/hero')
+                                            ->visibility('public')
+                                            ->helperText('Large background image for hero section')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.hero.side_image_large')
+                                            ->label('Side Image (Large)')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->directory('careers/hero')
+                                            ->visibility('public')
+                                            ->helperText('Large image on the right side')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.hero.side_image_small')
+                                            ->label('Side Image (Small)')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->directory('careers/hero')
+                                            ->visibility('public')
+                                            ->helperText('Small image overlay on left side')
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // BENEFITS TAB (Careers Page)
+                        Forms\Components\Tabs\Tab::make('💼 Benefits')
+                            ->visible(fn (callable $get) => $get('template') === 'careers')
+                            ->schema([
+                                Forms\Components\Section::make('Benefits Section')
+                                    ->description('Career benefits and perks displayed as cards')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.benefits.is_active')
+                                            ->label('Show Benefits Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('sections.benefits.subtitle')
+                                                    ->label('Subtitle')
+                                                    ->default('Inspiration'),
+                                                
+                                                Forms\Components\TextInput::make('sections.benefits.title')
+                                                    ->label('Section Title')
+                                                    ->default('Inspiring benefits to grow with us'),
+                                            ]),
+                                        
+                                        Forms\Components\Repeater::make('sections.benefits.items')
+                                            ->label('Benefit Cards')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('title')
+                                                    ->label('Benefit Title')
+                                                    ->required()
+                                                    ->placeholder('e.g., Competitive salary, Health Insurance')
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\Textarea::make('description')
+                                                    ->label('Description')
+                                                    ->rows(3)
+                                                    ->required()
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\Select::make('icon_type')
+                                                    ->label('Icon Type')
+                                                    ->options([
+                                                        'money' => 'Money/Salary',
+                                                        'innovation' => 'Innovation',
+                                                        'health' => 'Health Insurance',
+                                                        'retirement' => 'Retirement Plans',
+                                                        'team' => 'Team Building',
+                                                        'training' => 'Training & Development',
+                                                    ])
+                                                    ->default('money')
+                                                    ->helperText('Icon is decorative (SVG in template)')
+                                                    ->native(false),
+                                            ])
+                                            ->columns(1)
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Benefit')
+                                            ->defaultItems(6)
+                                            ->addActionLabel('Add Benefit')
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // JOB LISTINGS TAB (Careers Page)
+                        Forms\Components\Tabs\Tab::make('📋 Job Listings')
+                            ->visible(fn (callable $get) => $get('template') === 'careers')
+                            ->schema([
+                                Forms\Components\Section::make('Job Listings Section')
+                                    ->description('Section header for available positions (jobs come from Career model)')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.job_listings.is_active')
+                                            ->label('Show Job Listings Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('sections.job_listings.subtitle')
+                                                    ->label('Subtitle')
+                                                    ->default('Openings'),
+                                                
+                                                Forms\Components\TextInput::make('sections.job_listings.title')
+                                                    ->label('Section Title')
+                                                    ->default('Available Positions'),
+                                            ]),
+                                        
+                                        Forms\Components\Textarea::make('sections.job_listings.description')
+                                            ->label('Description (Optional)')
+                                            ->rows(2)
+                                            ->placeholder('Explore our current job openings...')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Placeholder::make('jobs_note')
+                                            ->label('📌 Job Positions Source')
+                                            ->content(new \Illuminate\Support\HtmlString('
+                                                <div style="padding: 10px; background: #f0f9ff; border-radius: 4px; font-size: 13px;">
+                                                    <strong>Job positions are managed separately in the Careers menu.</strong><br>
+                                                    This section only controls the header title and visibility.<br>
+                                                    To add/edit job positions, go to: <strong>Careers → Create Career</strong>
+                                                </div>
+                                            '))
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // ========================================
+                        // BLOG PAGE SECTIONS
+                        // ========================================
+                        
+                        // BREADCRUMB TAB (Blog Page)
+                        Forms\Components\Tabs\Tab::make('📍 Breadcrumb')
+                            ->visible(fn (callable $get) => $get('template') === 'blog')
+                            ->schema([
+                                Forms\Components\Section::make('Breadcrumb Section')
+                                    ->description('Page header with title and background image')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.breadcrumb.is_active')
+                                            ->label('Show Breadcrumb Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.breadcrumb.page_title')
+                                            ->label('Page Title')
+                                            ->default('Blogs and News')
+                                            ->required()
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.breadcrumb.background_image')
+                                            ->label('Background Image')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->directory('blog/breadcrumb')
+                                            ->visibility('public')
+                                            ->helperText('Header background image')
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // BLOG LISTING TAB (Blog Page)
+                        Forms\Components\Tabs\Tab::make('📰 Blog Listing')
+                            ->visible(fn (callable $get) => $get('template') === 'blog')
+                            ->schema([
+                                Forms\Components\Section::make('Blog Listing Section')
+                                    ->description('Section header and configuration for blog posts listing')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.blog_listing.is_active')
+                                            ->label('Show Blog Listing Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('sections.blog_listing.subtitle')
+                                                    ->label('Subtitle')
+                                                    ->default('Latest Real Estate Insights'),
+                                                
+                                                Forms\Components\TextInput::make('sections.blog_listing.title')
+                                                    ->label('Section Title')
+                                                    ->default('Market Updates & News'),
+                                            ]),
+                                        
+                                        Forms\Components\Textarea::make('sections.blog_listing.description')
+                                            ->label('Description (Optional)')
+                                            ->rows(2)
+                                            ->placeholder('Stay informed with our latest articles...')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('sections.blog_listing.posts_per_page')
+                                                    ->label('Posts Per Page')
+                                                    ->numeric()
+                                                    ->default(12)
+                                                    ->minValue(1)
+                                                    ->maxValue(50),
+                                                
+                                                Forms\Components\Toggle::make('sections.blog_listing.show_featured_only')
+                                                    ->label('Show Featured Posts Only')
+                                                    ->default(false)
+                                                    ->inline(false),
+                                            ]),
+                                        
+                                        Forms\Components\Placeholder::make('blog_posts_note')
+                                            ->label('📌 Blog Posts Source')
+                                            ->content(new \Illuminate\Support\HtmlString('
+                                                <div style="padding: 10px; background: #f0f9ff; border-radius: 4px; font-size: 13px;">
+                                                    <strong>Blog posts are managed separately in the Blog Posts menu.</strong><br>
+                                                    This section only controls the header title, description, and listing configuration.<br>
+                                                    To add/edit blog posts, go to: <strong>Blog Posts → Create Post</strong>
+                                                </div>
+                                            '))
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // SIDEBAR TAB (Blog Page)
+                        Forms\Components\Tabs\Tab::make('📌 Sidebar')
+                            ->visible(fn (callable $get) => $get('template') === 'blog')
+                            ->schema([
+                                Forms\Components\Section::make('Sidebar Configuration')
+                                    ->description('Control what appears in the blog sidebar')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.sidebar.is_active')
+                                            ->label('Show Sidebar')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.sidebar.show_categories')
+                                                    ->label('Show Categories')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\Toggle::make('sections.sidebar.show_recent_posts')
+                                                    ->label('Show Recent Posts')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                            ]),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.sidebar.show_tags')
+                                                    ->label('Show Tags')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\TextInput::make('sections.sidebar.recent_posts_limit')
+                                                    ->label('Recent Posts Limit')
+                                                    ->numeric()
+                                                    ->default(5)
+                                                    ->minValue(1)
+                                                    ->maxValue(10),
+                                            ]),
                                     ])->collapsible()->collapsed(),
                             ]),
                         

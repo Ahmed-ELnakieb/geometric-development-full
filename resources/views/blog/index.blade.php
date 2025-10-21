@@ -1,14 +1,22 @@
 @extends('layouts.app')
 
-@section('title', 'Blogs and News - Geometric Development')
+@section('title', ($blogPage->meta_title ?? 'Blogs and News - Geometric Development'))
 
 @section('body-class', '')
 
 @section('content')
+@php
+    $breadcrumbSection = $blogPage->sections['breadcrumb'] ?? [];
+    $isBreadcrumbActive = $breadcrumbSection['is_active'] ?? true;
+@endphp
+
+@if($isBreadcrumbActive)
     <!-- breadcrumb-start -->
     <section class="breadcrumb-area wa-p-relative">
         <div class="breadcrumb-bg-img wa-fix wa-img-cover">
-            <img class="wa-parallax-img" src="{{ asset('assets/img/breadcrumb/breadcrumb-img.png') }}" alt="">
+            @if(!empty($breadcrumbSection['background_image']))
+            <img class="wa-parallax-img" src="{{ asset($breadcrumbSection['background_image']) }}" alt="">
+            @endif
         </div>
 
         <div class="container bs-container-1">
@@ -17,7 +25,7 @@
                     @if(isset($category))
                         Category: {{ $category->name }}
                     @else
-                        Blogs and News
+                        {{ $breadcrumbSection['page_title'] ?? 'Blogs and News' }}
                     @endif
                 </h1>
 
@@ -40,7 +48,14 @@
         </div>
     </section>
     <!-- breadcrumb-end -->
+@endif
 
+@php
+    $blogListingSection = $blogPage->sections['blog_listing'] ?? [];
+    $isBlogListingActive = $blogListingSection['is_active'] ?? true;
+@endphp
+
+@if($isBlogListingActive)
     <!-- blog-start -->
     <section class="bs-blog-1-area wa-p-relative pt-140 pb-80">
 
@@ -54,15 +69,18 @@
                     <span class="icon">
                         <img src="{{ asset('assets/img/illus/star-shape.png') }}" alt="">
                     </span>
-                    Latest Real Estate Insights
+                    {{ $blogListingSection['subtitle'] ?? 'Latest Real Estate Insights' }}
                 </h6>
                 <h2 class="bs-sec-title-1 wa-split-right wa-capitalize" data-cursor="-opaque">
                     @if(isset($category))
                         Posts in {{ $category->name }}
                     @else
-                        Market Updates & News
+                        {{ $blogListingSection['title'] ?? 'Market Updates & News' }}
                     @endif
                 </h2>
+                @if(!empty($blogListingSection['description']))
+                <p class="bs-p-4 disc">{{ $blogListingSection['description'] }}</p>
+                @endif
             </div>
 
             <div class="bs-blog-1-wrap">
@@ -156,4 +174,5 @@
         </div>
     </section>
     <!-- blog-item-end -->
+@endif
 @endsection
