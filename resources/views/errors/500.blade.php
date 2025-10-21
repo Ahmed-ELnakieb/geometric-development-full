@@ -1,14 +1,14 @@
 @php
     // Check if request is from admin panel
     if (request()->is('admin/*') || request()->is('admin')) {
-        // Admin Panel 404 - Completely standalone, NO frontend layout
+        // Admin Panel 500 - Completely standalone, NO frontend layout
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found | Admin Panel</title>
+    <title>500 - Server Error | Admin Panel</title>
     <style>
         * {
             margin: 0;
@@ -109,8 +109,8 @@
 <body>
     <div class="error-container">
         <h3 class="error-header">Admin Panel</h3>
-        <h1 class="error-code">404</h1>
-        <h2 class="error-title">Page Not Found</h2>
+        <h1 class="error-code">500</h1>
+        <h2 class="error-title">Server Error</h2>
         <a href="<?php echo route('filament.admin.pages.dashboard'); ?>" class="btn">back to dashboard</a>
     </div>
     
@@ -124,10 +124,10 @@
     }
 @endphp
 
-{{-- Frontend 404 Page --}}
+{{-- Frontend 500 Page --}}
 @extends('layouts.app')
 
-@section('title', '404 - Page Not Found - Geometric Development')
+@section('title', '500 - Server Error - Geometric Development')
 
 @section('body-class', '')
 
@@ -136,9 +136,9 @@
     <div class="container bs-container-1">
         <div class="bs-error-page-wrap">
             <div class="bs-error-page-content">
-                <h4 class="bs-h-4 title-1 ">Oops!</h4>
-                <h4 class="bs-h-4 title-2 ">404 Error!</h4>
-                <p class="bs-p-4 disc">We can't find the page that you're looking for. Can't find what you need? Take a moment and search below!</p>
+                <h4 class="bs-h-4 title-1 ">Server Error!</h4>
+                <h4 class="bs-h-4 title-2 ">500 Error!</h4>
+                <p class="bs-p-4 disc">Something went wrong on our server. We're working to fix it. Please try again later.</p>
 
                 <a href="{{ route('home') }}" aria-label="name" class="bs-btn-1">
                     <span class="text">
