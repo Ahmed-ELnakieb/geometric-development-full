@@ -45,29 +45,6 @@ class PageSeeder extends Seeder
                 'published_at' => now(),
             ],
             [
-                'title' => 'About Us',
-                'slug' => 'about',
-                'template' => 'about',
-                'meta_title' => 'About Geometric Development - Our Story & Vision',
-                'meta_description' => 'Learn about Geometric Development\'s journey, vision, and commitment to creating exceptional real estate projects in UAE and Egypt.',
-                'meta_keywords' => 'about geometric development, company history, vision, mission, real estate developer',
-                'sections' => [
-                    'hero' => [
-                        'title' => 'Our Story',
-                        'subtitle' => 'Building the future of real estate development',
-                        'content' => 'Geometric Development has been at the forefront of real estate innovation, creating communities that enhance lives and build lasting value.'
-                    ],
-                    'values' => [
-                        ['title' => 'Excellence', 'description' => 'We strive for excellence in every aspect of our developments'],
-                        ['title' => 'Innovation', 'description' => 'Embracing cutting-edge technology and design'],
-                        ['title' => 'Sustainability', 'description' => 'Building responsibly for future generations'],
-                        ['title' => 'Community', 'description' => 'Creating spaces that bring people together'],
-                    ]
-                ],
-                'is_published' => true,
-                'published_at' => now(),
-            ],
-            [
                 'title' => 'Contact Us',
                 'slug' => 'contact',
                 'template' => 'contact',

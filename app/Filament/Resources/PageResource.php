@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PageResource\Pages;
-use App\Filament\Resources\PageResource\RelationManagers;
 use App\Models\Page;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -47,13 +46,20 @@ class PageResource extends Resource
                                         'about' => 'About',
                                         'contact' => 'Contact',
                                     ])
-                                    ->default('default'),
+                                    ->default('default')
+                                    ->live()
+                                    ->required(),
                                 Forms\Components\Toggle::make('is_published')
                                     ->label('Published'),
                             ])->columns(2),
                         
+                        // ========================================
+                        // HOME PAGE SECTIONS (only visible when template = 'home')
+                        // ========================================
+                        
                         // HERO SECTION TAB
                         Forms\Components\Tabs\Tab::make('🌟 Hero')
+                            ->visible(fn (callable $get) => $get('template') === 'home')
                             ->schema([
                                 Forms\Components\Section::make('Hero Section')
                                     ->description('Main banner with background, foreground image, and rotating text')
@@ -148,6 +154,7 @@ class PageResource extends Resource
                         
                         // ABOUT SECTION TAB
                         Forms\Components\Tabs\Tab::make('ℹ️ About')
+                            ->visible(fn (callable $get) => $get('template') === 'home')
                             ->schema([
                                 Forms\Components\Section::make('About Section')
                                     ->description('Company intro with text and images')
@@ -260,6 +267,7 @@ class PageResource extends Resource
                         
                         // COUNTERS TAB
                         Forms\Components\Tabs\Tab::make('📊 Counters')
+                            ->visible(fn (callable $get) => $get('template') === 'home')
                             ->schema([
                                 Forms\Components\Section::make('Statistics')
                                     ->description('Achievement counters - Lines 141-199')
@@ -288,6 +296,7 @@ class PageResource extends Resource
                         
                         // VIDEO TAB
                         Forms\Components\Tabs\Tab::make('🎬 Video')
+                            ->visible(fn (callable $get) => $get('template') === 'home')
                             ->schema([
                                 Forms\Components\Section::make('Video Section')
                                     ->description('Promotional video with upload or YouTube link')
@@ -335,6 +344,7 @@ class PageResource extends Resource
                         
                         // SERVICES TABS
                         Forms\Components\Tabs\Tab::make('💼 Services')
+                            ->visible(fn (callable $get) => $get('template') === 'home')
                             ->schema([
                                 Forms\Components\Section::make('Services/Projects Tabs')
                                     ->description('Tabbed services section - Lines 223-466')
@@ -458,6 +468,7 @@ class PageResource extends Resource
                         
                         // PROJECTS TAB
                         Forms\Components\Tabs\Tab::make('🏘️ Projects')
+                            ->visible(fn (callable $get) => $get('template') === 'home')
                             ->schema([
                                 Forms\Components\Section::make('Featured Projects Section')
                                     ->description('Configure the featured projects display on homepage')
@@ -541,6 +552,7 @@ class PageResource extends Resource
                         
                         // SHOWCASE TAB
                         Forms\Components\Tabs\Tab::make('📸 Showcase')
+                            ->visible(fn (callable $get) => $get('template') === 'home')
                             ->schema([
                                 Forms\Components\Section::make('Showcase Carousel')
                                     ->description('Select up to 2 projects. Auto-fills data, but all fields are editable.')
@@ -708,6 +720,7 @@ class PageResource extends Resource
                         
                         // GALLERY TAB
                         Forms\Components\Tabs\Tab::make('🖼️ Gallery')
+                            ->visible(fn (callable $get) => $get('template') === 'home')
                             ->schema([
                                 Forms\Components\Section::make('Instagram Gallery')
                                     ->description('Social gallery grid with individual Instagram links')
@@ -785,6 +798,7 @@ class PageResource extends Resource
                         
                         // BLOG TAB
                         Forms\Components\Tabs\Tab::make('📝 Blog')
+                            ->visible(fn (callable $get) => $get('template') === 'home')
                             ->schema([
                                 Forms\Components\Section::make('Blog Posts Section')
                                     ->description('Configure the latest blog posts display on homepage')
@@ -874,6 +888,493 @@ class PageResource extends Resource
                                                     </ul>
                                                 </div>
                                             ')),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // ========================================
+                        // ABOUT PAGE SECTIONS
+                        // ========================================
+                        
+                        // BREADCRUMB TAB (About Page)
+                        Forms\Components\Tabs\Tab::make('📍 Breadcrumb')
+                            ->visible(fn (callable $get) => $get('template') === 'about')
+                            ->schema([
+                                Forms\Components\Section::make('Breadcrumb Section')
+                                    ->description('Page header with title and background image')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.breadcrumb.is_active')
+                                            ->label('Show Breadcrumb Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.breadcrumb.page_title')
+                                            ->label('Page Title')
+                                            ->default('About Us')
+                                            ->required()
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.breadcrumb.background_image')
+                                            ->label('Background Image')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->directory('about/breadcrumb')
+                                            ->visibility('public')
+                                            ->helperText('Header background image')
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // CORE FEATURES TAB (About Page)
+                        Forms\Components\Tabs\Tab::make('⭐ Core Features')
+                            ->visible(fn (callable $get) => $get('template') === 'about')
+                            ->schema([
+                                Forms\Components\Section::make('Core Features Section')
+                                    ->description('Key features with icons displayed horizontally')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.core_features.is_active')
+                                            ->label('Show Core Features Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Repeater::make('sections.core_features.items')
+                                            ->label('Feature Items')
+                                            ->schema([
+                                                Forms\Components\FileUpload::make('icon')
+                                                    ->label('Feature Icon')
+                                                    ->image()
+                                                    ->directory('about/features')
+                                                    ->visibility('public'),
+                                                Forms\Components\TextInput::make('title')
+                                                    ->label('Title')
+                                                    ->required(),
+                                                Forms\Components\TextInput::make('description')
+                                                    ->label('Description'),
+                                                Forms\Components\TextInput::make('link')
+                                                    ->label('Link URL')
+                                                    ->default('#'),
+                                            ])
+                                            ->columns(2)
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Feature')
+                                            ->defaultItems(4)
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // ABOUT SECTION TAB (About Page)
+                        Forms\Components\Tabs\Tab::make('ℹ️ About Company')
+                            ->visible(fn (callable $get) => $get('template') === 'about')
+                            ->schema([
+                                Forms\Components\Section::make('About Section')
+                                    ->description('Company introduction with image slider')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.about.is_active')
+                                            ->label('Show About Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.about.subtitle')
+                                            ->label('Subtitle')
+                                            ->default('Welcome to Geometric Development')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.about.title')
+                                            ->label('Main Title')
+                                            ->default('Exceptional Communities <br> Across Egypt')
+                                            ->helperText('Use <br> for line breaks')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\RichEditor::make('sections.about.description')
+                                            ->label('Description')
+                                            ->toolbarButtons(['bold', 'italic'])
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Repeater::make('sections.about.images')
+                                            ->label('Slider Images')
+                                            ->schema([
+                                                Forms\Components\FileUpload::make('image')
+                                                    ->label('Image')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('about/slider')
+                                                    ->visibility('public')
+                                                    ->required(),
+                                            ])
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => 'Image #' . ($state['image'] ? '✓' : ''))
+                                            ->defaultItems(4)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.about.show_button')
+                                                    ->label('Show Button')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\TextInput::make('sections.about.button_text')
+                                                    ->label('Button Text')
+                                                    ->default('learn more about')
+                                                    ->visible(fn (callable $get) => $get('sections.about.show_button')),
+                                            ]),
+                                        
+                                        Forms\Components\TextInput::make('sections.about.button_link')
+                                            ->label('Button Link')
+                                            ->default('#')
+                                            ->visible(fn (callable $get) => $get('sections.about.show_button'))
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // COUNTERS TAB (About Page)
+                        Forms\Components\Tabs\Tab::make('📊 Statistics')
+                            ->visible(fn (callable $get) => $get('template') === 'about')
+                            ->schema([
+                                Forms\Components\Section::make('Counters/Statistics Section')
+                                    ->description('Achievement counters with animated numbers')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.counters.is_active')
+                                            ->label('Show Counters Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Repeater::make('sections.counters.items')
+                                            ->label('Counter Items')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('title')
+                                                    ->label('Title')
+                                                    ->required(),
+                                                Forms\Components\TextInput::make('value')
+                                                    ->label('Counter Value')
+                                                    ->numeric()
+                                                    ->required(),
+                                                Forms\Components\TextInput::make('suffix')
+                                                    ->label('Suffix')
+                                                    ->placeholder('k+, %, +, etc.')
+                                                    ->helperText('Symbol after the number'),
+                                                Forms\Components\Textarea::make('description')
+                                                    ->label('Description')
+                                                    ->rows(2)
+                                                    ->columnSpanFull(),
+                                            ])
+                                            ->columns(3)
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Counter')
+                                            ->defaultItems(4)
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // VALUES TAB (About Page)
+                        Forms\Components\Tabs\Tab::make('💎 Brand Values')
+                            ->visible(fn (callable $get) => $get('template') === 'about')
+                            ->schema([
+                                Forms\Components\Section::make('Brand Values Section')
+                                    ->description('Company values with interactive cards')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.values.is_active')
+                                            ->label('Show Values Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.values.subtitle')
+                                            ->label('Subtitle')
+                                            ->default('OUR BRAND VALUES')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.values.title')
+                                            ->label('Main Title')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Textarea::make('sections.values.description')
+                                            ->label('Description')
+                                            ->rows(3)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.values.section_image')
+                                            ->label('Section Image (Left Side)')
+                                            ->image()
+                                            ->directory('about/values')
+                                            ->visibility('public')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.values.background_image')
+                                            ->label('Background Image')
+                                            ->image()
+                                            ->directory('about/backgrounds')
+                                            ->visibility('public')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.values.show_button')
+                                                    ->label('Show Button')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\TextInput::make('sections.values.button_text')
+                                                    ->label('Button Text')
+                                                    ->default('learn more')
+                                                    ->visible(fn (callable $get) => $get('sections.values.show_button')),
+                                            ]),
+                                        
+                                        Forms\Components\TextInput::make('sections.values.button_link')
+                                            ->label('Button Link')
+                                            ->default('#')
+                                            ->visible(fn (callable $get) => $get('sections.values.show_button'))
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Repeater::make('sections.values.values')
+                                            ->label('Value Cards')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('title')
+                                                    ->label('Value Title')
+                                                    ->required()
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\Textarea::make('description')
+                                                    ->label('Description')
+                                                    ->rows(3)
+                                                    ->required()
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\FileUpload::make('image')
+                                                    ->label('Value Image')
+                                                    ->image()
+                                                    ->directory('about/values')
+                                                    ->visibility('public')
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\TextInput::make('link')
+                                                    ->label('Link URL')
+                                                    ->default('#'),
+                                                
+                                                Forms\Components\Toggle::make('active')
+                                                    ->label('Active by Default')
+                                                    ->helperText('First value card to show expanded')
+                                                    ->inline(false),
+                                            ])
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Value')
+                                            ->defaultItems(5)
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // EXPERTISE TAB (About Page)
+                        Forms\Components\Tabs\Tab::make('🎯 Expertise')
+                            ->visible(fn (callable $get) => $get('template') === 'about')
+                            ->schema([
+                                Forms\Components\Section::make('Expertise Tags Section')
+                                    ->description('Expertise areas with animated floating tags')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.expertise.is_active')
+                                            ->label('Show Expertise Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.expertise.title')
+                                            ->label('Section Title')
+                                            ->default('Geometric Development')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Repeater::make('sections.expertise.tags')
+                                            ->label('Expertise Tags')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('text')
+                                                    ->label('Tag Text')
+                                                    ->required(),
+                                                
+                                                Forms\Components\TextInput::make('icon')
+                                                    ->label('Icon Class')
+                                                    ->default('flaticon-check')
+                                                    ->helperText('Font icon class (e.g., flaticon-check)'),
+                                                
+                                                Forms\Components\Select::make('icon_position')
+                                                    ->label('Icon Position')
+                                                    ->options([
+                                                        'left' => 'Left',
+                                                        'right' => 'Right',
+                                                    ])
+                                                    ->default('left')
+                                                    ->native(false),
+                                                
+                                                Forms\Components\TextInput::make('icon_color')
+                                                    ->label('Icon Color Class')
+                                                    ->placeholder('has-clr-3, has-clr-2, etc.')
+                                                    ->helperText('Optional color class'),
+                                            ])
+                                            ->columns(2)
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => $state['text'] ?? 'Tag')
+                                            ->defaultItems(6)
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // PORTFOLIO TAB (About Page)
+                        Forms\Components\Tabs\Tab::make('🏘️ Portfolio')
+                            ->visible(fn (callable $get) => $get('template') === 'about')
+                            ->schema([
+                                Forms\Components\Section::make('Projects Portfolio Section')
+                                    ->description('Showcase featured projects')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.portfolio.is_active')
+                                            ->label('Show Portfolio Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.portfolio.subtitle')
+                                            ->label('Subtitle')
+                                            ->default('projects')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.portfolio.title')
+                                            ->label('Main Title')
+                                            ->default('Our Development Portfolio')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.portfolio.featured_image')
+                                            ->label('Featured Image (Left Side)')
+                                            ->image()
+                                            ->directory('about/portfolio')
+                                            ->visibility('public')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Toggle::make('sections.portfolio.use_real_projects')
+                                            ->label('Use Real Projects from Database')
+                                            ->default(true)
+                                            ->helperText('Pull projects automatically from Projects menu')
+                                            ->live()
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Select::make('sections.portfolio.project_limit')
+                                            ->label('Number of Projects to Display')
+                                            ->options([
+                                                3 => '3 Projects',
+                                                4 => '4 Projects',
+                                                5 => '5 Projects',
+                                                6 => '6 Projects',
+                                                8 => '8 Projects',
+                                            ])
+                                            ->default(6)
+                                            ->visible(fn (callable $get) => $get('sections.portfolio.use_real_projects'))
+                                            ->native(false),
+                                        
+                                        Forms\Components\Placeholder::make('portfolio_note')
+                                            ->label('📌 Projects Source')
+                                            ->content(new \Illuminate\Support\HtmlString('
+                                                <div style="padding: 10px; background: #f0f9ff; border-radius: 4px; font-size: 13px;">
+                                                    Projects are pulled from the <strong>Projects menu</strong> where <strong>Is Featured</strong> is enabled, 
+                                                    sorted by <strong>Display Order</strong>.
+                                                </div>
+                                            '))
+                                            ->visible(fn (callable $get) => $get('sections.portfolio.use_real_projects')),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // WHY CHOOSE US TAB (About Page)
+                        Forms\Components\Tabs\Tab::make('❓ Why Choose Us')
+                            ->visible(fn (callable $get) => $get('template') === 'about')
+                            ->schema([
+                                Forms\Components\Section::make('Why Choose Us Section')
+                                    ->description('Reasons to choose with progress bars and features')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.why_choose_us.is_active')
+                                            ->label('Show Why Choose Us Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.why_choose_us.subtitle')
+                                            ->label('Subtitle')
+                                            ->default('Why choose us')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.why_choose_us.title')
+                                            ->label('Main Title')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Textarea::make('sections.why_choose_us.description')
+                                            ->label('Description')
+                                            ->rows(3)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.why_choose_us.background_image')
+                                            ->label('Background Image')
+                                            ->image()
+                                            ->directory('about/backgrounds')
+                                            ->visibility('public')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.why_choose_us.show_video')
+                                                    ->label('Show Video Button')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\TextInput::make('sections.why_choose_us.video_url')
+                                                    ->label('Video URL')
+                                                    ->placeholder('https://www.youtube.com/watch?v=...')
+                                                    ->visible(fn (callable $get) => $get('sections.why_choose_us.show_video')),
+                                            ]),
+                                        
+                                        Forms\Components\Repeater::make('sections.why_choose_us.progress')
+                                            ->label('Progress Bars')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('title')
+                                                    ->label('Progress Title')
+                                                    ->required(),
+                                                
+                                                Forms\Components\TextInput::make('percentage')
+                                                    ->label('Percentage')
+                                                    ->numeric()
+                                                    ->minValue(0)
+                                                    ->maxValue(100)
+                                                    ->suffix('%')
+                                                    ->required(),
+                                            ])
+                                            ->columns(2)
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => ($state['title'] ?? 'Progress') . ' - ' . ($state['percentage'] ?? '0') . '%')
+                                            ->defaultItems(3)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Repeater::make('sections.why_choose_us.features')
+                                            ->label('Feature Cards')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('icon')
+                                                    ->label('Icon Class')
+                                                    ->default('flaticon-minimalist')
+                                                    ->helperText('Font icon class'),
+                                                
+                                                Forms\Components\TextInput::make('title')
+                                                    ->label('Feature Title')
+                                                    ->required(),
+                                                
+                                                Forms\Components\Textarea::make('description')
+                                                    ->label('Description')
+                                                    ->rows(2)
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\TextInput::make('link')
+                                                    ->label('Link URL')
+                                                    ->default('#'),
+                                            ])
+                                            ->columns(2)
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Feature')
+                                            ->defaultItems(4)
+                                            ->columnSpanFull(),
                                     ])->collapsible()->collapsed(),
                             ]),
                         
