@@ -30,7 +30,10 @@ return new class extends Migration
             $table->foreignId('brochure_id')->nullable()->constrained('media')->nullOnDelete();
             $table->foreignId('factsheet_id')->nullable()->constrained('media')->nullOnDelete();
             $table->boolean('is_featured')->default(false);
+            $table->boolean('showcase')->default(true);
+            $table->integer('showcase_order')->default(0);
             $table->integer('display_order')->default(0);
+            $table->string('video_preview_url', 500)->nullable();
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->boolean('is_published')->default(false);

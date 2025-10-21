@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('phone', 50);
             $table->text('cover_letter')->nullable();
-            $table->foreignId('cv_file_id')->constrained('media')->cascadeOnDelete();
+            $table->foreignId('cv_file_id')->nullable()->constrained('media')->nullOnDelete();
             $table->string('portfolio_url', 500)->nullable();
             $table->enum('status', ['new', 'reviewing', 'shortlisted', 'interviewed', 'hired', 'rejected'])->default('new');
             $table->text('notes')->nullable();
