@@ -33,12 +33,9 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->maxContentWidth('full') // Set full width for all pages
-            // Disabled FilamentMediaManager plugin - using custom MediaLibraryResource instead
-            // ->plugins([
-            //     FilamentMediaManagerPlugin::make()
-            //         ->allowSubFolders()
-            //         ->allowUserAccess(false),
-            // ])
+            ->resources([
+                \Z3d0X\FilamentLogger\Resources\ActivityResource::class,
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
