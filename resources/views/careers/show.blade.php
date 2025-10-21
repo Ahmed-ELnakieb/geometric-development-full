@@ -5,10 +5,23 @@
 @section('body-class', '')
 
 @section('content')
+@php
+    $careerDetailSection = $careersPage->sections['career_detail'] ?? [];
+    $isBreadcrumbActive = $careerDetailSection['breadcrumb_active'] ?? true;
+    $showJobInfoSidebar = $careerDetailSection['show_job_info_sidebar'] ?? true;
+    $showApplicationForm = $careerDetailSection['show_application_form'] ?? true;
+    $showAnySidebar = $showJobInfoSidebar || $showApplicationForm;
+@endphp
+
+@if($isBreadcrumbActive)
 <!-- breadcrumb-start -->
 <section class="breadcrumb-area wa-p-relative pb-160">
     <div class="breadcrumb-bg-img wa-fix wa-img-cover">
+        @if(!empty($careerDetailSection['breadcrumb_bg']))
+        <img class="wa-parallax-img" src="{{ asset($careerDetailSection['breadcrumb_bg']) }}" alt="">
+        @else
         <img class="wa-parallax-img" src="{{ asset('assets/img/breadcrumb/geo-banner.png') }}" alt="">
+        @endif
     </div>
 
     <div class="container bs-container-1">
@@ -21,6 +34,7 @@
     </div>
 </section>
 <!-- breadcrumb-end -->
+@endif
 
 <!-- career-single-start -->
 <section class="bs-career-single-area pt-80 pb-80">
@@ -28,26 +42,28 @@
         <div class="row">
 
             <!-- left -->
-            <div class="col-lg-8">
+            <div class="{{ $showAnySidebar ? 'col-lg-8' : 'col-lg-12' }}">
                 <div class="bs-career-single-content">
-                    <h2>Position Overview</h2>
+                    <h2>{{ $careerDetailSection['overview_title'] ?? 'Position Overview' }}</h2>
                     {!! $career->overview !!}
 
-                    <h2>Key Responsibilities</h2>
+                    <h2>{{ $careerDetailSection['responsibilities_title'] ?? 'Key Responsibilities' }}</h2>
                     {!! $career->responsibilities !!}
 
                     @if($career->requirements)
-                    <h2>Requirements</h2>
+                    <h2>{{ $careerDetailSection['requirements_title'] ?? 'Requirements' }}</h2>
                     {!! $career->requirements !!}
                     @endif
 
-                    <h2>What We Offer</h2>
+                    <h2>{{ $careerDetailSection['benefits_title'] ?? 'What We Offer' }}</h2>
                     {!! $career->benefits !!}
                 </div>
             </div>
 
-            <!-- right -->
+            @if($showAnySidebar)
+            <!-- right sidebar -->
             <div class="col-lg-4">
+                @if($showJobInfoSidebar)
                 <div class="bs-career-single-sidebar">
                     <ul class="bs-career-single-sidebar-list wa-list-style-none">
                         <li>
@@ -108,7 +124,9 @@
                         </li>
                     </ul>
                 </div>
+                @endif
 
+                @if($showApplicationForm)
                 <div class="bs-career-single-sidebar">
                     <div class="bs-career-single-form-box">
                         <div class="box-icon">
@@ -117,7 +135,6 @@
                                 <path d="M32.4515 23.5158H25.8594V24.6877C25.8594 25.3353 25.3351 25.8596 24.6875 25.8596H15.3125C14.6649 25.8596 14.1406 25.3353 14.1406 24.6877V23.5158H7.54852C6.03333 23.5158 4.6933 22.5499 4.21356 21.1125L0 8.46973V34.0627C0 36.0012 1.57715 37.5783 3.51562 37.5783H36.4844C38.4229 37.5783 40 36.0012 40 34.0627V8.47064L35.7861 21.1125C35.3067 22.5499 33.9667 23.5158 32.4515 23.5158Z" fill="black"/>
                                 <path d="M24.6868 2.42188H15.3118C13.3734 2.42188 11.7962 3.99902 11.7962 5.9375V7.10938H2.01562L6.43549 20.3708C6.5957 20.8502 7.04309 21.1719 7.54785 21.1719H14.14V20C14.14 19.3524 14.6642 18.8281 15.3118 18.8281H24.6868C25.3344 18.8281 25.8587 19.3524 25.8587 20V21.1719H32.4508C32.9556 21.1719 33.403 20.8502 33.5632 20.3708L37.9833 7.10938H28.2025V5.9375C28.2025 3.99902 26.6253 2.42188 24.6868 2.42188ZM14.14 7.10938V5.9375C14.14 5.29083 14.6652 4.76562 15.3118 4.76562H24.6868C25.3335 4.76562 25.8587 5.29083 25.8587 5.9375V7.10938H14.14Z" fill="black"/>
                             </svg>
-
                         </div>
 
                         <h4 class="bs-h-4 box-title">Apply for this position</h4>
@@ -128,7 +145,7 @@
                             @csrf
 
                             <div class="bs-form-1-item">
-                                <label class="bs-form-1-item-label" for="first_name">First Name:</label>
+                            <label class="bs-form-1-item-label" for="first_name">First Name:</label>
                                 <input id="first_name" name="first_name" class="bs-form-1-item-input" type="text" value="{{ old('first_name') }}" placeholder="e.g. Ahmed" required>
                                 @error('first_name')
                                 <span class="text-danger">{{ $message }}</span>
@@ -183,10 +200,11 @@
                         </form>
 
                     </div>
-
                 </div>
+                @endif
 
             </div>
+            @endif
         </div>
     </div>
 </section>

@@ -1557,6 +1557,85 @@ class PageResource extends Resource
                                     ])->collapsible()->collapsed(),
                             ]),
                         
+                        // CAREER DETAIL PAGE TAB
+                        Forms\Components\Tabs\Tab::make('📄 Career Detail Page')
+                            ->visible(fn (callable $get) => $get('template') === 'careers')
+                            ->schema([
+                                Forms\Components\Section::make('Career Detail Page Configuration')
+                                    ->description('Configure the individual career/job position detail page layout')
+                                    ->schema([
+                                        // Breadcrumb Section
+                                        Forms\Components\Fieldset::make('Breadcrumb Section')
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.career_detail.breadcrumb_active')
+                                                    ->label('Show Breadcrumb')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\FileUpload::make('sections.career_detail.breadcrumb_bg')
+                                                    ->label('Breadcrumb Background Image')
+                                                    ->image()
+                                                    ->imageEditor()
+                                                    ->directory('careers/detail-breadcrumb')
+                                                    ->visibility('public')
+                                                    ->columnSpanFull(),
+                                            ]),
+                                        
+                                        // Content Layout
+                                        Forms\Components\Fieldset::make('Content Layout')
+                                            ->schema([
+                                                Forms\Components\Grid::make(2)
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('sections.career_detail.overview_title')
+                                                            ->label('Overview Title')
+                                                            ->default('Position Overview'),
+                                                        
+                                                        Forms\Components\TextInput::make('sections.career_detail.responsibilities_title')
+                                                            ->label('Responsibilities Title')
+                                                            ->default('Key Responsibilities'),
+                                                    ]),
+                                                
+                                                Forms\Components\Grid::make(2)
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('sections.career_detail.requirements_title')
+                                                            ->label('Requirements Title')
+                                                            ->default('Requirements'),
+                                                        
+                                                        Forms\Components\TextInput::make('sections.career_detail.benefits_title')
+                                                            ->label('Benefits Title')
+                                                            ->default('What We Offer'),
+                                                    ]),
+                                            ]),
+                                        
+                                        // Sidebar Configuration
+                                        Forms\Components\Fieldset::make('Sidebar Configuration')
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.career_detail.show_job_info_sidebar')
+                                                    ->label('Show Job Info Sidebar')
+                                                    ->default(true)
+                                                    ->helperText('Toggle to show/hide the job details sidebar (Location, Type, Salary, Days)')
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\Toggle::make('sections.career_detail.show_application_form')
+                                                    ->label('Show Application Form')
+                                                    ->default(true)
+                                                    ->helperText('Toggle to show/hide the application form below job info')
+                                                    ->inline(false),
+                                            ]),
+                                        
+                                        Forms\Components\Placeholder::make('career_detail_note')
+                                            ->label('📌 Important Note')
+                                            ->content(new \Illuminate\Support\HtmlString('
+                                                <div style="padding: 10px; background: #f0f9ff; border-radius: 4px; font-size: 13px;">
+                                                    <strong>This controls the LAYOUT of individual career detail pages.</strong><br>
+                                                    The actual job content (title, overview, requirements, etc.) is managed in each Career entry.<br>
+                                                    Go to: <strong>Careers → Edit Career</strong> to modify job-specific content.
+                                                </div>
+                                            '))
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
                         // ========================================
                         // BLOG PAGE SECTIONS
                         // ========================================
@@ -1689,6 +1768,106 @@ class PageResource extends Resource
                                                     ->minValue(1)
                                                     ->maxValue(10),
                                             ]),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // BLOG POST DETAIL PAGE TAB
+                        Forms\Components\Tabs\Tab::make('📝 Blog Post Detail Page')
+                            ->visible(fn (callable $get) => $get('template') === 'blog')
+                            ->schema([
+                                Forms\Components\Section::make('Blog Post Detail Page Configuration')
+                                    ->description('Configure the individual blog post detail page layout')
+                                    ->schema([
+                                        // Breadcrumb Section
+                                        Forms\Components\Fieldset::make('Breadcrumb/Hero Section')
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.blog_detail.breadcrumb_active')
+                                                    ->label('Show Breadcrumb/Hero')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\Toggle::make('sections.blog_detail.show_back_button')
+                                                    ->label('Show "Back to Blog" Button')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\TextInput::make('sections.blog_detail.back_button_text')
+                                                    ->label('Back Button Text')
+                                                    ->default('Back to Blog')
+                                                    ->columnSpanFull(),
+                                            ]),
+                                        
+                                        // Content Layout
+                                        Forms\Components\Fieldset::make('Content Display')
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.blog_detail.show_author')
+                                                    ->label('Show Author Info')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\Toggle::make('sections.blog_detail.show_date')
+                                                    ->label('Show Publish Date')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\Toggle::make('sections.blog_detail.show_categories')
+                                                    ->label('Show Categories')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\Toggle::make('sections.blog_detail.show_tags')
+                                                    ->label('Show Tags')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                            ]),
+                                        
+                                        // Related Posts Section
+                                        Forms\Components\Fieldset::make('Related Posts Section')
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.blog_detail.show_related_posts')
+                                                    ->label('Show Related Posts')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\Grid::make(2)
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('sections.blog_detail.related_posts_title')
+                                                            ->label('Related Posts Section Title')
+                                                            ->default('Related Articles'),
+                                                        
+                                                        Forms\Components\TextInput::make('sections.blog_detail.related_posts_limit')
+                                                            ->label('Number of Related Posts')
+                                                            ->numeric()
+                                                            ->default(3)
+                                                            ->minValue(1)
+                                                            ->maxValue(6),
+                                                    ]),
+                                            ]),
+                                        
+                                        // Comments Section
+                                        Forms\Components\Fieldset::make('Comments Section')
+                                            ->schema([
+                                                Forms\Components\Toggle::make('sections.blog_detail.show_comments')
+                                                    ->label('Show Comments Section')
+                                                    ->default(true)
+                                                    ->inline(false),
+                                                
+                                                Forms\Components\TextInput::make('sections.blog_detail.comments_title')
+                                                    ->label('Comments Section Title')
+                                                    ->default('Comments')
+                                                    ->columnSpanFull(),
+                                            ]),
+                                        
+                                        Forms\Components\Placeholder::make('blog_detail_note')
+                                            ->label('📌 Important Note')
+                                            ->content(new \Illuminate\Support\HtmlString('
+                                                <div style="padding: 10px; background: #f0f9ff; border-radius: 4px; font-size: 13px;">
+                                                    <strong>This controls the LAYOUT of individual blog post detail pages.</strong><br>
+                                                    The actual post content (title, body, featured image, etc.) is managed in each Blog Post entry.<br>
+                                                    Go to: <strong>Blog Posts → Edit Post</strong> to modify post-specific content.
+                                                </div>
+                                            '))
+                                            ->columnSpanFull(),
                                     ])->collapsible()->collapsed(),
                             ]),
                         

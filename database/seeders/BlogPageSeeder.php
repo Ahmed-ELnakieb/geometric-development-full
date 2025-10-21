@@ -61,6 +61,22 @@ class BlogPageSeeder extends Seeder
                 'show_tags' => true,
                 'recent_posts_limit' => 5,
             ],
+
+            // BLOG POST DETAIL PAGE CONFIGURATION
+            'blog_detail' => [
+                'breadcrumb_active' => true,
+                'show_back_button' => true,
+                'back_button_text' => 'Back to Blog',
+                'show_author' => true,
+                'show_date' => true,
+                'show_categories' => true,
+                'show_tags' => true,
+                'show_related_posts' => true,
+                'related_posts_title' => 'Related Articles',
+                'related_posts_limit' => 3,
+                'show_comments' => true,
+                'comments_title' => 'Comments',
+            ],
         ];
     }
 }

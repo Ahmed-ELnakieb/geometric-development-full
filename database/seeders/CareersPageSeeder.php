@@ -94,6 +94,18 @@ class CareersPageSeeder extends Seeder
                 'title' => 'Available Positions',
                 'description' => 'Explore our current job openings and take the next step in your career.',
             ],
+
+            // CAREER DETAIL PAGE CONFIGURATION
+            'career_detail' => [
+                'breadcrumb_active' => true,
+                'breadcrumb_bg' => 'assets/img/breadcrumb/geo-banner.png',
+                'overview_title' => 'Position Overview',
+                'responsibilities_title' => 'Key Responsibilities',
+                'requirements_title' => 'Requirements',
+                'benefits_title' => 'What We Offer',
+                'show_job_info_sidebar' => true, // Toggle 1: Job details (location, type, salary, days)
+                'show_application_form' => true, // Toggle 2: Application form
+            ],
         ];
     }
 }

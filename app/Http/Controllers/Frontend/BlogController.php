@@ -89,8 +89,16 @@ class BlogController extends Controller
         return view('blog.index', compact('posts', 'categories', 'tags', 'tag'));
     }
 
+    /**
+     * Display individual blog post detail page with dynamic content
+     */
     public function show($slug)
     {
+        // Load blog page content for detail page configuration
+        $blogPage = Page::where('slug', 'blog')
+            ->orWhere('template', 'blog')
+            ->first();
+
         $post = BlogPost::published()
             ->where('slug', $slug)
             ->with([
@@ -112,6 +120,6 @@ class BlogController extends Controller
             ->take(3)
             ->get();
 
-        return view('blog.show', compact('post', 'relatedPosts'));
+        return view('blog.show', compact('blogPage', 'post', 'relatedPosts'));
     }
 }

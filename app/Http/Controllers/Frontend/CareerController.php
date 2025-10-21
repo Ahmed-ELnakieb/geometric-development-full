@@ -38,8 +38,16 @@ class CareerController extends Controller
         return view('careers.index', compact('careersPage', 'careers', 'locations', 'jobTypes'));
     }
 
+    /**
+     * Display individual career detail page with dynamic content
+     */
     public function show($slug)
     {
+        // Load careers page content for detail page configuration
+        $careersPage = Page::where('slug', 'careers')
+            ->orWhere('template', 'careers')
+            ->first();
+
         $career = Career::active()->notExpired()->where('slug', $slug)->firstOrFail();
 
         $relatedCareers = Career::active()->notExpired()
@@ -48,7 +56,7 @@ class CareerController extends Controller
             ->take(3)
             ->get();
 
-        return view('careers.show', compact('career', 'relatedCareers'));
+        return view('careers.show', compact('careersPage', 'career', 'relatedCareers'));
     }
 
     public function apply($slug, Request $request)

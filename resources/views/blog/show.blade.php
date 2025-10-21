@@ -7,6 +7,19 @@
 @section('body-class', '')
 
 @section('content')
+@php
+    $blogDetailSection = $blogPage->sections['blog_detail'] ?? [];
+    $isBreadcrumbActive = $blogDetailSection['breadcrumb_active'] ?? true;
+    $showBackButton = $blogDetailSection['show_back_button'] ?? true;
+    $showAuthor = $blogDetailSection['show_author'] ?? true;
+    $showDate = $blogDetailSection['show_date'] ?? true;
+    $showCategories = $blogDetailSection['show_categories'] ?? true;
+    $showTags = $blogDetailSection['show_tags'] ?? true;
+    $showRelatedPosts = $blogDetailSection['show_related_posts'] ?? true;
+    $showComments = $blogDetailSection['show_comments'] ?? true;
+@endphp
+
+@if($isBreadcrumbActive)
 <!-- breadcrumb-start -->
 <section class="breadcrumb-area has-blog-details wa-p-relative">
     <div class="breadcrumb-bg-img wa-fix wa-img-cover">
@@ -15,14 +28,17 @@
 
     <div class="container bs-container-1">
         <div class="breadcrumb-wrap">
+            @if($showBackButton)
             <a href="{{ route('blog.index') }}" aria-label="name" class="breadcrumb-back-page-btn">
                 <i class="fa-solid fa-angle-left"></i>
-                Back to Blog
+                {{ $blogDetailSection['back_button_text'] ?? 'Back to Blog' }}
             </a>
+            @endif
 
             <h1 class="breadcrumb-title wa-split-right wa-capitalize" data-split-delay="1.1s">{{ $post->title }}</h1>
 
             <div class="bs-blog-details-meta">
+                @if($showAuthor)
                 <span class="meta-item bs-p-1">
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_2155_3933)">
@@ -36,6 +52,8 @@
                     </svg>
                     {{ $post->author->name }}
                 </span>
+                @endif
+                @if($showDate)
                 <span class="meta-item bs-p-1">
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_2155_3901)">
@@ -61,6 +79,8 @@
                     </svg>
                     comments({{ $post->approvedComments->count() }})
                 </span>
+                @endif
+                @if($showCategories)
                 <span class="meta-item bs-p-1">
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_2155_3897)">
@@ -74,11 +94,13 @@
                     </svg>
                     {{ $post->published_at->format('M d, Y') }}
                 </span>
+                @endif
             </div>
         </div>
     </div>
 </section>
 <!-- breadcrumb-end -->
+@endif
 
 <!-- blog-details-start -->
 <section class="bs-blog-details-area wa-p-relative pt-80 pb-50">
@@ -88,6 +110,7 @@
             {!! $post->content !!}
         </div>
 
+        @if($showTags)
         <div class="bs-blog-details-tag-share">
             <div class="bs-blog-tag">
                 <h6 class="title bs-h-1">Tags:</h6>
@@ -143,18 +166,19 @@
                 </a>
             </div>
         </div>
+        @endif
 
     </div>
 </section>
 <!-- blog-details-end -->
 
 <!-- related-posts-start -->
-@if($relatedPosts->isNotEmpty())
+@if($showRelatedPosts && $relatedPosts->isNotEmpty())
 <section class="bs-related-posts-area wa-p-relative pt-80 pb-50">
     <div class="container bs-container-1">
 
         <div class="bs-section-title text-center mb-50">
-            <h2 class="title bs-h-2 wa-split-right" data-split-delay="0.2s">Related Posts</h2>
+            <h2 class="title bs-h-2 wa-split-right" data-split-delay="0.2s">{{ $blogDetailSection['related_posts_title'] ?? 'Related Articles' }}</h2>
         </div>
 
         <div class="row">
