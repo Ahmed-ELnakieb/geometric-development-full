@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             PageSeeder::class,
             HomePageSeeder::class, // Homepage with all sections
             AboutPageSeeder::class, // About page with all sections
+            ContactPageSeeder::class, // Contact page with all sections
             CareerSeeder::class,
             BlogPostSeeder::class,
             ProjectSeeder::class,

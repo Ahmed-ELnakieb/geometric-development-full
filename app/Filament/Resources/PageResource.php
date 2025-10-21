@@ -1378,6 +1378,195 @@ class PageResource extends Resource
                                     ])->collapsible()->collapsed(),
                             ]),
                         
+                        // ========================================
+                        // CONTACT PAGE SECTIONS
+                        // ========================================
+                        
+                        // BREADCRUMB TAB (Contact Page)
+                        Forms\Components\Tabs\Tab::make('📍 Breadcrumb')
+                            ->visible(fn (callable $get) => $get('template') === 'contact')
+                            ->schema([
+                                Forms\Components\Section::make('Breadcrumb Section')
+                                    ->description('Page header with title and background image')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.breadcrumb.is_active')
+                                            ->label('Show Breadcrumb Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.breadcrumb.page_title')
+                                            ->label('Page Title')
+                                            ->default('Contact Us')
+                                            ->required()
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.breadcrumb.background_image')
+                                            ->label('Background Image')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->directory('contact/breadcrumb')
+                                            ->visibility('public')
+                                            ->helperText('Header background image')
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // CONTACT INFO TAB (Contact Page)
+                        Forms\Components\Tabs\Tab::make('📞 Contact Info')
+                            ->visible(fn (callable $get) => $get('template') === 'contact')
+                            ->schema([
+                                Forms\Components\Section::make('Contact Information Cards')
+                                    ->description('Display address, email, and phone contact cards')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.contact_info.is_active')
+                                            ->label('Show Contact Info Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Repeater::make('sections.contact_info.items')
+                                            ->label('Contact Cards')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('title')
+                                                    ->label('Card Title')
+                                                    ->required()
+                                                    ->placeholder('e.g., Address, Email, Call Us')
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\TextInput::make('icon')
+                                                    ->label('Icon Class')
+                                                    ->required()
+                                                    ->default('fas fa-info-circle')
+                                                    ->helperText('Font Awesome icon class (e.g., fas fa-map-marker-alt, fas fa-envelope, fas fa-phone)')
+                                                    ->columnSpanFull(),
+                                                
+                                                Forms\Components\Repeater::make('links')
+                                                    ->label('Contact Links/Text')
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('text')
+                                                            ->label('Display Text')
+                                                            ->required()
+                                                            ->columnSpanFull(),
+                                                        
+                                                        Forms\Components\TextInput::make('url')
+                                                            ->label('URL')
+                                                            ->placeholder('mailto:, tel:, https://, etc.')
+                                                            ->helperText('Leave empty for plain text'),
+                                                        
+                                                        Forms\Components\Select::make('type')
+                                                            ->label('Type')
+                                                            ->options([
+                                                                'link' => 'Clickable Link',
+                                                                'text' => 'Plain Text',
+                                                            ])
+                                                            ->default('link')
+                                                            ->native(false),
+                                                        
+                                                        Forms\Components\Toggle::make('new_tab')
+                                                            ->label('Open in New Tab')
+                                                            ->default(false)
+                                                            ->inline(false),
+                                                    ])
+                                                    ->columns(2)
+                                                    ->collapsible()
+                                                    ->itemLabel(fn (array $state): ?string => $state['text'] ?? 'Link')
+                                                    ->defaultItems(1)
+                                                    ->columnSpanFull(),
+                                            ])
+                                            ->collapsible()
+                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Contact Card')
+                                            ->defaultItems(3)
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // CONTACT FORM TAB (Contact Page)
+                        Forms\Components\Tabs\Tab::make('✉️ Contact Form')
+                            ->visible(fn (callable $get) => $get('template') === 'contact')
+                            ->schema([
+                                Forms\Components\Section::make('Contact Form Section')
+                                    ->description('Form title and configuration')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.contact_form.is_active')
+                                            ->label('Show Contact Form Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.contact_form.subtitle')
+                                            ->label('Subtitle')
+                                            ->default('Contact us')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.contact_form.title')
+                                            ->label('Form Title')
+                                            ->default('Find Your Perfect Property Today!')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\FileUpload::make('sections.contact_form.side_image')
+                                            ->label('Side Image (Optional)')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->directory('contact/form')
+                                            ->visibility('public')
+                                            ->helperText('Image displayed beside the form')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Toggle::make('sections.contact_form.show_user_type')
+                                            ->label('Show User Type Field')
+                                            ->helperText('Show "Are you a Customer or Broker?" dropdown')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
+                        // MAP TAB (Contact Page)
+                        Forms\Components\Tabs\Tab::make('🗺️ Map')
+                            ->visible(fn (callable $get) => $get('template') === 'contact')
+                            ->schema([
+                                Forms\Components\Section::make('Google Maps Section')
+                                    ->description('Embed Google Maps location')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('sections.map.is_active')
+                                            ->label('Show Map Section')
+                                            ->default(true)
+                                            ->inline(false)
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\Textarea::make('sections.map.embed_url')
+                                            ->label('Google Maps Embed URL')
+                                            ->required()
+                                            ->rows(3)
+                                            ->helperText('Get embed URL from Google Maps: Share → Embed a map → Copy HTML')
+                                            ->placeholder('https://www.google.com/maps/embed?pb=...')
+                                            ->columnSpanFull(),
+                                        
+                                        Forms\Components\TextInput::make('sections.map.height')
+                                            ->label('Map Height (pixels)')
+                                            ->numeric()
+                                            ->default('450')
+                                            ->suffix('px'),
+                                        
+                                        Forms\Components\Placeholder::make('map_instructions')
+                                            ->label('📌 How to Get Embed URL')
+                                            ->content(new \Illuminate\Support\HtmlString('
+                                                <div style="padding: 10px; background: #f0f9ff; border-radius: 4px; font-size: 13px;">
+                                                    <ol style="margin: 0; padding-left: 20px;">
+                                                        <li>Go to <a href="https://www.google.com/maps" target="_blank">Google Maps</a></li>
+                                                        <li>Search for your location</li>
+                                                        <li>Click "Share" button</li>
+                                                        <li>Select "Embed a map" tab</li>
+                                                        <li>Copy the URL from the iframe src attribute</li>
+                                                        <li>Paste it in the field above</li>
+                                                    </ol>
+                                                </div>
+                                            '))
+                                            ->columnSpanFull(),
+                                    ])->collapsible()->collapsed(),
+                            ]),
+                        
                         // SEO TAB
                         Forms\Components\Tabs\Tab::make('🔍 SEO')
                             ->schema([

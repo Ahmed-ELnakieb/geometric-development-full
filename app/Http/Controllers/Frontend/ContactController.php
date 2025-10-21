@@ -4,14 +4,22 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Message;
+use App\Models\Page;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
+    /**
+     * Display the contact page
+     */
     public function index()
     {
-        return view('contact');
+        $contactPage = Page::where('slug', 'contact')
+            ->orWhere('template', 'contact')
+            ->firstOrFail();
+        
+        return view('contact', compact('contactPage'));
     }
 
     public function store(Request $request)

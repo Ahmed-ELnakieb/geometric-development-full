@@ -44,28 +44,6 @@ class PageSeeder extends Seeder
                 'is_published' => true,
                 'published_at' => now(),
             ],
-            [
-                'title' => 'Contact Us',
-                'slug' => 'contact',
-                'template' => 'contact',
-                'meta_title' => 'Contact Geometric Development - Get in Touch',
-                'meta_description' => 'Contact Geometric Development for inquiries about our real estate projects in UAE and Egypt. We\'re here to help you find your perfect property.',
-                'meta_keywords' => 'contact geometric development, real estate inquiries, property information',
-                'sections' => [
-                    'hero' => [
-                        'title' => 'Get in Touch',
-                        'subtitle' => 'We\'re here to help you find your perfect property'
-                    ],
-                    'contact_info' => [
-                        'address' => '6 October - Sheikh Zayed, Egypt',
-                        'phone' => '+20 127 2777919',
-                        'email' => 'info@geometric-development.com',
-                        'working_hours' => 'Sunday - Thursday: 9:00 AM - 6:00 PM'
-                    ]
-                ],
-                'is_published' => true,
-                'published_at' => now(),
-            ]
         ];
 
         foreach ($pages as &$pageData) {
