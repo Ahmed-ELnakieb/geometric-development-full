@@ -1,6 +1,6 @@
-<footer class="bs-footer-4-area wa-p-relative wa-fix pt-130">
+<footer class="bs-footer-4-area wa-p-relative wa-fix pt-130" style="background-color: {{ settings('footer_bg_color', '#1a1a1a') }}; color: {{ settings('footer_text_color', '#ffffff') }};">
     <div class="bs-footer-4-bg wa-fix">
-        <img src="{{ asset('assets/img/footer/f4-bg-1.png') }}" alt="">
+        <img src="{{ asset(settings('footer_bg_image', 'assets/img/footer/f4-bg-1.png')) }}" alt="Footer Background">
     </div>
 
     <div class="container bs-container-2">
@@ -54,13 +54,42 @@
             <div class="bs-footer-4-contact">
                 <h4 class="bs-h-1 title wa-split-up wa-capitalize wa-fix">{{ settings('footer_contact_title', 'contact us') }}</h4>
                 <div class="bs-footer-4-contact-link">
-                    <p class="bs-p-4 link-title">Email</p>
-                    <a href="mailto:{{ settings('email', 'info@geometric-development.com') }}" target="_blank" class="link-elm bs-p-4 wa-clip-left-right">{{ settings('email', 'info@geometric-development.com') }}</a>
-                    <p class="bs-p-4 link-title">phone</p>
-                    <a href="https://wa.me/{{ settings('phone_1_whatsapp', '201272777919') }}" target="_blank" class="link-elm bs-p-4 wa-clip-left-right" style="display: block;">{{ settings('phone_1', '+20 127 2777919') }}</a>
-                    <a href="https://wa.me/{{ settings('phone_2_whatsapp', '201200111338') }}" target="_blank" class="link-elm bs-p-4 wa-clip-left-right" style="display: block;">{{ settings('phone_2', '+20 120 0111338') }}</a>
-                    <p class="bs-p-4 link-title">Address</p>
-                    <a href="{{ settings('address_map_url', 'https://maps.google.com/?q=6+October+Sheikh+Zayed+Egypt') }}" target="_blank" class="link-elm bs-p-4 wa-clip-left-right" style="display: block;">{{ settings('address', '6 October - Sheikh Zayed') }}</a>
+                    @if(settings('contact_email'))
+                        <p class="bs-p-4 link-title">{{ settings('contact_email_label', 'Email') }}</p>
+                        <a href="mailto:{{ settings('contact_email') }}" target="_blank" class="link-elm bs-p-4 wa-clip-left-right">{{ settings('contact_email') }}</a>
+                    @endif
+
+                    @if(settings('phone_1') || settings('phone_2'))
+                        <p class="bs-p-4 link-title">{{ settings('contact_phone_label', 'phone') }}</p>
+                        @if(settings('phone_1'))
+                            <a href="https://wa.me/{{ settings('phone_1_whatsapp') }}" target="_blank" class="link-elm bs-p-4 wa-clip-left-right" style="display: block;">{{ settings('phone_1') }}</a>
+                        @endif
+                        @if(settings('phone_2'))
+                            <a href="https://wa.me/{{ settings('phone_2_whatsapp') }}" target="_blank" class="link-elm bs-p-4 wa-clip-left-right" style="display: block;">{{ settings('phone_2') }}</a>
+                        @endif
+                    @endif
+
+                    @if(settings('address'))
+                        <p class="bs-p-4 link-title">{{ settings('contact_address_label', 'Address') }}</p>
+                        <a href="{{ settings('address_map_url', '#') }}" target="_blank" class="link-elm bs-p-4 wa-clip-left-right" style="display: block;">{{ settings('address') }}</a>
+                    @endif
+
+                    @php
+                        $additionalContactItems = json_decode(settings('additional_contact_items', '[]'), true) ?: [];
+                    @endphp
+                    @foreach($additionalContactItems as $item)
+                        @if(!empty($item['is_active']) && !empty($item['label']) && !empty($item['value']))
+                            <p class="bs-p-4 link-title">{{ $item['label'] }}</p>
+                            @if(!empty($item['link_url']))
+                                <a href="{{ $item['link_url'] }}" 
+                                   target="{{ !empty($item['open_in_new_tab']) ? '_blank' : '_self' }}" 
+                                   class="link-elm bs-p-4 wa-clip-left-right" 
+                                   style="display: block;">{{ $item['value'] }}</a>
+                            @else
+                                <p class="link-elm bs-p-4 wa-clip-left-right" style="display: block;">{{ $item['value'] }}</p>
+                            @endif
+                        @endif
+                    @endforeach
                 </div>
             </div>
         </div>

@@ -47,7 +47,33 @@ class NavbarFooterSettingsSeeder extends Seeder
                 'group' => 'navbar',
             ],
             
-            // Contact Info (if not exists)
+            // Contact Info Labels
+            [
+                'key' => 'contact_email_label',
+                'value' => 'Email',
+                'type' => 'text',
+                'group' => 'contact',
+            ],
+            [
+                'key' => 'contact_email',
+                'value' => 'info@geometric-development.com',
+                'type' => 'text',
+                'group' => 'contact',
+            ],
+            [
+                'key' => 'contact_phone_label',
+                'value' => 'phone',
+                'type' => 'text',
+                'group' => 'contact',
+            ],
+            [
+                'key' => 'contact_address_label',
+                'value' => 'Address',
+                'type' => 'text',
+                'group' => 'contact',
+            ],
+            
+            // Contact Info
             [
                 'key' => 'phone_1',
                 'value' => '+20 127 2777919',
@@ -87,6 +113,24 @@ class NavbarFooterSettingsSeeder extends Seeder
             
             // Footer
             [
+                'key' => 'footer_bg_image',
+                'value' => 'assets/img/footer/f4-bg-1.png',
+                'type' => 'image',
+                'group' => 'footer',
+            ],
+            [
+                'key' => 'footer_bg_color',
+                'value' => '#1a1a1a',
+                'type' => 'text',
+                'group' => 'footer',
+            ],
+            [
+                'key' => 'footer_text_color',
+                'value' => '#ffffff',
+                'type' => 'text',
+                'group' => 'footer',
+            ],
+            [
                 'key' => 'footer_copyright_text',
                 'value' => 'Geometric-Development',
                 'type' => 'text',
@@ -97,6 +141,32 @@ class NavbarFooterSettingsSeeder extends Seeder
                 'value' => 'contact us',
                 'type' => 'text',
                 'group' => 'footer',
+            ],
+            
+            // Social Media
+            [
+                'key' => 'facebook_url',
+                'value' => 'https://facebook.com/geometric-development',
+                'type' => 'text',
+                'group' => 'social',
+            ],
+            [
+                'key' => 'instagram_url',
+                'value' => 'https://instagram.com/geometric-development',
+                'type' => 'text',
+                'group' => 'social',
+            ],
+            [
+                'key' => 'twitter_url',
+                'value' => 'https://twitter.com/geometric-development',
+                'type' => 'text',
+                'group' => 'social',
+            ],
+            [
+                'key' => 'linkedin_url',
+                'value' => 'https://linkedin.com/company/geometric-development',
+                'type' => 'text',
+                'group' => 'social',
             ],
         ];
 
