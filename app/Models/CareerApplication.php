@@ -42,12 +42,13 @@ class CareerApplication extends Model implements HasMedia
         return $this->belongsTo(Media::class, 'cv_file_id');
     }
 
+    /**
+     * Register media collections for CV files
+     */
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('cv_files')
-            ->singleFile()
-            ->acceptsMimeTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
-            ->maxFileSize(5 * 1024 * 1024); // 5MB
+            ->singleFile();
     }
 
     public function scopeStatus($query, $status)
