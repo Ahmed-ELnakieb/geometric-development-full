@@ -29,10 +29,12 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('GEOMETRIC')
             ->colors([
                 'primary' => Color::Amber,
             ])
             ->maxContentWidth('full') // Set full width for all pages
+            ->renderHook('panels::body.end', fn () => view('filament.footer'))
             ->resources([
                 \Z3d0X\FilamentLogger\Resources\ActivityResource::class,
             ])
