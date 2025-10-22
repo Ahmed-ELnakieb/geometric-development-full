@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "artesaos/seotools": "^1.3",
+        "eightynine/filament-advanced-widgets": "^3.0",
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "filament/spatie-laravel-settings-plugin": "^3.2",
