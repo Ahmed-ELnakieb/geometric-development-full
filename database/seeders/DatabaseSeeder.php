@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             SettingSeeder::class,
+            NavbarFooterSettingsSeeder::class, // Navbar & Footer settings
             ProjectCategorySeeder::class,
             BlogCategorySeeder::class,
             BlogTagSeeder::class,
@@ -30,6 +31,7 @@ class DatabaseSeeder extends Seeder
             CareerSeeder::class,
             BlogPostSeeder::class,
             ProjectSeeder::class,
+            MenuItemSeeder::class, // Menu items (navbar & footer)
         ]);
     }
 }
