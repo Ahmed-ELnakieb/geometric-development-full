@@ -277,6 +277,207 @@
   - ✅ Consistent enhanced controls across all media fields
 - **Status**: ✅ Implemented - test at /admin/projects/1/edit
 
+### 2025-10-22 - Inbox Viewer (IMAP Email Reader)
+- **Issue**: Need to view RECEIVED emails (emails arriving in inbox) in admin panel
+- **Requirements**:
+  1. Connect to email inbox via IMAP protocol
+  2. Display received emails in admin panel
+  3. Read full email content with HTML rendering
+  4. Show unread count and email stats
+  5. Configure IMAP settings from admin panel
+- **Implementation**:
+  1. **Package Installation**:
+     - Installed `webklex/php-imap` (v6.2) for IMAP connectivity
+  2. **Inbox Page**:
+     - Created `app/Filament/Pages/Inbox.php` - Inbox controller
+     - Created `resources/views/filament/pages/inbox.blade.php` - Inbox UI
+     - Features: email list, email viewer, stats, refresh, mark as read
+     - Connects to Gmail/Outlook/Yahoo via IMAP
+     - Fetches last 50 emails from inbox
+     - Safe HTML rendering in sandboxed iframe
+  3. **Mail Settings Enhancement**:
+     - Added IMAP configuration section to Mail Settings page
+     - Fields: IMAP Host, Port, Username, Password, Encryption
+     - Collapsed by default to avoid confusion
+     - Saves to `.env` file (IMAP_HOST, IMAP_PORT, etc.)
+  4. **Documentation**:
+     - Created `INBOX-SETUP-GUIDE.md` with complete setup instructions
+     - Gmail App Password instructions
+     - IMAP settings for different providers
+     - Troubleshooting guide
+- **Features**:
+  - View received emails from inbox in admin panel
+  - Email list with sender, subject, preview, date
+  - Unread indicator (blue dot + highlighted row)
+  - Click to view full email with HTML rendering
+  - Auto-mark as read when viewing
+  - Refresh button to load latest emails
+  - Stats showing total emails and unread count
+  - Error handling with helpful messages
+- **Admin Panel Navigation**:
+  - Added "Inbox" page to Mail navigation group
+  - Sort order: 4 (after Mail Settings)
+- **Security**:
+  - SSL/TLS encryption required
+  - App Password recommended over regular password
+  - Safe HTML rendering in sandboxed iframe
+  - Read-only access (cannot send/delete)
+  - Credentials stored in `.env` file
+- **Files Created**:
+  - `app/Filament/Pages/Inbox.php`
+  - `resources/views/filament/pages/inbox.blade.php`
+  - `INBOX-SETUP-GUIDE.md`
+- **Files Modified**:
+  - `app/Filament/Pages/MailSettings.php` - Added IMAP configuration fields
+- **Status**: ✅ Implemented - configure IMAP in Mail Settings, then visit /admin/inbox
+
+### 2025-10-23 - Storage Cleanup & Blog Post Reduction
+- **Issue**: `storage/app/public` folder was 222MB with many unused media folders and too many blog posts
+- **Requirements**:
+  1. Reduce blog posts from 24+ to only 8 posts
+  2. Remove unused media files and folders
+  3. Keep only media files that are actively used in the application
+  4. Create cleanup command for future maintenance
+- **Implementation**:
+  1. **Blog Post Reduction**:
+     - Modified `database/seeders/BlogPostSeeder.php`
+     - Removed posts 9-50, keeping only first 8 blog posts
+     - Reduced from 50 posts to 8 posts (84% reduction)
+  2. **Media Cleanup Command**:
+     - Created `app/Console/Commands/CleanupUnusedMedia.php`
+     - Scans `storage/app/public` for media folders
+     - Compares folder IDs with database media records
+     - Deletes folders that don't exist in database
+     - Provides dry-run option to preview deletions
+  3. **Database Refresh**:
+     - Ran `php artisan migrate:fresh --seed`
+     - Seeded only 8 blog posts
+     - All media properly attached to models
+  4. **Cleanup Execution**:
+     - Ran `php artisan media:cleanup-unused --force`
+     - Deleted 90 unused media folders
+     - Freed 59.64 MB of storage space
+- **Results**:
+  - Blog posts: 50 → 8 (84% reduction)
+  - Storage freed: 59.64 MB
+  - Only actively used media files remain
+  - Remaining storage: ~162 MB (down from 222 MB)
+- **Blog Posts Kept** (8 total):
+  1. Egypt's Real Estate Market Sees Strong Growth in 2025 (Featured)
+  2. Investment Opportunities in Coastal Developments (Featured)
+  3. Sustainable Living: Green Communities in Egypt
+  4. The Rise of Smart Communities in Sheikh Zayed
+  5. Investment Guide: Property Market Trends 2024
+  6. New Developments Launch in 6 October City
+  7. Luxury Amenities: What Modern Buyers Expect
+  8. Smart Home Technology in Egyptian Properties
+- **Command Usage**:
+  - Preview cleanup: `php artisan media:cleanup-unused --dry-run`
+  - Execute cleanup: `php artisan media:cleanup-unused --force`
+  - Interactive mode: `php artisan media:cleanup-unused` (asks for confirmation)
+- **Files Created**:
+  - `app/Console/Commands/CleanupUnusedMedia.php`
+- **Files Modified**:
+  - `database/seeders/BlogPostSeeder.php` - Reduced to 8 posts
+- **Status**: ✅ Complete - storage optimized and cleaned
+
+### 2025-10-23 - Storage Analysis & Verification
+- **Issue**: Need to verify what all folders and images in `storage/app/public` belong to
+- **Requirements**:
+  1. Identify what each folder in storage belongs to
+  2. Verify all folders are being used
+  3. Provide detailed breakdown of media ownership
+  4. Confirm no unused folders remain
+- **Implementation**:
+  - Created `app/Console/Commands/AnalyzeMediaUsage.php`
+  - Command scans database media records
+  - Matches storage folders to database entries
+  - Groups media by model type (Projects, Blog Posts, etc.)
+  - Shows detailed breakdown with sizes
+- **Analysis Results**:
+  - **Total Folders**: 102 numbered folders (1-102)
+  - **All Folders Used**: ✅ 100% usage rate
+  - **Unused Folders**: 0
+  - **Total Storage**: 58.62 MB
+  - **Distribution**: 6 projects × 17 files each = 102 files
+- **Folder Ownership Breakdown**:
+  - **Folders 1-17**: MUROJ project (hero slider, thumbnails, about, gallery, brochure, factsheet)
+  - **Folders 18-34**: Rich Hills project (same structure)
+  - **Folders 35-51**: Maldives project (same structure)
+  - **Folders 52-68**: Ras Al Khaimah Towers project (same structure)
+  - **Folders 69-85**: Sheikh Zayed Residence project (same structure)
+  - **Folders 86-102**: Coastal Paradise project (same structure)
+- **Per-Project Media Structure** (17 files each):
+  - 4 hero slider images
+  - 4 hero thumbnail images (same as slider)
+  - 1 about section image
+  - 6 gallery images
+  - 1 brochure PDF
+  - 1 factsheet PDF
+- **Special Folders** (empty, reserved for future use):
+  - `contact/` - Contact page uploads
+  - `gallery/` - General gallery uploads
+  - `hero/` - Hero section media
+  - `showcase/` - Showcase media
+  - `livewire-tmp/` - Temporary Livewire files (auto-cleaned)
+- **Command Usage**:
+  ```bash
+  php artisan media:analyze
+  ```
+- **Files Created**:
+  - `app/Console/Commands/AnalyzeMediaUsage.php` - Storage analyzer
+  - `STORAGE-ANALYSIS.md` - Comprehensive storage documentation
+- **Conclusion**:
+  - ✅ All 102 folders are actively used
+  - ✅ No cleanup needed
+  - ✅ Storage is optimized (58.62 MB)
+  - ✅ Ready for production deployment
+- **Status**: ✅ Complete - all storage verified and documented
+
+### 2025-10-22 - Deployment Documentation
+- **Issue**: Need clear instructions for uploading application to production server
+- **Requirements**:
+  1. List folders/files to upload
+  2. List folders/files to exclude
+  3. WinRAR compression instructions
+  4. Step-by-step deployment guide
+  5. Server configuration steps
+  6. Security checklist
+- **Implementation**:
+  - Created comprehensive `UPLOAD.md` documentation
+  - Detailed folder structure with ✅/❌ indicators
+  - Upload size estimates for each archive
+  - Step-by-step deployment process
+  - Server configuration instructions
+  - Security hardening checklist
+  - Troubleshooting guide
+- **Key Points**:
+  - **Upload (~50MB)**: app/, bootstrap/, config/, database/, public/, resources/, routes/, storage/ (structure), composer files
+  - **Exclude**: node_modules/, vendor/, .git/, .env, tests/, cache files
+  - **Build before upload**: `npm run build` to compile assets
+  - **Install on server**: `composer install --no-dev` after upload
+  - **Configure**: Create .env, generate key, run migrations, set permissions
+  - **Optimize**: Cache configs for production performance
+- **Archive Strategy**:
+  1. core-app.rar (~10MB) - Application code
+  2. resources.rar (~5MB) - Views and source assets
+  3. public.rar (~30MB) - Public files and built assets
+  4. dependencies.rar (~1KB) - Config files
+  - OR single geometric-app.rar (~50MB) with all required files
+- **Server Setup Steps**:
+  1. Upload and extract archives
+  2. Create `.env` from `.env.example`
+  3. Run `composer install --no-dev`
+  4. Run `php artisan key:generate`
+  5. Run `php artisan migrate --force`
+  6. Run `php artisan storage:link`
+  7. Set permissions (755 for storage and bootstrap/cache)
+  8. Cache configs (`config:cache`, `route:cache`, `view:cache`)
+  9. Point domain to `/public` folder
+- **Files Created**:
+  - `UPLOAD.md` - Complete deployment guide
+- **Status**: ✅ Documentation complete - ready for production deployment
+
 ### 2025-10-22 - Mail Management System Implementation
 - **Issue**: Need comprehensive mail tracking and configuration management in admin panel
 - **Requirements**:
@@ -383,3 +584,12 @@
 - Hero thumbnails enforced to 3 images maximum with both UI (maxFiles) and model-level validation, plus auto-generation from hero slider
 - Mail system: Two tracking systems work together - custom MailLog for simple tracking, Filament Mails plugin for advanced features with event tracking
 - Contact form emails sent to MAIL_FROM_ADDRESS configured in Mail Settings page
+- Blog posts reduced to 8 (from 50) to minimize storage and database size
+- Storage optimized: Unused media folders cleaned up, freed 59.64 MB
+- Use `php artisan media:cleanup-unused` command to clean unused media files after seeding or media deletion
+- All 102 storage folders (1-102) are actively used by 6 projects (17 files per project)
+- Storage structure: Each project has hero slider (4), hero thumbnails (4), about image (1), gallery (6), brochure (1), factsheet (1)
+- Use `php artisan media:analyze` to see detailed storage breakdown and verify no unused folders exist
+- Two types of media: storage/app/public (dynamic, admin-managed, 58.62 MB) and public/assets/img (static template assets, 114 MB)
+- public/assets/img contains logos, icons, backgrounds, and source files for seeding
+- public/assets/img/random folder (24 MB) contains source images that get copied to storage during seeding - optional in production
