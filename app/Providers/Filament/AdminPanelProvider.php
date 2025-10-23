@@ -35,6 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->maxContentWidth('full') // Set full width for all pages
             ->renderHook('panels::body.end', fn () => view('filament.footer'))
+            ->plugin(\Vormkracht10\FilamentMails\FilamentMailsPlugin::make())
             ->resources([
                 \Z3d0X\FilamentLogger\Resources\ActivityResource::class,
             ])

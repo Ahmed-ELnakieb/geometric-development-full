@@ -22,5 +22,11 @@ class AppServiceProvider extends ServiceProvider
     {
         // Fix for MySQL key length issues
         Schema::defaultStringLength(191);
+        
+        // Register email logging listener
+        \Illuminate\Support\Facades\Event::listen(
+            \Illuminate\Mail\Events\MessageSent::class,
+            \App\Listeners\LogSentEmail::class,
+        );
     }
 }

@@ -33,7 +33,7 @@ class ContactController extends Controller
             'message' => 'required|string',
         ]);
 
-        Message::create(array_merge($validated, [
+        $message = Message::create(array_merge($validated, [
             'type' => 'contact',
             'status' => 'new',
             'source_url' => $request->url(),
@@ -41,6 +41,15 @@ class ContactController extends Controller
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]));
+
+        // Send email notification to admin
+        try {
+            $adminEmail = config('mail.admin_email', env('MAIL_FROM_ADDRESS'));
+            \Illuminate\Support\Facades\Mail::to($adminEmail)
+                ->send(new \App\Mail\ContactFormSubmitted($message));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send contact form email: ' . $e->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Thank you for contacting us! We will get back to you soon.');
     }
@@ -58,7 +67,7 @@ class ContactController extends Controller
 
         $project = Project::findOrFail($request->project_id);
 
-        Message::create(array_merge($validated, [
+        $message = Message::create(array_merge($validated, [
             'type' => 'project_inquiry',
             'status' => 'new',
             'messageable_type' => 'App\\Models\\Project',
@@ -69,6 +78,15 @@ class ContactController extends Controller
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]));
+
+        // Send email notification to admin
+        try {
+            $adminEmail = config('mail.admin_email', env('MAIL_FROM_ADDRESS'));
+            \Illuminate\Support\Facades\Mail::to($adminEmail)
+                ->send(new \App\Mail\ContactFormSubmitted($message));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send project inquiry email: ' . $e->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Your inquiry has been submitted successfully!');
     }
