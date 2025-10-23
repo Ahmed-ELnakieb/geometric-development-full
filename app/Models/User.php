@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Models\ActivityLog;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable, SoftDeletes;
 
@@ -110,5 +112,13 @@ class User extends Authenticatable
     public function canManageCareers(): bool
     {
         return in_array($this->role, ['super_admin', 'hr_manager']);
+    }
+
+    /**
+     * Determine if user can access Filament admin panel
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return in_array($this->role, ['super_admin', 'content_manager']);
     }
 }
