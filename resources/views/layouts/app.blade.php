@@ -9,6 +9,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/logo/favicon.png') }}">
         
+        <!-- PWA Meta Tags -->
+        <meta name="theme-color" content="#1a1a1a">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Geometric Development">
+        <meta name="msapplication-TileImage" content="{{ asset('assets/img/logo/favicon.png') }}">
+        <meta name="msapplication-TileColor" content="#1a1a1a">
+        <link rel="manifest" href="{{ route('pwa.manifest') }}">
+        <link rel="apple-touch-icon" href="{{ asset('assets/img/logo/favicon.png') }}">
+        
 		<!-- all-CSS-link-here -->
         <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
@@ -45,6 +55,9 @@
             <!-- end main-content-wrapper -->
 
             @include('partials.back-to-top')
+            
+            <!-- PWA Install Button -->
+            @include('components.pwa-install-button')
 
         </div>
 
@@ -69,7 +82,40 @@
         <script src="{{ asset('assets/js/preloader.js') }}"></script>
         <script src="{{ asset('assets/js/main.js') }}"></script>
         
+        <!-- PWA Advanced Features -->
+        <script src="{{ asset('assets/js/sync-manager.js') }}"></script>
+        <script src="{{ asset('assets/js/notification-manager.js') }}"></script>
+        <script src="{{ asset('assets/js/form-sync.js') }}"></script>
+        
         @stack('scripts')
+        
+        <!-- PWA Service Worker Registration -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('{{ route("pwa.sw") }}')
+                        .then(function(registration) {
+                            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                            
+                            // Check for updates
+                            registration.addEventListener('updatefound', function() {
+                                const newWorker = registration.installing;
+                                newWorker.addEventListener('statechange', function() {
+                                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                        // New content is available, refresh the page
+                                        if (confirm('New version available! Refresh to update?')) {
+                                            window.location.reload();
+                                        }
+                                    }
+                                });
+                            });
+                        })
+                        .catch(function(error) {
+                            console.log('ServiceWorker registration failed: ', error);
+                        });
+                });
+            }
+        </script>
         
     </body>
 </html>
