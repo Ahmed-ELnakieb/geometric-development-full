@@ -32,12 +32,14 @@ class BlogPost extends Model implements HasMedia
         'published_at',
         'meta_title',
         'meta_description',
+        'meta_keywords',
     ];
 
     protected $casts = [
         'is_featured' => 'boolean',
         'is_published' => 'boolean',
         'published_at' => 'datetime',
+        'meta_keywords' => 'array',
     ];
 
     public function author(): BelongsTo

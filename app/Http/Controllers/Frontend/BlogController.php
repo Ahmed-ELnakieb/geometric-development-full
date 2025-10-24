@@ -7,15 +7,25 @@ use App\Models\BlogPost;
 use App\Models\BlogCategory;
 use App\Models\BlogTag;
 use App\Models\Page;
+use App\Services\SEOService;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
+    protected $seoService;
+
+    public function __construct(SEOService $seoService)
+    {
+        $this->seoService = $seoService;
+    }
+
     /**
      * Display blog listing page with dynamic content
      */
     public function index()
     {
+        $this->seoService->setBlogPage();
+
         // Load blog page content
         $blogPage = Page::where('slug', 'blog')
             ->orWhere('template', 'blog')
@@ -110,6 +120,8 @@ class BlogController extends Controller
                 }
             ])
             ->firstOrFail();
+
+        $this->seoService->setBlogPost($post);
 
         $relatedPosts = BlogPost::published()
             ->whereHas('categories', function ($q) use ($post) {

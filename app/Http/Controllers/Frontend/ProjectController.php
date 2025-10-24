@@ -4,12 +4,22 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Services\SEOService;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
+    protected $seoService;
+
+    public function __construct(SEOService $seoService)
+    {
+        $this->seoService = $seoService;
+    }
+
     public function index(Request $request)
     {
+        $this->seoService->setProjectsPage();
+
         $query = Project::published()->ordered()->with(['categories', 'unitTypes', 'media']);
 
         if ($request->has('type') && $request->type) {
@@ -31,6 +41,8 @@ class ProjectController extends Controller
             ->where('slug', $slug)
             ->with(['categories', 'unitTypes', 'amenities', 'media'])
             ->firstOrFail();
+
+        $this->seoService->setProjectPage($project);
 
         $relatedProjects = Project::published()
             ->whereHas('categories', function ($q) use ($project) {

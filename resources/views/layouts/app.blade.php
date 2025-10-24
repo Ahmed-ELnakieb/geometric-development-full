@@ -1,11 +1,44 @@
 <!Doctype html>
-<html class="no-js" lang="zxx">
+<html class="no-js" lang="en">
     
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>@yield('title', 'Geometric Development - Real Estate in Egypt & Emirates')</title>
-        <meta name="description" content="Geometric Development - Leading Saudi real estate company providing comprehensive residential and commercial solutions in Egypt and Emirates. Discover our premium projects in Ras El Hekma.">
+        
+        <!-- SEO Meta Tags -->
+        {!! SEOMeta::generate() !!}
+        {!! OpenGraph::generate() !!}
+        {!! TwitterCard::generate() !!}
+        {!! JsonLd::generate() !!}
+        
+        <!-- Additional SEO Meta Tags -->
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+        <meta name="googlebot" content="index, follow">
+        <meta name="bingbot" content="index, follow">
+        <meta name="author" content="Geometric Development">
+        <meta name="publisher" content="Geometric Development">
+        <meta name="language" content="English">
+        <meta name="geo.region" content="EG">
+        <meta name="geo.country" content="Egypt">
+        <meta name="geo.placename" content="Cairo, Egypt">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="application-name" content="Geometric Development">
+        <meta name="msapplication-tooltip" content="Leading Engineering & Construction Company in Egypt">
+        <meta name="msapplication-starturl" content="{{ route('home') }}">
+        
+        <!-- Preconnect for Performance -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="dns-prefetch" href="//www.google-analytics.com">
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        
+        <!-- Additional Link Tags -->
+        <link rel="alternate" type="application/rss+xml" title="Geometric Development Blog" href="{{ route('blog.index') }}">
+        <link rel="search" type="application/opensearchdescription+xml" title="Geometric Development" href="{{ asset('opensearch.xml') }}">
+        
+        @stack('meta')
+        
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/logo/favicon.png') }}">
         
@@ -88,6 +121,10 @@
         <script src="{{ asset('assets/js/form-sync.js') }}"></script>
         
         @stack('scripts')
+        
+        <!-- Additional Structured Data -->
+        <x-structured-data type="Organization" />
+        <x-structured-data type="WebSite" />
         
         <!-- PWA Service Worker Registration -->
         <script>

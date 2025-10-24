@@ -12,6 +12,8 @@ use App\Http\Controllers\SyncController;
 use App\Http\Controllers\PushNotificationController;
 
 use App\Http\Controllers\NotificationPreferencesController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\RobotsController;
 
 // PWA Routes
 Route::get('/manifest.json', [PWAController::class, 'manifest'])->name('pwa.manifest');
@@ -77,6 +79,10 @@ Route::prefix('contact')->name('contact.')->group(function () {
     Route::post('/', [ContactController::class, 'store'])->name('store');
     Route::post('/project-inquiry', [ContactController::class, 'projectInquiry'])->name('project.inquiry');
 });
+
+// SEO Routes
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
 
 // Static Pages (About, etc.)
 Route::get('/{slug}', [PageController::class, 'show'])->name('page.show');

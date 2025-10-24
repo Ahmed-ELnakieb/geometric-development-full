@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             SettingSeeder::class,
             NavbarFooterSettingsSeeder::class, // Navbar & Footer settings
+            SeoSettingSeeder::class, // SEO settings
             ProjectCategorySeeder::class,
             BlogCategorySeeder::class,
             BlogTagSeeder::class,

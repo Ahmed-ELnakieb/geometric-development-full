@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+    <ShortName>Geometric Development</ShortName>
+    <Description>Search Geometric Development - Leading Engineering &amp; Construction Company in Egypt</Description>
+    <Tags>engineering construction architecture egypt geometric development</Tags>
+    <Contact>info@geometricdevelopment.com</Contact>
+    <Url type="text/html" template="https://geometricdevelopment.com/search?q={searchTerms}"/>
+    <Image height="16" width="16" type="image/png">https://geometricdevelopment.com/assets/img/logo/favicon.png</Image>
+    <Image height="64" width="64" type="image/png">https://geometricdevelopment.com/assets/img/logo/favicon.png</Image>
+    <Developer>Geometric Development</Developer>
+    <Attribution>© Geometric Development. All rights reserved.</Attribution>
+    <SyndicationRight>open</SyndicationRight>
+    <AdultContent>false</AdultContent>
+    <Language>en-us</Language>
+    <OutputEncoding>UTF-8</OutputEncoding>
+    <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

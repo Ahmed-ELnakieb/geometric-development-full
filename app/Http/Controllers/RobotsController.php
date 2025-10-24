@@ -1,4 +1,14 @@
-User-agent: *
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class RobotsController extends Controller
+{
+    public function index()
+    {
+        $content = "User-agent: *
 Allow: /
 
 # Disallow admin and API routes
@@ -17,7 +27,7 @@ Allow: /manifest.json
 Allow: /sw.js
 
 # Sitemap
-Sitemap: https://geometricdevelopment.com/sitemap.xml
+Sitemap: " . config('app.url') . "/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
@@ -67,4 +77,10 @@ User-agent: SemrushBot
 Disallow: /
 
 User-agent: MajesticSEO
-Disallow: /
+Disallow: /";
+
+        return response($content, 200, [
+            'Content-Type' => 'text/plain'
+        ]);
+    }
+}
