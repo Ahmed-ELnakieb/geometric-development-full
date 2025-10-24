@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('GEOMETRIC')
+            ->favicon('/assets/img/logo/favicon.png')
             ->colors([
                 'primary' => Color::Amber,
             ])
