@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone', 50)->nullable();
-            $table->enum('user_type', ['customer', 'broker', 'applicant', 'other'])->nullable();
+            $table->enum('user_type', ['individual', 'broker', 'investor'])->nullable();
             $table->string('subject')->nullable();
             $table->text('message');
             $table->enum('status', ['new', 'read', 'replied', 'archived'])->default('new');

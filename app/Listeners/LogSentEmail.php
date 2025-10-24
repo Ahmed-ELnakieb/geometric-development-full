@@ -64,6 +64,7 @@ class LogSentEmail
 
     /**
      * Format email addresses array to string
+     * Handles both Symfony\Component\Mime\Address objects and array format
      */
     protected function formatAddresses(?array $addresses): ?string
     {
@@ -72,8 +73,21 @@ class LogSentEmail
         }
 
         $formatted = [];
-        foreach ($addresses as $email => $name) {
-            $formatted[] = $name ? "$name <$email>" : $email;
+        foreach ($addresses as $address) {
+            // Check if it's a Symfony Address object
+            if (is_object($address) && method_exists($address, 'getAddress')) {
+                $email = $address->getAddress();
+                $name = $address->getName();
+                $formatted[] = $name ? "$name <$email>" : $email;
+            } elseif (is_string($address)) {
+                // Handle plain string email
+                $formatted[] = $address;
+            } elseif (is_array($address)) {
+                // Handle array format ['email' => 'name']
+                foreach ($address as $email => $name) {
+                    $formatted[] = $name ? "$name <$email>" : $email;
+                }
+            }
         }
 
         return implode(', ', $formatted);

@@ -541,6 +541,110 @@
 - **Files Modified**: `app/Models/User.php`
 - **Status**: ✅ Complete - admin panel access working for authorized roles
 
+### 2025-10-23 - Email Configuration and LogSentEmail Listener Fix
+- **Issue**: Test email sending fails with error "Object of class Symfony\Component\Mime\Address could not be converted to string"
+- **Root Cause**: LogSentEmail listener's formatAddresses() method doesn't handle Symfony\Component\Mime\Address objects
+- **Error Location**: `app/Listeners/LogSentEmail.php:76` in formatAddresses method
+- **Laravel 11 Change**: Symfony Mailer now returns Address objects instead of simple arrays
+- **Solution**:
+  - Updated formatAddresses() method to detect and handle Address objects
+  - Added method checks: is_object() && method_exists($address, 'getAddress')
+  - Extract email using $address->getAddress() and name using $address->getName()
+  - Maintained backward compatibility with string and array formats
+- **Method Enhancement**:
+  - Handles Symfony\Component\Mime\Address objects (Laravel 11+)
+  - Handles plain string emails
+  - Handles array format ['email' => 'name']
+  - Returns formatted string: "Name <email>" or just "email"
+- **Email Configuration Note**:
+  - Port 465 requires SSL encryption
+  - Port 587 requires TLS encryption
+  - Port 25 requires None encryption
+  - Mismatch causes connection failures
+- **Files Modified**: `app/Listeners/LogSentEmail.php`
+- **Status**: ✅ Complete - email sending now works correctly with proper logging
+
+### 2025-10-23 - IMAP Inbox Connection Fix (SSL Certificate Validation)
+- **Issue**: Inbox page fails to load with "connection failed" error when using TLS/SSL encryption
+- **Symptoms**:
+  - "NO [AUTHENTICATIONFAILED] Authentication failed" with None encryption (server reachable)
+  - "connection failed" with TLS/SSL encryption (SSL certificate validation fails)
+- **Root Cause**: Namecheap shared hosting uses self-signed or invalid SSL certificates for mail servers
+- **Error**: SSL certificate validation prevents IMAP connection even with correct credentials
+- **Solution**:
+  - Changed default `validate_cert` from `true` to `false` in Inbox.php
+  - Modified both loadEmails() and viewEmail() methods
+  - Now defaults to: `env('IMAP_VALIDATE_CERT', false)` instead of `true`
+  - Allows connection to mail servers with invalid/self-signed SSL certificates
+- **Configuration Notes**:
+  - IMAP Host: Should be `mail.geometric-development.com` (not just `geometric-development.com`)
+  - Port 993 with SSL encryption works after disabling cert validation
+  - Port 143 with TLS encryption also works
+  - Authentication requires exact email password without typos
+- **Security Note**: Disabling SSL validation is acceptable for trusted mail servers on same hosting
+- **Files Modified**: `app/Filament\Pages\Inbox.php`
+- **Status**: ✅ Complete - inbox now loads emails successfully with SSL/TLS encryption
+
+### 2025-10-23 - IMAP Date Formatting & Livewire Serialization Fix
+- **Issue 1**: Inbox page crashes with "Call to undefined method Webklex\PHPIMAP\Attribute::diffForHumans()"
+- **Issue 2**: After fixing Issue 1, "Property type not supported in Livewire for property: [{}]" error
+- **Root Cause**: 
+  - IMAP library returns date as Webklex\PHPIMAP\Attribute object, not Carbon
+  - Livewire cannot serialize Carbon objects in component properties
+- **Solution**:
+  - Step 1: Convert IMAP date to Carbon instance
+  - Step 2: Convert Carbon to ISO string for Livewire serialization (`toISOString()`)
+  - Step 3: Parse ISO string back to Carbon in Blade view for formatting
+- **Implementation**:
+  - Inbox.php: Convert all fields to primitive types (string, int, bool) for Livewire
+  - Explicit type casting: `(string)`, `(int)`, `(bool)` for all email properties
+  - Convert email addresses from objects to strings with proper null handling
+  - Convert dates to ISO strings for storage: `$carbonDate->toISOString()`
+  - inbox.blade.php: Parse ISO strings to Carbon for `diffForHumans()` and `format()`
+- **Files Modified**: 
+  - `app/Filament/Pages/Inbox.php` (date conversion)
+  - `resources/views/filament/pages/inbox.blade.php` (date parsing)
+- **Impact**: Dates properly serialized for Livewire and formatted for display
+- **Additional Fix**: viewEmail method serialization error when opening emails
+  - Added try-catch blocks for body content extraction (getHTMLBody(), getTextBody())
+  - Added try-catch for attachments count
+  - Improved email address extraction to handle different IMAP object structures
+  - Convert Webklex\PHPIMAP\Attribute objects to arrays before counting/accessing
+  - Added `$fromAddress->toArray()` call to convert Attribute to array
+  - Check for both $address->mail and $address->mailbox/@host combinations
+  - All email addresses now properly extracted (were showing "Unknown" before)
+  - Fixed TypeError: count() requires Countable|array, not Attribute object
+- **Status**: ✅ Complete - inbox displays emails correctly with proper email addresses and dates
+
+### 2025-10-24 - HTML Email Rendering Fix
+- **Issue**: HTML emails displaying as raw HTML code instead of rendered content
+- **Root Cause**: iframe srcdoc with htmlspecialchars() not rendering properly
+- **Solution**: Changed to base64-encoded data URI for iframe src attribute
+  - Uses `data:text/html;charset=utf-8;base64,{{ base64_encode($selectedEmail['body_html']) }}`
+  - Browser decodes base64 and renders HTML correctly
+  - Maintains sandbox security to prevent malicious script execution
+  - Set iframe height to 600px with proper styling
+- **Files Modified**: `resources/views/filament/pages/inbox.blade.php`
+- **Security**: iframe sandbox attribute prevents XSS attacks
+- **Status**: ✅ Complete - HTML emails now render correctly with proper formatting
+
+### 2025-10-24 - Contact Form user_type Enum Fix
+- **Issue**: Contact form submission fails with "Data truncated for column 'user_type'" error
+- **Error**: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'user_type'
+- **Root Cause**: Mismatch between database enum values and controller validation
+  - Database migration: `['customer', 'broker', 'applicant', 'other']`
+  - Controller validation: `['individual', 'broker', 'investor']`
+  - Frontend form sends: `individual`, `broker`, or `investor`
+- **Solution**:
+  - Updated create_messages_table migration to use correct enum values
+  - Created new migration `2024_10_24_000000_update_messages_user_type_enum.php`
+  - Migration uses ALTER TABLE to change enum to: `['individual', 'broker', 'investor']`
+- **Files Modified**:
+  - `database/migrations/2024_01_01_000016_create_messages_table.php` (for new installations)
+  - `database/migrations/2024_10_24_000000_update_messages_user_type_enum.php` (for existing database)
+- **Deployment**: Run `php artisan migrate` on production to apply enum fix
+- **Status**: ✅ Complete - contact form now accepts individual/broker/investor values
+
 ### 2025-10-22 - Deployment Documentation
 - **Issue**: Need clear instructions for uploading application to production server
 - **Requirements**:

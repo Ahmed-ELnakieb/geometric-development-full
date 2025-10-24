@@ -59,7 +59,7 @@
                     <div class="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-400">
                         <div><strong>From:</strong> {{ $selectedEmail['from_name'] }} &lt;{{ $selectedEmail['from'] }}&gt;</div>
                         <div><strong>To:</strong> {{ $selectedEmail['to'] }}</div>
-                        <div><strong>Date:</strong> {{ $selectedEmail['date']->format('F j, Y \a\t g:i A') }}</div>
+                        <div><strong>Date:</strong> {{ \Carbon\Carbon::parse($selectedEmail['date'])->format('F j, Y \a\t g:i A') }}</div>
                         @if ($selectedEmail['attachments'] > 0)
                             <div><strong>Attachments:</strong> {{ $selectedEmail['attachments'] }}</div>
                         @endif
@@ -68,8 +68,9 @@
                 <div class="p-4">
                     @if ($selectedEmail['body_html'])
                         <iframe 
-                            srcdoc="{{ htmlspecialchars($selectedEmail['body_html']) }}" 
-                            class="h-96 w-full rounded border dark:border-gray-700"
+                            src="data:text/html;charset=utf-8;base64,{{ base64_encode($selectedEmail['body_html']) }}" 
+                            class="w-full rounded border dark:border-gray-700"
+                            style="min-height: 400px; height: 600px;"
                             sandbox="allow-same-origin"
                         ></iframe>
                     @else
@@ -109,7 +110,7 @@
                                     </div>
                                 </div>
                                 <div class="ml-4 flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
-                                    {{ $email['date']->diffForHumans() }}
+                                    {{ \Carbon\Carbon::parse($email['date'])->diffForHumans() }}
                                 </div>
                             </div>
                         </div>
