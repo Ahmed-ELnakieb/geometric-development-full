@@ -116,9 +116,9 @@
         <script src="{{ asset('assets/js/main.js') }}"></script>
         
         <!-- PWA Advanced Features -->
-        <script src="{{ asset('assets/js/sync-manager.js') }}"></script>
-        <script src="{{ asset('assets/js/notification-manager.js') }}"></script>
-        <script src="{{ asset('assets/js/form-sync.js') }}"></script>
+        <script src="{{ asset('assets/js/sync-manager.js') }}?v={{ time() }}"></script>
+        <script src="{{ asset('assets/js/notification-manager.js') }}?v={{ time() }}"></script>
+        <script src="{{ asset('assets/js/form-sync.js') }}?v={{ time() }}"></script>
         
         @stack('scripts')
         
@@ -132,17 +132,14 @@
                 window.addEventListener('load', function() {
                     navigator.serviceWorker.register('{{ route("pwa.sw") }}')
                         .then(function(registration) {
-                            // Force update check
-                            registration.update();
-                            
-                            // Check for updates
+                            // Check for updates silently without forcing reload
                             registration.addEventListener('updatefound', function() {
                                 const newWorker = registration.installing;
                                 newWorker.addEventListener('statechange', function() {
                                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                        // Automatically activate new service worker
+                                        // Silently activate new service worker without reload
                                         newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                        window.location.reload();
+                                        // No automatic reload - let user continue browsing
                                     }
                                 });
                             });

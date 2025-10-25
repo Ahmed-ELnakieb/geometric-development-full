@@ -110,22 +110,56 @@ self.addEventListener("fetch", function (event) {
         return;
     }
     
-    event.respondWith(
-        caches.match(event.request).then(function(response) {
-            // Return cached version or fetch from network
-            if (response) {
-                return response;
-            }
-            
-            return checkResponse(event.request).catch(function () {
-                return returnFromCache(event.request);
-            });
-        })
-    );
+    // Determine if this is an HTML page request
+    const isHTMLRequest = event.request.headers.get('accept') && 
+                         event.request.headers.get('accept').includes('text/html');
     
-    // Cache successful requests in the background
-    if (event.request.url.startsWith('http') && event.request.method === 'GET' && !shouldExclude(url.pathname)) {
-        event.waitUntil(addToCache(event.request));
+    if (isHTMLRequest) {
+        // Network-first strategy for HTML pages with quick fallback
+        event.respondWith(
+            fetch(event.request, { 
+                cache: 'no-cache' // Always get fresh content
+            }).then(function(response) {
+                if (response.ok) {
+                    const responseClone = response.clone();
+                    caches.open(CACHE_NAME).then(function(cache) {
+                        cache.put(event.request, responseClone);
+                    });
+                    return response;
+                }
+                // If network response is not ok, try cache
+                return caches.match(event.request).then(function(cachedResponse) {
+                    return cachedResponse || returnFromCache(event.request);
+                });
+            }).catch(function() {
+                // Network failed, use cache
+                return caches.match(event.request).then(function(cachedResponse) {
+                    return cachedResponse || returnFromCache(event.request);
+                });
+            })
+        );
+    } else {
+        // Cache-first strategy for static assets (CSS, JS, images)
+        event.respondWith(
+            caches.match(event.request).then(function(response) {
+                if (response) {
+                    return response;
+                }
+                
+                return fetch(event.request).then(function(response) {
+                    // Cache successful responses
+                    if (response.ok) {
+                        const responseClone = response.clone();
+                        caches.open(CACHE_NAME).then(function(cache) {
+                            cache.put(event.request, responseClone);
+                        });
+                    }
+                    return response;
+                }).catch(function() {
+                    return returnFromCache(event.request);
+                });
+            })
+        );
     }
 });
 
@@ -262,12 +296,12 @@ async function processSyncItem(item, store) {
         // Remove completed item
         await removeSyncItem(store, item.id);
         
-        // Notify clients of successful sync
-        await notifyClients('syncSuccess', {
-            syncId: item.id,
-            action: item.action,
-            result: result
-        });
+        // Sync notifications disabled by default
+        // await notifyClients('syncSuccess', {
+        //     syncId: item.id,
+        //     action: item.action,
+        //     result: result
+        // });
     } else {
         // Handle sync failure
         throw new Error(result.message || 'Sync failed');
@@ -284,12 +318,12 @@ async function handleSyncItemError(item, error, store) {
         item.status = 'failed';
         await updateSyncItem(store, item);
         
-        // Notify clients of failed sync
-        await notifyClients('syncFailed', {
-            syncId: item.id,
-            action: item.action,
-            error: error.message
-        });
+        // Sync notifications disabled by default
+        // await notifyClients('syncFailed', {
+        //     syncId: item.id,
+        //     action: item.action,
+        //     error: error.message
+        // });
     } else {
         // Reset to pending for retry
         item.status = 'pending';

@@ -267,8 +267,8 @@ class FormSync {
     handleFormSuccess(form, result) {
         this.updateStatusIndicator(form, 'success', 'Submitted successfully!', 'fas fa-check-circle text-success');
         
-        // Show success message
-        this.showAlert(form, 'Form submitted successfully!', 'success');
+        // Form success notifications disabled by default
+        // this.showAlert(form, 'Form submitted successfully!', 'success');
         
         // Reset form if configured
         if (form.dataset.resetOnSuccess !== 'false') {
@@ -322,12 +322,13 @@ class FormSync {
         });
 
         // Show global status notification
-        const statusMessage = status === 'online' 
-            ? 'Connection restored. Syncing pending forms...' 
-            : 'You are offline. Forms will be submitted when connection is restored.';
-        
-        const alertType = status === 'online' ? 'success' : 'info';
-        this.showGlobalAlert(statusMessage, alertType);
+        // Global sync notifications disabled by default
+        // const statusMessage = status === 'online' 
+        //     ? 'Connection restored. Syncing pending forms...' 
+        //     : 'You are offline. Forms will be submitted when connection is restored.';
+        // 
+        // const alertType = status === 'online' ? 'success' : 'info';
+        // this.showGlobalAlert(statusMessage, alertType);
     }
 
     /**
