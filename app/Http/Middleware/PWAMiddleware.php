@@ -15,20 +15,26 @@ class PWAMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
-        
-        // Only add PWA headers to frontend routes (exclude admin/filament)
-        if (!$request->is('admin/*') && !$request->is('filament/*')) {
-            // Add PWA-related headers
-            $response->headers->set('Cache-Control', 'public, max-age=3600');
+        try {
+            $response = $next($request);
             
-            // Add service worker headers for better caching
-            if ($request->is('sw.js') || $request->is('manifest.json')) {
-                $response->headers->set('Cache-Control', 'public, max-age=0, must-revalidate');
-                $response->headers->set('Service-Worker-Allowed', '/');
+            // Only add PWA headers to frontend routes (exclude admin/filament)
+            if (!$request->is('admin/*') && !$request->is('filament/*')) {
+                // Add PWA-related headers
+                $response->headers->set('Cache-Control', 'public, max-age=3600');
+                
+                // Add service worker headers for better caching
+                if ($request->is('sw.js') || $request->is('manifest.json')) {
+                    $response->headers->set('Cache-Control', 'public, max-age=0, must-revalidate');
+                    $response->headers->set('Service-Worker-Allowed', '/');
+                }
             }
+            
+            return $response;
+        } catch (\Exception $e) {
+            // Log error but don't crash
+            \Log::error('PWA Middleware Error: ' . $e->getMessage());
+            return $next($request);
         }
-        
-        return $response;
     }
 }

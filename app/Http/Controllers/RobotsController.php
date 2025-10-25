@@ -8,7 +8,8 @@ class RobotsController extends Controller
 {
     public function index()
     {
-        $content = "User-agent: *
+        try {
+            $content = "User-agent: *
 Allow: /
 
 # Disallow admin and API routes
@@ -79,8 +80,16 @@ Disallow: /
 User-agent: MajesticSEO
 Disallow: /";
 
-        return response($content, 200, [
-            'Content-Type' => 'text/plain'
-        ]);
+            return response($content, 200, [
+                'Content-Type' => 'text/plain'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Robots.txt Generation Error: ' . $e->getMessage());
+            // Return minimal robots.txt on error
+            $minimalContent = "User-agent: *\nAllow: /\nSitemap: " . url('/sitemap.xml');
+            return response($minimalContent, 200, [
+                'Content-Type' => 'text/plain'
+            ]);
+        }
     }
 }

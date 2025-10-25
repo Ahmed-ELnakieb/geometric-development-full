@@ -18,24 +18,29 @@ class SEOMiddleware
 
     public function handle(Request $request, Closure $next): Response
     {
-        // Skip SEO processing during console commands
-        if (app()->runningInConsole()) {
-            return $next($request);
-        }
+        try {
+            // Skip SEO processing during console commands
+            if (app()->runningInConsole()) {
+                return $next($request);
+            }
 
-        // Skip SEO for admin, API, and other non-frontend routes
-        if ($request->is('admin/*') || 
-            $request->is('filament/*') || 
-            $request->is('api/*') || 
-            $request->is('pwa-test') ||
-            $request->is('notifications/*') ||
-            $request->is('manifest.json') ||
-            $request->is('sw.js')) {
-            return $next($request);
-        }
+            // Skip SEO for admin, API, and other non-frontend routes
+            if ($request->is('admin/*') || 
+                $request->is('filament/*') || 
+                $request->is('api/*') || 
+                $request->is('pwa-test') ||
+                $request->is('notifications/*') ||
+                $request->is('manifest.json') ||
+                $request->is('sw.js')) {
+                return $next($request);
+            }
 
-        // Set SEO based on route
-        $routeName = $request->route()->getName();
+            // Set SEO based on route
+            $routeName = $request->route() ? $request->route()->getName() : null;
+            
+            if (!$routeName) {
+                return $next($request);
+            }
         
         switch ($routeName) {
             case 'home':
@@ -97,6 +102,15 @@ class SEOMiddleware
                     $request->url()
                 );
                 break;
+        }
+        } catch (\Exception $e) {
+            // Log error but don't crash the application
+            \Log::error('SEO Middleware Error: ' . $e->getMessage(), [
+                'route' => $request->route() ? $request->route()->getName() : 'unknown',
+                'url' => $request->url(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            // Continue without SEO if there's an error
         }
 
         return $next($request);

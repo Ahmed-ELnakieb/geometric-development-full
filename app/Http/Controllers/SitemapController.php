@@ -9,8 +9,9 @@ class SitemapController extends Controller
 {
     public function index()
     {
-        // Static pages
-        $urls = [
+        try {
+            // Static pages
+            $urls = [
             [
                 'loc' => route('home'),
                 'lastmod' => now()->toISOString(),
@@ -99,10 +100,18 @@ class SitemapController extends Controller
             ];
         }
 
-        $xml = view('sitemap', compact('urls'))->render();
-        
-        return response($xml, 200, [
-            'Content-Type' => 'application/xml'
-        ]);
+            $xml = view('sitemap', compact('urls'))->render();
+            
+            return response($xml, 200, [
+                'Content-Type' => 'application/xml'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Sitemap Generation Error: ' . $e->getMessage());
+            // Return minimal sitemap on error
+            $minimalXml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>' . url('/') . '</loc></url></urlset>';
+            return response($minimalXml, 200, [
+                'Content-Type' => 'application/xml'
+            ]);
+        }
     }
 }

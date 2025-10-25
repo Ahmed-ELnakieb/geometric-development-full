@@ -1,5 +1,5 @@
-const CACHE_NAME = 'geometric-development-v{{ config("app.version", "1.0") }}-{{ time() }}';
-const OFFLINE_CACHE = 'offline-v{{ time() }}';
+const CACHE_NAME = 'geometric-development-v{{ config("app.version", "1.0") }}-fixed-{{ time() }}';
+const OFFLINE_CACHE = 'offline-v-fixed-{{ time() }}';
 
 // Files to cache immediately on install
 const filesToCache = [
@@ -69,25 +69,38 @@ const checkResponse = function (request) {
 };
 
 const addToCache = function (request) {
-    const url = new URL(request.url);
-    
-    // Only cache http(s) requests and exclude admin routes
-    if (!request.url.startsWith('http') || shouldExclude(url.pathname)) {
-        return Promise.resolve();
-    }
-    
-    return caches.open(CACHE_NAME).then(function (cache) {
-        return fetch(request).then(function (response) {
-            // Only cache successful responses
-            if (response.status === 200 && response.type === 'basic') {
-                return cache.put(request, response.clone());
-            }
-            return response;
-        }).catch(function() {
-            // If fetch fails, don't cache
+    try {
+        const url = new URL(request.url);
+        
+        // Filter out non-HTTP(S) schemes (chrome-extension, data, blob, etc.)
+        if (!request.url.startsWith('http://') && !request.url.startsWith('https://')) {
+            return Promise.resolve();
+        }
+        
+        // Exclude admin routes and other patterns
+        if (shouldExclude(url.pathname)) {
+            return Promise.resolve();
+        }
+        
+        return caches.open(CACHE_NAME).then(function (cache) {
+            return fetch(request).then(function (response) {
+                // Only cache successful responses
+                if (response.status === 200 && response.type === 'basic') {
+                    return cache.put(request, response.clone());
+                }
+                return response;
+            }).catch(function() {
+                // If fetch fails, don't cache
+                return Promise.resolve();
+            });
+        }).catch(function(error) {
+            // Silently handle cache errors
             return Promise.resolve();
         });
-    });
+    } catch (error) {
+        // Handle any URL parsing or other errors
+        return Promise.resolve();
+    }
 };
 
 const returnFromCache = function (request) {
@@ -103,10 +116,20 @@ const returnFromCache = function (request) {
 };
 
 self.addEventListener("fetch", function (event) {
-    const url = new URL(event.request.url);
+    // Filter out non-HTTP(S) requests (chrome-extension, data, blob, etc.)
+    if (!event.request.url.startsWith('http://') && !event.request.url.startsWith('https://')) {
+        return;
+    }
     
-    // Skip admin, filament routes and non-GET requests from PWA caching
-    if (shouldExclude(url.pathname) || event.request.method !== 'GET') {
+    try {
+        const url = new URL(event.request.url);
+        
+        // Skip admin, filament routes and non-GET requests from PWA caching
+        if (shouldExclude(url.pathname) || event.request.method !== 'GET') {
+            return;
+        }
+    } catch (error) {
+        // If URL parsing fails, skip this request
         return;
     }
     
@@ -421,9 +444,13 @@ self.addEventListener('notificationclick', function(event) {
 // Handle messages from the main thread
 self.addEventListener('message', function(event) {
     if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
-        // Immediately claim all clients
-        self.clients.claim();
+        self.skipWaiting().then(function() {
+            // Only claim clients after skipWaiting completes
+            return self.clients.claim();
+        }).catch(function(error) {
+            // Silently handle claim errors
+            console.error('Skip waiting error:', error);
+        });
     } else if (event.data && event.data.type === 'FORCE_SYNC') {
         // Force background sync
         handleBackgroundSync().catch(error => {

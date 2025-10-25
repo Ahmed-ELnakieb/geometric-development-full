@@ -12,35 +12,40 @@ class PWAController extends Controller
      */
     public function manifest()
     {
-        $manifest = [
-            'name' => config('pwa.name', 'Geometric Development'),
-            'short_name' => config('pwa.short_name', 'Geometric'),
-            'description' => config('pwa.description', 'Leading Saudi real estate company'),
-            'start_url' => config('pwa.start_url', '/'),
-            'display' => config('pwa.display', 'standalone'),
-            'theme_color' => config('pwa.theme_color', '#1a1a1a'),
-            'background_color' => config('pwa.background_color', '#1a1a1a'),
-            'orientation' => config('pwa.orientation', 'portrait-primary'),
-            'scope' => config('pwa.scope', '/'),
-            'icons' => config('pwa.icons', [
-                [
-                    'src' => '/assets/img/logo/favicon.png',
-                    'sizes' => '192x192',
-                    'type' => 'image/png',
-                    'purpose' => 'any maskable'
-                ],
-                [
-                    'src' => '/assets/img/logo/favicon.png',
-                    'sizes' => '512x512',
-                    'type' => 'image/png',
-                    'purpose' => 'any maskable'
-                ]
-            ])
-        ];
+        try {
+            $manifest = [
+                'name' => config('pwa.name', 'Geometric Development'),
+                'short_name' => config('pwa.short_name', 'Geometric'),
+                'description' => config('pwa.description', 'Leading Saudi real estate company'),
+                'start_url' => config('pwa.start_url', '/'),
+                'display' => config('pwa.display', 'standalone'),
+                'theme_color' => config('pwa.theme_color', '#1a1a1a'),
+                'background_color' => config('pwa.background_color', '#1a1a1a'),
+                'orientation' => config('pwa.orientation', 'portrait-primary'),
+                'scope' => config('pwa.scope', '/'),
+                'icons' => config('pwa.icons', [
+                    [
+                        'src' => '/assets/img/logo/favicon.png',
+                        'sizes' => '192x192',
+                        'type' => 'image/png',
+                        'purpose' => 'any maskable'
+                    ],
+                    [
+                        'src' => '/assets/img/logo/favicon.png',
+                        'sizes' => '512x512',
+                        'type' => 'image/png',
+                        'purpose' => 'any maskable'
+                    ]
+                ])
+            ];
 
-        return response()->json($manifest)
-            ->header('Content-Type', 'application/manifest+json')
-            ->header('Cache-Control', 'public, max-age=3600');
+            return response()->json($manifest)
+                ->header('Content-Type', 'application/manifest+json')
+                ->header('Cache-Control', 'public, max-age=3600');
+        } catch (\Exception $e) {
+            \Log::error('PWA Manifest Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Manifest generation failed'], 500);
+        }
     }
 
     /**
@@ -48,16 +53,22 @@ class PWAController extends Controller
      */
     public function serviceWorker()
     {
-        $cacheRoutes = config('pwa.cache.routes', ['/']);
-        $cacheAssets = config('pwa.cache.assets', []);
-        $excludePatterns = config('pwa.cache.exclude_patterns', []);
+        try {
+            $cacheRoutes = config('pwa.cache.routes', ['/']);
+            $cacheAssets = config('pwa.cache.assets', []);
+            $excludePatterns = config('pwa.cache.exclude_patterns', []);
 
-        $sw = view('pwa.service-worker', compact('cacheRoutes', 'cacheAssets', 'excludePatterns'));
+            $sw = view('pwa.service-worker', compact('cacheRoutes', 'cacheAssets', 'excludePatterns'));
 
-        return response($sw)
-            ->header('Content-Type', 'application/javascript')
-            ->header('Cache-Control', 'public, max-age=0, must-revalidate')
-            ->header('Service-Worker-Allowed', '/');
+            return response($sw)
+                ->header('Content-Type', 'application/javascript')
+                ->header('Cache-Control', 'public, max-age=0, must-revalidate')
+                ->header('Service-Worker-Allowed', '/');
+        } catch (\Exception $e) {
+            \Log::error('Service Worker Generation Error: ' . $e->getMessage());
+            return response('// Service worker generation failed', 500)
+                ->header('Content-Type', 'application/javascript');
+        }
     }
 
     /**

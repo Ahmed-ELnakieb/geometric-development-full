@@ -24,37 +24,52 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $this->seoService->setBlogPage();
+        try {
+            $this->seoService->setBlogPage();
 
-        // Load blog page content
-        $blogPage = Page::where('slug', 'blog')
-            ->orWhere('template', 'blog')
-            ->first();
+            // Load blog page content
+            $blogPage = Page::where('slug', 'blog')
+                ->orWhere('template', 'blog')
+                ->first();
 
-        // Get featured posts (not paginated)
-        $featuredPosts = BlogPost::published()
-            ->featured()
-            ->recent()
-            ->with(['author', 'categories', 'tags'])
-            ->get();
+            // Get featured posts (not paginated)
+            $featuredPosts = BlogPost::published()
+                ->featured()
+                ->recent()
+                ->with(['author', 'categories', 'tags'])
+                ->get();
 
-        // Get regular posts (paginated)
-        $posts = BlogPost::published()
-            ->where('is_featured', false)
-            ->recent()
-            ->with(['author', 'categories', 'tags'])
-            ->paginate(6);
+            // Get regular posts (paginated)
+            $posts = BlogPost::published()
+                ->where('is_featured', false)
+                ->recent()
+                ->with(['author', 'categories', 'tags'])
+                ->paginate(6);
 
-        $categories = BlogCategory::withCount('publishedPosts')
-            ->ordered()
-            ->get();
+            $categories = BlogCategory::withCount('publishedPosts')
+                ->ordered()
+                ->get();
 
-        $tags = BlogTag::withCount('posts')
-            ->orderBy('posts_count', 'desc')
-            ->take(10)
-            ->get();
+            $tags = BlogTag::withCount('posts')
+                ->orderBy('posts_count', 'desc')
+                ->take(10)
+                ->get();
 
-        return view('blog.index', compact('blogPage', 'posts', 'featuredPosts', 'categories', 'tags'));
+            return view('blog.index', compact('blogPage', 'posts', 'featuredPosts', 'categories', 'tags'));
+        } catch (\Exception $e) {
+            \Log::error('BlogController@index Error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
+            return view('blog.index', [
+                'blogPage' => null,
+                'posts' => collect()->paginate(6),
+                'featuredPosts' => collect(),
+                'categories' => collect(),
+                'tags' => collect()
+            ]);
+        }
     }
 
     public function category($slug)
@@ -104,34 +119,46 @@ class BlogController extends Controller
      */
     public function show($slug)
     {
-        // Load blog page content for detail page configuration
-        $blogPage = Page::where('slug', 'blog')
-            ->orWhere('template', 'blog')
-            ->first();
+        try {
+            // Load blog page content for detail page configuration
+            $blogPage = Page::where('slug', 'blog')
+                ->orWhere('template', 'blog')
+                ->first();
 
-        $post = BlogPost::published()
-            ->where('slug', $slug)
-            ->with([
-                'author',
-                'categories',
-                'tags',
-                'approvedComments' => function ($query) {
-                    $query->with('user');
-                }
-            ])
-            ->firstOrFail();
+            $post = BlogPost::published()
+                ->where('slug', $slug)
+                ->with([
+                    'author',
+                    'categories',
+                    'tags',
+                    'approvedComments' => function ($query) {
+                        $query->with('user');
+                    }
+                ])
+                ->firstOrFail();
 
-        $this->seoService->setBlogPost($post);
+            $this->seoService->setBlogPost($post);
 
-        $relatedPosts = BlogPost::published()
-            ->whereHas('categories', function ($q) use ($post) {
-                $q->whereIn('blog_categories.id', $post->categories->pluck('id'));
-            })
-            ->where('id', '!=', $post->id)
-            ->with(['author', 'categories', 'tags'])
-            ->take(3)
-            ->get();
+            $relatedPosts = BlogPost::published()
+                ->whereHas('categories', function ($q) use ($post) {
+                    $q->whereIn('blog_categories.id', $post->categories->pluck('id'));
+                })
+                ->where('id', '!=', $post->id)
+                ->with(['author', 'categories', 'tags'])
+                ->take(3)
+                ->get();
 
-        return view('blog.show', compact('blogPage', 'post', 'relatedPosts'));
+            return view('blog.show', compact('blogPage', 'post', 'relatedPosts'));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            \Log::warning('Blog post not found: ' . $slug);
+            abort(404, 'Blog post not found');
+        } catch (\Exception $e) {
+            \Log::error('BlogController@show Error: ' . $e->getMessage(), [
+                'slug' => $slug,
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            abort(500, 'Error loading blog post');
+        }
     }
 }
