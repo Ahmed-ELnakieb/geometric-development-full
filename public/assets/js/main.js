@@ -2402,12 +2402,10 @@ if ($('.wa-back-to-top').length) {
 	popup-video-activation
 */
 if($('.popup-video').length) {
-	console.log('Initializing magnific popup for video');
 	try {
 		$('.popup-video').magnificPopup({
 			type: 'iframe'
 		});
-		console.log('Video popup initialized successfully');
 	} catch (error) {
 		console.error('Error initializing magnific popup for video:', error);
 	}
@@ -2417,32 +2415,21 @@ if($('.popup-video').length) {
 	popup-image-activation
 */
 if($('.popup-img').length) {
-	console.log('Initializing magnific popup for', $('.popup-img').length, 'images');
 	try {
 		$('.popup-img').magnificPopup({
 			type: 'image',
 			gallery: {
 				enabled: true,
-			},
-			callbacks: {
-				buildControls: function() {
-					console.log('Magnific popup controls built');
-				},
-				open: function() {
-					console.log('Magnific popup opened');
-				}
 			}
 		});
-		console.log('Magnific popup initialized successfully');
 	} catch (error) {
 		console.error('Error initializing magnific popup for images:', error);
 	}
 }
 
-// Test click handler for debugging
+// Click handler for popup images
 $(document).on('click', '.popup-img', function(e) {
-	console.log('Popup image clicked:', $(this).attr('href'));
-	console.log('Element:', this);
+	// Image popup functionality handled by magnificPopup
 });
 
 /* 

@@ -6,10 +6,10 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         
         <!-- SEO Meta Tags -->
-        {!! SEOMeta::generate() !!}
-        {!! OpenGraph::generate() !!}
-        {!! TwitterCard::generate() !!}
-        {!! JsonLd::generate() !!}
+        {!! \Artesaos\SEOTools\Facades\SEOMeta::generate() !!}
+        {!! \Artesaos\SEOTools\Facades\OpenGraph::generate() !!}
+        {!! \Artesaos\SEOTools\Facades\TwitterCard::generate() !!}
+        {!! \Artesaos\SEOTools\Facades\JsonLd::generate() !!}
         
         <!-- Additional SEO Meta Tags -->
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -132,23 +132,23 @@
                 window.addEventListener('load', function() {
                     navigator.serviceWorker.register('{{ route("pwa.sw") }}')
                         .then(function(registration) {
-                            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                            // Force update check
+                            registration.update();
                             
                             // Check for updates
                             registration.addEventListener('updatefound', function() {
                                 const newWorker = registration.installing;
                                 newWorker.addEventListener('statechange', function() {
                                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                        // New content is available, refresh the page
-                                        if (confirm('New version available! Refresh to update?')) {
-                                            window.location.reload();
-                                        }
+                                        // Automatically activate new service worker
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
                                     }
                                 });
                             });
                         })
                         .catch(function(error) {
-                            console.log('ServiceWorker registration failed: ', error);
+                            console.error('ServiceWorker registration failed: ', error);
                         });
                 });
             }

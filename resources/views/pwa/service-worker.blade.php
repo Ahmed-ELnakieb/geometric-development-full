@@ -1,5 +1,5 @@
-const CACHE_NAME = 'geometric-development-v{{ config("app.version", "1.0") }}';
-const OFFLINE_CACHE = 'offline-v1';
+const CACHE_NAME = 'geometric-development-v{{ config("app.version", "1.0") }}-{{ time() }}';
+const OFFLINE_CACHE = 'offline-v{{ time() }}';
 
 // Files to cache immediately on install
 const filesToCache = [
@@ -33,13 +33,25 @@ const shouldExclude = function(url) {
 
 const preLoad = function () {
     return caches.open(CACHE_NAME).then(function (cache) {
-        console.log('Caching essential files...');
-        return cache.addAll(filesToCache);
+        // Cache files individually to avoid failing the entire cache if one file fails
+        const cachePromises = filesToCache.map(function(url) {
+            return fetch(url).then(function(response) {
+                if (response.ok) {
+                    return cache.put(url, response);
+                }
+                // Skip files that don't exist or return errors
+                return Promise.resolve();
+            }).catch(function() {
+                // Skip files that fail to fetch
+                return Promise.resolve();
+            });
+        });
+        
+        return Promise.all(cachePromises);
     });
 };
 
 self.addEventListener("install", function (event) {
-    console.log('Service Worker installing...');
     event.waitUntil(preLoad());
     self.skipWaiting();
 });
@@ -102,12 +114,10 @@ self.addEventListener("fetch", function (event) {
         caches.match(event.request).then(function(response) {
             // Return cached version or fetch from network
             if (response) {
-                console.log('Serving from cache:', event.request.url);
                 return response;
             }
             
             return checkResponse(event.request).catch(function () {
-                console.log('Network failed, serving offline page for:', event.request.url);
                 return returnFromCache(event.request);
             });
         })
@@ -121,19 +131,18 @@ self.addEventListener("fetch", function (event) {
 
 // Handle cache updates and cleanup
 self.addEventListener('activate', function(event) {
-    console.log('Service Worker activating...');
     event.waitUntil(
         caches.keys().then(function(cacheNames) {
+            // Delete ALL old caches to ensure clean state
             return Promise.all(
                 cacheNames.map(function(cacheName) {
                     if (cacheName !== CACHE_NAME && cacheName !== OFFLINE_CACHE) {
-                        console.log('Deleting old cache:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
             );
         }).then(function() {
-            console.log('Service Worker activated');
+            // Take control of all clients immediately
             return self.clients.claim();
         })
     );
@@ -141,8 +150,6 @@ self.addEventListener('activate', function(event) {
 
 // Handle background sync events
 self.addEventListener('sync', function(event) {
-    console.log('Background sync event:', event.tag);
-    
     if (event.tag === 'background-sync') {
         event.waitUntil(handleBackgroundSync());
     }
@@ -151,8 +158,6 @@ self.addEventListener('sync', function(event) {
 // Handle background sync processing
 async function handleBackgroundSync() {
     try {
-        console.log('Processing background sync...');
-        
         // Process sync queue directly in service worker
         await processOfflineQueue();
         
@@ -172,7 +177,6 @@ async function processOfflineQueue() {
         
         // Get all pending items
         const pendingItems = await getAllPendingItems(store);
-        console.log(`Found ${pendingItems.length} pending sync items`);
         
         for (const item of pendingItems) {
             try {
@@ -210,8 +214,6 @@ function getAllPendingItems(store) {
 
 // Process individual sync item
 async function processSyncItem(item, store) {
-    console.log('Processing sync item:', item.id, item.action);
-    
     // Update status to processing
     item.status = 'processing';
     await updateSyncItem(store, item);
@@ -259,7 +261,6 @@ async function processSyncItem(item, store) {
     if (result.success) {
         // Remove completed item
         await removeSyncItem(store, item.id);
-        console.log('Sync completed for:', item.action);
         
         // Notify clients of successful sync
         await notifyClients('syncSuccess', {
@@ -293,8 +294,6 @@ async function handleSyncItemError(item, error, store) {
         // Reset to pending for retry
         item.status = 'pending';
         await updateSyncItem(store, item);
-        
-        console.log(`Sync retry ${item.retryCount}/${item.maxRetries} for:`, item.action);
     }
 }
 
@@ -326,7 +325,6 @@ async function notifyClients(type, data) {
 
 // Handle push notification events
 self.addEventListener('push', function(event) {
-    console.log('Push notification received:', event);
     
     let notificationData = {
         title: 'Geometric Development',
@@ -364,7 +362,6 @@ self.addEventListener('push', function(event) {
 
 // Handle notification click events
 self.addEventListener('notificationclick', function(event) {
-    console.log('Notification clicked:', event);
     
     event.notification.close();
     
@@ -391,6 +388,8 @@ self.addEventListener('notificationclick', function(event) {
 self.addEventListener('message', function(event) {
     if (event.data && event.data.type === 'SKIP_WAITING') {
         self.skipWaiting();
+        // Immediately claim all clients
+        self.clients.claim();
     } else if (event.data && event.data.type === 'FORCE_SYNC') {
         // Force background sync
         handleBackgroundSync().catch(error => {
@@ -413,13 +412,8 @@ async function cleanupOldCaches() {
         );
         
         await Promise.all(
-            oldCaches.map(cacheName => {
-                console.log('Deleting old cache:', cacheName);
-                return caches.delete(cacheName);
-            })
+            oldCaches.map(cacheName => caches.delete(cacheName))
         );
-        
-        console.log(`Cleaned up ${oldCaches.length} old caches`);
     } catch (error) {
         console.error('Failed to cleanup caches:', error);
     }

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamp('published_at')->nullable();
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
+            $table->json('meta_keywords')->nullable(); // SEO keywords
             $table->timestamps();
             $table->softDeletes();
 

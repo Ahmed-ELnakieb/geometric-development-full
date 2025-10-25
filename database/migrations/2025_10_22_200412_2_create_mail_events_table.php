@@ -27,6 +27,7 @@ return new class extends Migration
             $table->json('payload')->nullable();
             $table->timestamps();
             $table->timestamp('occurred_at')->nullable();
+            $table->timestamp('unsuppressed_at')->nullable(); // Unsuppression timestamp
         });
     }
 };

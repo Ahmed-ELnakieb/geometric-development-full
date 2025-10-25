@@ -33,6 +33,19 @@ class SEOService
         }
     }
 
+    protected function safeAsset($path)
+    {
+        if (app()->runningInConsole()) {
+            return config('app.url') . '/' . ltrim($path, '/');
+        }
+        
+        try {
+            return asset($path);
+        } catch (\Exception $e) {
+            return config('app.url') . '/' . ltrim($path, '/');
+        }
+    }
+
     protected function getTitle()
     {
         return $this->settings?->site_title ?? 'Geometric Development - Leading Engineering & Construction Company in Egypt';
@@ -58,20 +71,20 @@ class SEOService
             ->setDescription('Leading Saudi engineering and construction company delivering innovative architectural design, civil works, and infrastructure projects across Egypt and Emirates.')
             ->setUrl($this->safeRoute('home'))
             ->setType('website')
-            ->addImage(asset('assets/img/logo/favicon.png'), [
+            ->addImage($this->safeAsset('assets/img/logo/favicon.png'), [
                 'height' => 630,
                 'width' => 1200
             ]);
 
         TwitterCard::setTitle('Geometric Development - Engineering Excellence')
             ->setDescription('Premier engineering and construction solutions in Egypt and Emirates')
-            ->setImage(asset('assets/img/logo/favicon.png'));
+            ->setImage($this->safeAsset('assets/img/logo/favicon.png'));
 
         JsonLd::setType('Organization')
-            ->setName('Geometric Development')
-            ->setDescription('Leading Saudi engineering and construction company providing comprehensive solutions in Egypt and Emirates.')
-            ->setUrl(config('app.url'))
-            ->setLogo(asset('assets/img/logo/favicon.png'))
+            ->addValue('name', 'Geometric Development')
+            ->addValue('description', 'Leading Saudi engineering and construction company providing comprehensive solutions in Egypt and Emirates.')
+            ->addValue('url', config('app.url'))
+            ->addValue('logo', $this->safeAsset('assets/img/logo/favicon.png'))
             ->addValue('address', [
                 '@type' => 'PostalAddress',
                 'addressCountry' => 'EG',
@@ -144,8 +157,8 @@ class SEOService
         }
 
         JsonLd::setType('Project')
-            ->setName($title)
-            ->setDescription($description)
+            ->addValue('name', $title)
+            ->addValue('description', $description)
             ->addValue('creator', [
                 '@type' => 'Organization',
                 'name' => 'Geometric Development'
@@ -205,8 +218,8 @@ class SEOService
         }
 
         JsonLd::setType('Article')
-            ->setName($title)
-            ->setDescription($description)
+            ->addValue('name', $title)
+            ->addValue('description', $description)
             ->addValue('author', [
                 '@type' => 'Organization',
                 'name' => 'Geometric Development'
@@ -214,7 +227,7 @@ class SEOService
             ->addValue('publisher', [
                 '@type' => 'Organization',
                 'name' => 'Geometric Development',
-                'logo' => asset('assets/img/logo/favicon.png')
+                'logo' => $this->safeAsset('assets/img/logo/favicon.png')
             ]);
     }
 
@@ -261,8 +274,8 @@ class SEOService
             ->setType('website');
 
         JsonLd::setType('ContactPage')
-            ->setName('Contact Geometric Development')
-            ->setDescription('Contact information for Geometric Development engineering and construction services');
+            ->addValue('name', 'Contact Geometric Development')
+            ->addValue('description', 'Contact information for Geometric Development engineering and construction services');
     }
 
     public function setAboutPage()
@@ -310,8 +323,8 @@ class SEOService
             ->setType('website');
 
         JsonLd::setType('Service')
-            ->setName('Engineering & Construction Services')
-            ->setDescription('Comprehensive engineering and construction services including architectural design, civil engineering, and infrastructure development')
+            ->addValue('name', 'Engineering & Construction Services')
+            ->addValue('description', 'Comprehensive engineering and construction services including architectural design, civil engineering, and infrastructure development')
             ->addValue('provider', [
                 '@type' => 'Organization',
                 'name' => 'Geometric Development'
@@ -413,8 +426,8 @@ class SEOService
             ->setType('article');
 
         JsonLd::setType('JobPosting')
-            ->setName($title)
-            ->setDescription($description)
+            ->addValue('name', $title)
+            ->addValue('description', $description)
             ->addValue('hiringOrganization', [
                 '@type' => 'Organization',
                 'name' => 'Geometric Development',

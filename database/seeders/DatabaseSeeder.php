@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             SettingSeeder::class,
             NavbarFooterSettingsSeeder::class, // Navbar & Footer settings
-            SeoSettingSeeder::class, // SEO settings
             ProjectCategorySeeder::class,
             BlogCategorySeeder::class,
             BlogTagSeeder::class,
@@ -33,6 +32,7 @@ class DatabaseSeeder extends Seeder
             BlogPostSeeder::class,
             ProjectSeeder::class,
             MenuItemSeeder::class, // Menu items (navbar & footer)
+            SeoSettingSeeder::class, // SEO settings (runs last to include project names)
         ]);
     }
 }

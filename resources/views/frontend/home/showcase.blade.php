@@ -22,9 +22,15 @@
                     if (!empty($item['image'])) {
                         // Check if it's a storage path or full URL
                         if (is_string($item['image'])) {
-                            $imageUrl = str_starts_with($item['image'], 'http') 
-                                ? $item['image'] 
-                                : asset('storage/' . $item['image']);
+                            if (str_starts_with($item['image'], 'http')) {
+                                $imageUrl = $item['image'];
+                            } elseif (str_starts_with($item['image'], 'assets/')) {
+                                // Direct asset path
+                                $imageUrl = asset($item['image']);
+                            } else {
+                                // Storage path
+                                $imageUrl = asset('storage/' . $item['image']);
+                            }
                         }
                     }
                     

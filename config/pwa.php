@@ -32,20 +32,15 @@ return [
     'cache' => [
         'routes' => [
             '/',
-            '/contact',
-            '/faqs',
-            '/projects',
-            '/careers',
-            '/blog',
         ],
         'assets' => [
             '/assets/css/bootstrap.min.css',
             '/assets/css/main.css',
-            '/assets/css/animate.css',
             '/assets/js/jquery-3.7.1.min.js',
             '/assets/js/bootstrap.bundle.min.js',
             '/assets/js/main.js',
             '/assets/img/logo/favicon.png',
+            '/manifest.json',
         ],
         'exclude_patterns' => [
             '/admin/*',

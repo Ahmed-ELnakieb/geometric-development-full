@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create(config('mails.database.tables.mails'), function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->nullable()->index();
+            $table->string('mailer'); // Mail driver/mailer
+            $table->string('stream_id')->nullable(); // Stream identifier
             $table->string('mail_class')->nullable()->index();
             $table->string('subject')->nullable();
             $table->json('from')->nullable();
@@ -22,6 +24,8 @@ return new class extends Migration
             $table->text('text')->nullable();
             $table->unsignedBigInteger('opens')->default(0);
             $table->unsignedBigInteger('clicks')->default(0);
+            $table->json('tags')->nullable(); // Mail tags
+            $table->string('transport')->nullable(); // Mail transport method
             $table->timestamp('sent_at')->nullable();
             $table->timestamp('resent_at')->nullable();
             $table->timestamp('accepted_at')->nullable();
