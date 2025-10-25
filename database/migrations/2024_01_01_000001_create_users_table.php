@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['super_admin', 'content_manager', 'marketing_manager', 'hr_manager'])->default('content_manager');
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_developer')->default(false);
             $table->timestamp('last_login_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->index('email');
             $table->index('role');
             $table->index('is_active');
+            $table->index('is_developer');
         });
     }
 

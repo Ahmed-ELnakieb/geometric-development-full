@@ -20,6 +20,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index('log_name');
+            $table->index('created_at'); // For sorting performance
+            $table->index(['log_name', 'created_at']); // For filtered sorting
             $table->index(['subject_type', 'subject_id'], 'activity_log_subject');
             $table->index(['causer_type', 'causer_id'], 'activity_log_causer');
         });
