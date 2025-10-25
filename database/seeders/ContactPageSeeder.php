@@ -39,12 +39,13 @@ class ContactPageSeeder extends Seeder
             'breadcrumb' => [
                 'is_active' => true,
                 'page_title' => 'Contact Us',
-                'background_image' => null, // Can be uploaded through admin panel
+                'background_image' => 'assets/img/hero/hero.png', // Header background image
             ],
 
             // CONTACT INFO SECTION
             'contact_info' => [
                 'is_active' => true,
+                'background_image' => 'assets/img/footer/f4-bg-1.png', // Background image for core feature section
                 'items' => [
                     [
                         'title' => 'Address',
