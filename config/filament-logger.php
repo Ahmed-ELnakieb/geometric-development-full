@@ -3,18 +3,19 @@ return [
     'datetime_format' => 'd/m/Y H:i:s',
     'date_format' => 'd/m/Y',
 
-    'activity_resource' => \Z3d0X\FilamentLogger\Resources\ActivityResource::class,
+    'activity_resource' => \App\Filament\Resources\ActivityLogResource::class,
 	'scoped_to_tenant' => false,
 	'navigation_sort' => 99,
 
     'resources' => [
-        'enabled' => true,
+        'enabled' => false, // Disabled to prevent infinite loops
         'log_name' => 'Resource',
         'logger' => \Z3d0X\FilamentLogger\Loggers\ResourceLogger::class,
         'color' => 'success',
 		
         'exclude' => [
             //App\Filament\Resources\UserResource::class,
+            \App\Filament\Resources\ActivityLogResource::class,
         ],
         'cluster' => null,
         'navigation_group' => null,
@@ -35,7 +36,7 @@ return [
     ],
 
     'models' => [
-        'enabled' => true,
+        'enabled' => false, // Disabled to prevent infinite loops
         'log_name' => 'Model',
         'color' => 'warning',
         'logger' => \Z3d0X\FilamentLogger\Loggers\ModelLogger::class,
@@ -48,6 +49,8 @@ return [
             \App\Models\Setting::class,
             \App\Models\Message::class,
             \App\Models\CareerApplication::class,
+            // Exclude Activity model to prevent infinite loop
+            // \Spatie\Activitylog\Models\Activity::class,
         ],
     ],
 

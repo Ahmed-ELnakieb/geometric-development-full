@@ -13,6 +13,18 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create PROTECTED developer account - CANNOT BE DELETED OR EDITED
+        if (!User::where('email', 'ahmedelnakieb95@gmail.com')->exists()) {
+            User::create([
+                'name' => 'Developer',
+                'email' => 'ahmedelnakieb95@gmail.com',
+                'password' => Hash::make('elnakieb'),
+                'role' => 'super_admin',
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]);
+        }
+
         // Create default super admin user
         // IMPORTANT: Change the password after first login for security!
         if (!User::where('email', 'admin@geometric-development.com')->exists()) {

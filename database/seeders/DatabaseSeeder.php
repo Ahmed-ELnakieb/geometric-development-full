@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            DeveloperAccountSeeder::class, // Developer account (must be first)
             UserSeeder::class,
             SettingSeeder::class,
             NavbarFooterSettingsSeeder::class, // Navbar & Footer settings

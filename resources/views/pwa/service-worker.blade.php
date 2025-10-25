@@ -107,6 +107,23 @@ const returnFromCache = function (request) {
     return caches.open(CACHE_NAME).then(function (cache) {
         return cache.match(request).then(function (matching) {
             if (!matching || matching.status === 404) {
+                // Check if this is an excluded route (admin, etc.)
+                try {
+                    const url = new URL(request.url);
+                    if (shouldExclude(url.pathname)) {
+                        // Don't serve offline page for excluded routes
+                        // Return a network error response instead
+                        return new Response('Network error', {
+                            status: 503,
+                            statusText: 'Service Unavailable',
+                            headers: new Headers({
+                                'Content-Type': 'text/plain'
+                            })
+                        });
+                    }
+                } catch (error) {
+                    // If URL parsing fails, continue to offline page
+                }
                 return cache.match("/offline.html");
             } else {
                 return matching;
@@ -125,7 +142,9 @@ self.addEventListener("fetch", function (event) {
         const url = new URL(event.request.url);
         
         // Skip admin, filament routes and non-GET requests from PWA caching
+        // Let these requests go directly to the network without service worker intervention
         if (shouldExclude(url.pathname) || event.request.method !== 'GET') {
+            // Don't intercept - let browser handle normally
             return;
         }
     } catch (error) {
@@ -138,24 +157,30 @@ self.addEventListener("fetch", function (event) {
                          event.request.headers.get('accept').includes('text/html');
     
     if (isHTMLRequest) {
-        // Network-first strategy for HTML pages with quick fallback
+        // Network-first strategy for HTML pages with timeout
         event.respondWith(
-            fetch(event.request, { 
-                cache: 'no-cache' // Always get fresh content
-            }).then(function(response) {
-                if (response.ok) {
-                    const responseClone = response.clone();
-                    caches.open(CACHE_NAME).then(function(cache) {
-                        cache.put(event.request, responseClone);
+            Promise.race([
+                fetch(event.request, { 
+                    cache: 'no-cache' // Always get fresh content
+                }).then(function(response) {
+                    if (response.ok) {
+                        const responseClone = response.clone();
+                        caches.open(CACHE_NAME).then(function(cache) {
+                            cache.put(event.request, responseClone);
+                        });
+                        return response;
+                    }
+                    // If network response is not ok, try cache
+                    return caches.match(event.request).then(function(cachedResponse) {
+                        return cachedResponse || returnFromCache(event.request);
                     });
-                    return response;
-                }
-                // If network response is not ok, try cache
-                return caches.match(event.request).then(function(cachedResponse) {
-                    return cachedResponse || returnFromCache(event.request);
-                });
-            }).catch(function() {
-                // Network failed, use cache
+                }),
+                // Timeout after 3 seconds
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Network timeout')), 3000)
+                )
+            ]).catch(function() {
+                // Network failed or timed out, use cache
                 return caches.match(event.request).then(function(cachedResponse) {
                     return cachedResponse || returnFromCache(event.request);
                 });

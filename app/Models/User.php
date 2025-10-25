@@ -25,6 +25,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'role',
         'is_active',
+        'is_developer',
         'last_login_at',
     ];
 
@@ -47,6 +48,7 @@ class User extends Authenticatable implements FilamentUser
         'email_verified_at' => 'datetime',
         'last_login_at' => 'datetime',
         'is_active' => 'boolean',
+        'is_developer' => 'boolean',
         'password' => 'hashed',
     ];
 
@@ -120,5 +122,29 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return in_array($this->role, ['super_admin', 'content_manager']);
+    }
+
+    /**
+     * Check if user is the developer account
+     */
+    public function isDeveloper(): bool
+    {
+        return $this->is_developer === true;
+    }
+
+    /**
+     * Scope a query to exclude developer accounts
+     */
+    public function scopeNonDeveloper($query)
+    {
+        return $query->where('is_developer', false);
+    }
+
+    /**
+     * Scope a query to get only developer account
+     */
+    public function scopeDeveloper($query)
+    {
+        return $query->where('is_developer', true);
     }
 }

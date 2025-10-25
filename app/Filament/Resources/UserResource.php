@@ -19,6 +19,11 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->nonDeveloper();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -77,11 +82,18 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->hidden(fn (User $record) => $record->isDeveloper()),
+                Tables\Actions\DeleteAction::make()
+                    ->hidden(fn (User $record) => $record->isDeveloper()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function ($records) {
+                            // Filter out developer accounts from bulk delete
+                            return $records->reject(fn ($record) => $record->isDeveloper());
+                        }),
                 ]),
             ]);
     }
