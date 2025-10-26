@@ -15,10 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\PWAMiddleware::class,
             \App\Http\Middleware\SEOMiddleware::class,
+            \App\Http\Middleware\TrackVisits::class,
         ]);
         
         $middleware->alias([
             'whatsapp.webhook' => \App\Http\Middleware\WhatsAppWebhookMiddleware::class,
+            'track.visits' => \App\Http\Middleware\TrackVisits::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

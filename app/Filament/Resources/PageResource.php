@@ -2083,11 +2083,14 @@ class PageResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('template'),
-                Tables\Columns\TextColumn::make('meta_title')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('og_image_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('visit_count')
+                    ->label('Visits')
+                    ->formatStateUsing(fn ($record) => number_format($record->visits()->count()))
+                    ->sortable(query: function ($query, $direction) {
+                        return $query->withCount('visits')->orderBy('visits_count', $direction);
+                    })
+                    ->badge()
+                    ->color('primary'),
                 Tables\Columns\IconColumn::make('is_published')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('published_at')
@@ -2110,6 +2113,7 @@ class PageResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -2131,6 +2135,7 @@ class PageResource extends Resource
         return [
             'index' => Pages\ListPages::route('/'),
             'create' => Pages\CreatePage::route('/create'),
+            'view' => Pages\ViewPage::route('/{record}'),
             'edit' => Pages\EditPage::route('/{record}/edit'),
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Visitable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,7 +14,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Page extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, HasSlug, InteractsWithMedia;
+    use HasFactory, SoftDeletes, HasSlug, InteractsWithMedia, Visitable;
 
     protected $fillable = [
         'title',
