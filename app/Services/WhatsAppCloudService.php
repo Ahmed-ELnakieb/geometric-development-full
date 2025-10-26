@@ -11,7 +11,7 @@ use Illuminate\Http\UploadedFile;
 
 class WhatsAppCloudService
 {
-    private string $baseUrl = 'https://graph.facebook.com/v18.0';
+    private string $baseUrl;
     private ?string $accessToken;
     private ?string $phoneNumberId;
     private ?string $appId;
@@ -22,6 +22,11 @@ class WhatsAppCloudService
         $this->accessToken = $config['access_token'];
         $this->phoneNumberId = $config['phone_number'];
         $this->appId = $config['app_id'];
+        
+        // Build base URL from configuration
+        $baseUrl = config('whatsapp.base_url', 'https://graph.facebook.com');
+        $apiVersion = config('whatsapp.api_version', 'v18.0');
+        $this->baseUrl = rtrim($baseUrl, '/') . '/' . ltrim($apiVersion, '/');
     }
 
     /**
@@ -61,7 +66,7 @@ class WhatsAppCloudService
             'template' => [
                 'name' => $template,
                 'language' => [
-                    'code' => 'en'
+                    'code' => 'en_US' // Use en_US as in the Meta example
                 ]
             ]
         ];
@@ -75,7 +80,40 @@ class WhatsAppCloudService
             ];
         }
 
+        Log::info('Sending WhatsApp template message', [
+            'to' => $to,
+            'formatted_to' => $this->formatPhoneNumber($to),
+            'template' => $template,
+            'payload' => $payload
+        ]);
+
         return $this->makeApiCall("/{$this->phoneNumberId}/messages", $payload);
+    }
+
+    /**
+     * Send a custom template with fallback to hello_world
+     */
+    public function sendTemplateWithFallback(string $to, string $template, array $params = []): array
+    {
+        try {
+            // Try to send the requested template first
+            return $this->sendTemplate($to, $template, $params);
+        } catch (WhatsAppApiException $e) {
+            // If template doesn't exist, fall back to hello_world
+            if (str_contains($e->getMessage(), 'Template name does not exist') || 
+                str_contains($e->getMessage(), 'does not exist in the translation')) {
+                
+                Log::warning('Template not found, falling back to hello_world', [
+                    'requested_template' => $template,
+                    'error' => $e->getMessage()
+                ]);
+                
+                return $this->sendTemplate($to, 'hello_world', []);
+            }
+            
+            // Re-throw other exceptions
+            throw $e;
+        }
     }
 
     /**
@@ -88,6 +126,7 @@ class WhatsAppCloudService
         }
 
         $response = Http::withToken($this->accessToken)
+            ->withOptions($this->getHttpOptions())
             ->attach('file', $file->getContent(), $file->getClientOriginalName())
             ->post("{$this->baseUrl}/{$this->appId}/media", [
                 'messaging_product' => 'whatsapp'
@@ -111,6 +150,7 @@ class WhatsAppCloudService
         }
 
         $response = Http::withToken($this->accessToken)
+            ->withOptions($this->getHttpOptions())
             ->get("{$this->baseUrl}/{$this->phoneNumberId}", [
                 'fields' => 'display_phone_number,verified_name,quality_rating'
             ]);
@@ -166,6 +206,7 @@ class WhatsAppCloudService
         }
 
         $response = Http::withToken($this->accessToken)
+            ->withOptions($this->getHttpOptions())
             ->get("{$this->baseUrl}/{$mediaId}");
 
         if (!$response->successful()) {
@@ -186,6 +227,7 @@ class WhatsAppCloudService
         }
 
         $response = Http::withToken($this->accessToken)
+            ->withOptions($this->getHttpOptions())
             ->get($mediaUrl);
 
         if (!$response->successful()) {
@@ -205,6 +247,7 @@ class WhatsAppCloudService
         while ($attempt < $retries) {
             try {
                 $response = Http::withToken($this->accessToken)
+                    ->withOptions($this->getHttpOptions())
                     ->post($this->baseUrl . $endpoint, $payload);
 
                 if ($response->successful()) {
@@ -258,13 +301,19 @@ class WhatsAppCloudService
      */
     private function formatPhoneNumber(string $phoneNumber): string
     {
-        // Remove all non-numeric characters
-        $cleaned = preg_replace('/[^0-9]/', '', $phoneNumber);
+        // Remove all non-numeric characters except +
+        $cleaned = preg_replace('/[^0-9+]/', '', $phoneNumber);
         
-        // Add country code if not present
-        if (!str_starts_with($cleaned, '1') && strlen($cleaned) === 10) {
-            $cleaned = '1' . $cleaned;
+        // Remove + if present at the beginning
+        if (str_starts_with($cleaned, '+')) {
+            $cleaned = substr($cleaned, 1);
         }
+        
+        // Log the formatted number for debugging
+        Log::info('WhatsApp phone number formatting', [
+            'original' => $phoneNumber,
+            'formatted' => $cleaned
+        ]);
         
         return $cleaned;
     }
@@ -298,5 +347,175 @@ class WhatsAppCloudService
     public function getWebhookVerifyToken(): ?string
     {
         return ChatSetting::get('whatsapp_webhook_verify_token');
+    }
+
+    /**
+     * Get message delivery status
+     */
+    public function getMessageStatus(string $messageId): array
+    {
+        if (!$this->isConfigured()) {
+            throw new WhatsAppApiException('WhatsApp API not configured', 500);
+        }
+
+        $response = Http::withToken($this->accessToken)
+            ->withOptions($this->getHttpOptions())
+            ->get("{$this->baseUrl}/{$messageId}");
+
+        if (!$response->successful()) {
+            throw new WhatsAppApiException('Failed to get message status: ' . $response->body(), $response->status());
+        }
+
+        return $response->json();
+    }
+
+    /**
+     * Send a test message with enhanced debugging
+     */
+    public function sendTestMessageWithDebug(string $to, string $message): array
+    {
+        $formattedNumber = $this->formatPhoneNumber($to);
+        
+        Log::info('Sending WhatsApp test message', [
+            'original_number' => $to,
+            'formatted_number' => $formattedNumber,
+            'message' => $message,
+            'phone_number_id' => $this->phoneNumberId
+        ]);
+
+        $result = $this->sendMessage($to, $message);
+        
+        Log::info('WhatsApp test message result', [
+            'result' => $result,
+            'message_id' => $result['messages'][0]['id'] ?? 'No ID returned'
+        ]);
+
+        return $result;
+    }
+
+    /**
+     * Get available message templates
+     */
+    public function getMessageTemplates(): array
+    {
+        if (!$this->isConfigured()) {
+            throw new WhatsAppApiException('WhatsApp API not configured', 500);
+        }
+
+        // Try to get templates from the correct endpoint
+        $response = Http::withToken($this->accessToken)
+            ->withOptions($this->getHttpOptions())
+            ->get("{$this->baseUrl}/{$this->phoneNumberId}/message_templates");
+
+        if (!$response->successful()) {
+            // If that fails, try the business account endpoint
+            $response = Http::withToken($this->accessToken)
+                ->withOptions($this->getHttpOptions())
+                ->get("{$this->baseUrl}/{$this->appId}/message_templates");
+        }
+
+        if (!$response->successful()) {
+            throw new WhatsAppApiException('Failed to get message templates: ' . $response->body(), $response->status());
+        }
+
+        return $response->json();
+    }
+
+    /**
+     * Get WhatsApp Business Account status and information
+     */
+    public function getBusinessAccountInfo(): array
+    {
+        if (!$this->isConfigured()) {
+            throw new WhatsAppApiException('WhatsApp API not configured', 500);
+        }
+
+        $response = Http::withToken($this->accessToken)
+            ->withOptions($this->getHttpOptions())
+            ->get("{$this->baseUrl}/{$this->appId}", [
+                'fields' => 'name,verification_status,business_verification_status,restriction_info'
+            ]);
+
+        if (!$response->successful()) {
+            throw new WhatsAppApiException('Failed to get business account info: ' . $response->body(), $response->status());
+        }
+
+        return $response->json();
+    }
+
+    /**
+     * Check if account is in production mode
+     */
+    public function isProductionMode(): bool
+    {
+        try {
+            $accountInfo = $this->getBusinessAccountInfo();
+            
+            // Check if business verification is complete
+            $businessVerified = isset($accountInfo['business_verification_status']) && 
+                               $accountInfo['business_verification_status'] === 'verified';
+            
+            // Check if phone number verification is complete
+            $phoneInfo = $this->getBusinessProfile();
+            $phoneVerified = isset($phoneInfo['verified_name']);
+            
+            return $businessVerified && $phoneVerified;
+        } catch (\Exception $e) {
+            Log::warning('Could not determine WhatsApp production mode status', [
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Get HTTP options for cURL requests
+     */
+    private function getHttpOptions(): array
+    {
+        $options = [
+            'timeout' => config('whatsapp.timeout', 30),
+            'connect_timeout' => config('whatsapp.connect_timeout', 10),
+        ];
+
+        // Check if SSL verification is explicitly disabled via environment
+        $sslVerify = config('whatsapp.ssl_verify');
+        
+        if ($sslVerify === false || (is_null($sslVerify) && app()->environment(['local', 'development', 'testing']))) {
+            $options['verify'] = false; // Disable SSL verification
+            
+            Log::warning('SSL verification disabled for WhatsApp API calls', [
+                'environment' => app()->environment(),
+                'explicit_config' => !is_null($sslVerify)
+            ]);
+        } else {
+            // Enable SSL verification
+            $options['verify'] = true;
+            
+            // Check for custom CA bundle path from config
+            $customCaBundle = config('whatsapp.ca_bundle');
+            if ($customCaBundle && file_exists($customCaBundle)) {
+                $options['cafile'] = $customCaBundle;
+                Log::info('Using custom CA bundle for WhatsApp API', ['path' => $customCaBundle]);
+            } else {
+                // Try to find system CA bundle
+                $caBundlePaths = [
+                    storage_path('app/cacert.pem'), // Custom downloaded bundle
+                    '/etc/ssl/certs/ca-certificates.crt', // Debian/Ubuntu
+                    '/etc/pki/tls/certs/ca-bundle.crt',   // RHEL/CentOS
+                    '/usr/local/share/certs/ca-root-nss.crt', // FreeBSD
+                ];
+
+                foreach ($caBundlePaths as $path) {
+                    if (file_exists($path)) {
+                        $options['cafile'] = $path;
+                        Log::info('Using system CA bundle for WhatsApp API', ['path' => $path]);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $options;
     }
 }
