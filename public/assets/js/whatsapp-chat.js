@@ -31,10 +31,20 @@ class WhatsAppChatWidget {
         this.initializeWebSocket();
         this.startHeartbeat();
 
+        // Show widget (same behavior as back-to-top)
+        this.showWidget();
+
         // Show pulse animation on first visit
         if (!localStorage.getItem('wa_chat_visited')) {
             this.showPulseAnimation();
             localStorage.setItem('wa_chat_visited', 'true');
+        }
+    }
+
+    showWidget() {
+        const widget = document.getElementById('whatsappChatWidget');
+        if (widget) {
+            widget.classList.add('active');
         }
     }
 
