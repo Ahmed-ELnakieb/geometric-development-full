@@ -30,7 +30,7 @@ class WhatsAppChatWidget {
         this.loadSession();
         this.initializeWebSocket();
         this.startHeartbeat();
-        
+
         // Show pulse animation on first visit
         if (!localStorage.getItem('wa_chat_visited')) {
             this.showPulseAnimation();
@@ -46,15 +46,15 @@ class WhatsAppChatWidget {
             // Get WebSocket configuration from server
             const response = await fetch(this.config.apiUrl + '/websocket-info');
             const data = await response.json();
-            
+
             if (!data.success || !data.websocket.enabled) {
                 console.log('WebSocket not available, using polling mode');
                 return;
             }
-            
+
             // Load Pusher library dynamically
             await this.loadPusherLibrary();
-            
+
             // Initialize Pusher connection
             this.pusher = new Pusher(data.websocket.key, {
                 cluster: data.websocket.cluster,
@@ -67,10 +67,10 @@ class WhatsAppChatWidget {
                     }
                 }
             });
-            
+
             // Subscribe to session channel
             this.subscribeToSessionChannel();
-            
+
             // Handle connection events
             this.pusher.connection.bind('connected', () => {
                 console.log('WebSocket connected');
@@ -78,19 +78,19 @@ class WhatsAppChatWidget {
                 this.showConnectionStatus('connected', 'Connected');
                 this.processMessageQueue();
             });
-            
+
             this.pusher.connection.bind('disconnected', () => {
                 console.log('WebSocket disconnected');
                 this.isConnected = false;
                 this.showConnectionStatus('disconnected', 'Disconnected');
             });
-            
+
             this.pusher.connection.bind('error', (error) => {
                 console.error('WebSocket error:', error);
                 this.isConnected = false;
                 this.showConnectionStatus('disconnected', 'Connection error');
             });
-            
+
         } catch (error) {
             console.error('Failed to initialize WebSocket:', error);
         }
@@ -105,7 +105,7 @@ class WhatsAppChatWidget {
                 resolve();
                 return;
             }
-            
+
             const script = document.createElement('script');
             script.src = 'https://js.pusher.com/8.2.0/pusher.min.js';
             script.onload = resolve;
@@ -119,30 +119,30 @@ class WhatsAppChatWidget {
      */
     subscribeToSessionChannel() {
         if (!this.pusher) return;
-        
+
         const channelName = `chat.session.${this.config.sessionId}`;
         const channel = this.pusher.subscribe(channelName);
         this.channels.session = channel;
-        
+
         // Handle incoming messages
         channel.bind('message.received', (data) => {
             console.log('Message received via WebSocket:', data);
-            
+
             if (data.message && data.message.type === 'received') {
                 this.receiveMessage(data.message);
             }
         });
-        
+
         // Handle message status updates
         channel.bind('message.status.updated', (data) => {
             console.log('Message status updated via WebSocket:', data);
             this.updateMessageStatus(data.message_id, data.new_status);
         });
-        
+
         // Handle typing indicators
         channel.bind('typing.indicator', (data) => {
             console.log('Typing indicator via WebSocket:', data);
-            
+
             if (data.sender_type === 'agent' || data.sender_type === 'system') {
                 if (data.is_typing) {
                     this.showTypingIndicator();
@@ -213,12 +213,12 @@ class WhatsAppChatWidget {
     openChat() {
         const chatInterface = document.getElementById('chatInterface');
         const chatButton = document.getElementById('chatButton');
-        
+
         if (chatInterface && chatButton) {
             this.isOpen = true;
             chatInterface.classList.add('active');
             chatButton.classList.remove('wa-chat-button-pulse');
-            
+
             // Focus on input
             setTimeout(() => {
                 const chatInput = document.getElementById('chatInput');
@@ -229,7 +229,7 @@ class WhatsAppChatWidget {
 
             // Mark as read
             this.markMessagesAsRead();
-            
+
             // Track analytics
             this.trackEvent('chat_opened');
         }
@@ -237,11 +237,11 @@ class WhatsAppChatWidget {
 
     closeChat() {
         const chatInterface = document.getElementById('chatInterface');
-        
+
         if (chatInterface) {
             this.isOpen = false;
             chatInterface.classList.remove('active');
-            
+
             // Track analytics
             this.trackEvent('chat_closed');
         }
@@ -250,16 +250,16 @@ class WhatsAppChatWidget {
     handleInputChange(e) {
         const input = e.target;
         const sendButton = document.getElementById('chatSend');
-        
+
         // Auto-resize textarea
         input.style.height = 'auto';
         input.style.height = Math.min(input.scrollHeight, 100) + 'px';
-        
+
         // Enable/disable send button
         if (sendButton) {
             sendButton.disabled = !input.value.trim();
         }
-        
+
         // Show typing indicator (will be implemented with WebSocket)
         this.handleTyping();
     }
@@ -285,12 +285,12 @@ class WhatsAppChatWidget {
     async sendMessage() {
         const chatInput = document.getElementById('chatInput');
         const sendButton = document.getElementById('chatSend');
-        
+
         if (!chatInput || !chatInput.value.trim()) return;
 
         const messageText = chatInput.value.trim();
         const messageId = this.generateMessageId();
-        
+
         // Clear input
         chatInput.value = '';
         chatInput.style.height = 'auto';
@@ -308,7 +308,7 @@ class WhatsAppChatWidget {
         try {
             // Send message via API
             const response = await this.sendMessageToAPI(messageText, messageId);
-            
+
             if (response.success) {
                 this.updateMessageStatus(messageId, 'sent');
                 this.trackEvent('message_sent');
@@ -317,7 +317,7 @@ class WhatsAppChatWidget {
             }
         } catch (error) {
             console.error('Failed to send message:', error);
-            
+
             // Queue message for retry if offline
             if (!this.isConnected) {
                 this.messageQueue.add({
@@ -362,13 +362,13 @@ class WhatsAppChatWidget {
 
         const messageElement = this.createMessageElement(message);
         messagesContainer.appendChild(messageElement);
-        
+
         // Scroll to bottom
         this.scrollToBottom();
-        
+
         // Add entrance animation
         messageElement.classList.add('wa-chat-message-enter');
-        
+
         // Update notification badge if chat is closed
         if (!this.isOpen && message.type === 'received') {
             this.updateNotificationBadge();
@@ -389,7 +389,7 @@ class WhatsAppChatWidget {
 
         const timeDiv = document.createElement('div');
         timeDiv.className = 'wa-chat-message-time';
-        
+
         const timeSpan = document.createElement('span');
         timeSpan.textContent = this.formatTime(message.timestamp);
         timeDiv.appendChild(timeSpan);
@@ -465,7 +465,7 @@ class WhatsAppChatWidget {
         if (badge) {
             badge.style.display = 'none';
         }
-        
+
         // Mark messages as read in storage
         const session = this.getSession();
         if (session.messages) {
@@ -481,8 +481,8 @@ class WhatsAppChatWidget {
     getUnreadMessageCount() {
         const session = this.getSession();
         if (!session.messages) return 0;
-        
-        return session.messages.filter(msg => 
+
+        return session.messages.filter(msg =>
             msg.type === 'received' && !msg.read
         ).length;
     }
@@ -505,12 +505,12 @@ class WhatsAppChatWidget {
     showConnectionStatus(status, message) {
         const connectionStatus = document.getElementById('connectionStatus');
         const connectionText = connectionStatus?.querySelector('.wa-chat-connection-text');
-        
+
         if (connectionStatus && connectionText) {
             connectionStatus.className = `wa-chat-connection-status ${status}`;
             connectionText.textContent = message;
             connectionStatus.style.display = 'flex';
-            
+
             if (status === 'connected') {
                 setTimeout(() => {
                     connectionStatus.style.display = 'none';
@@ -528,7 +528,7 @@ class WhatsAppChatWidget {
                 tag: 'whatsapp-chat'
             });
         }
-        
+
         console.log(`[WhatsApp Chat ${type.toUpperCase()}]:`, message);
     }
 
@@ -547,30 +547,30 @@ class WhatsAppChatWidget {
     }
 
     generateSessionId() {
-        return 'wa_session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        return 'wa_session_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
     }
 
     generateMessageId() {
-        return 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        return 'msg_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
     }
 
     loadSession() {
         const session = this.getSession();
-        
+
         // Load previous messages
         if (session.messages && session.messages.length > 0) {
             const messagesContainer = document.getElementById('chatMessages');
             if (messagesContainer) {
                 // Clear welcome message
                 messagesContainer.innerHTML = '';
-                
+
                 // Add previous messages
                 session.messages.forEach(message => {
                     this.addMessageToUI(message);
                 });
             }
         }
-        
+
         // Update notification badge
         this.updateNotificationBadge();
     }
@@ -599,10 +599,10 @@ class WhatsAppChatWidget {
     handleTyping() {
         // Clear existing timeout
         clearTimeout(this.typingTimeout);
-        
+
         // Send typing started
         this.sendTypingIndicator(true);
-        
+
         // Set timeout to send typing stopped
         this.typingTimeout = setTimeout(() => {
             this.sendTypingIndicator(false);
@@ -616,7 +616,7 @@ class WhatsAppChatWidget {
         if (!this.pusher || !this.isConnected) {
             return;
         }
-        
+
         try {
             await fetch(this.config.apiUrl + '/typing', {
                 method: 'POST',
@@ -647,7 +647,7 @@ class WhatsAppChatWidget {
         const chatButton = document.getElementById('chatButton');
         if (chatButton) {
             chatButton.classList.add('wa-chat-button-pulse');
-            
+
             // Remove after 10 seconds
             setTimeout(() => {
                 chatButton.classList.remove('wa-chat-button-pulse');
@@ -670,7 +670,7 @@ class WhatsAppChatWidget {
                     'X-Session-ID': this.config.sessionId
                 }
             });
-            
+
             if (response.ok) {
                 if (!this.isConnected) {
                     this.isConnected = true;
@@ -697,7 +697,7 @@ class WhatsAppChatWidget {
 
     async processMessageQueue() {
         const queuedMessages = this.messageQueue.getAll();
-        
+
         for (const message of queuedMessages) {
             try {
                 const response = await this.sendMessageToAPI(message.text, message.id);
@@ -720,7 +720,7 @@ class WhatsAppChatWidget {
                 ...data
             });
         }
-        
+
         console.log(`[WhatsApp Chat Event]: ${eventName}`, data);
     }
 
@@ -735,7 +735,7 @@ class WhatsAppChatWidget {
                     this.pusher.unsubscribe(channel.name);
                 }
             });
-            
+
             // Disconnect
             this.pusher.disconnect();
             this.pusher = null;
@@ -815,13 +815,13 @@ class MessageQueue {
 }
 
 // Initialize chat widget when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Check if chat widget exists on page
     if (document.getElementById('whatsappChatWidget')) {
         window.whatsappChat = new WhatsAppChatWidget({
             apiUrl: '/api/whatsapp/chat'
         });
-        
+
         // Request notification permission
         if ('Notification' in window && Notification.permission === 'default') {
             Notification.requestPermission();
