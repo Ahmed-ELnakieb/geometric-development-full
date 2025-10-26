@@ -41,6 +41,7 @@
 
     @stack('meta')
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/logo/favicon.png') }}">
 
@@ -89,6 +90,8 @@
         </div>
         <!-- end main-content-wrapper -->
 
+        @include('partials.whatsapp-chat')
+
         @include('partials.back-to-top')
 
         <!-- PWA Install Button -->
@@ -117,6 +120,9 @@
     <script src="{{ asset('assets/js/preloader.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
+    <!-- WhatsApp Chat Widget -->
+    <script src="{{ asset('assets/js/whatsapp-chat.js') }}?v={{ time() }}"></script>
+
     <!-- PWA Advanced Features -->
     <script src="{{ asset('assets/js/sync-manager.js') }}?v={{ time() }}"></script>
     <script src="{{ asset('assets/js/notification-manager.js') }}?v={{ time() }}"></script>
@@ -130,7 +136,8 @@
 
     <!-- PWA Service Worker Registration -->
     <script>
-        if ('serviceWorker' in navigator) {
+        // Only register service worker on non-admin pages
+        if ('serviceWorker' in navigator && !window.location.pathname.startsWith('/admin') && !window.location.pathname.startsWith('/filament')) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('{{ route('pwa.sw') }}')
                     .then(function(registration) {

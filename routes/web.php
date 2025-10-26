@@ -19,6 +19,9 @@ use App\Http\Controllers\RobotsController;
 Route::get('/manifest.json', [PWAController::class, 'manifest'])->name('pwa.manifest');
 Route::get('/sw.js', [PWAController::class, 'serviceWorker'])->name('pwa.sw');
 Route::get('/pwa-test', [PWAController::class, 'test'])->name('pwa.test');
+Route::get('/clear-sw', function() {
+    return response()->json(['message' => 'Service worker cleared', 'timestamp' => time()]);
+})->name('pwa.clear');
 
 // Sync API Routes
 Route::prefix('api/sync')->name('sync.')->group(function () {

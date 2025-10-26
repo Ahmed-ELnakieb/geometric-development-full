@@ -141,10 +141,10 @@ self.addEventListener("fetch", function (event) {
     try {
         const url = new URL(event.request.url);
         
-        // Skip admin, filament routes and non-GET requests from PWA caching
-        // Let these requests go directly to the network without service worker intervention
-        if (shouldExclude(url.pathname) || event.request.method !== 'GET') {
-            // Don't intercept - let browser handle normally
+        // COMPLETELY IGNORE admin and filament routes - no caching, no offline handling
+        if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/filament') || shouldExclude(url.pathname) || event.request.method !== 'GET') {
+            // Don't intercept AT ALL - let browser handle normally
+            // This ensures admin pages work without ANY service worker interference
             return;
         }
     } catch (error) {

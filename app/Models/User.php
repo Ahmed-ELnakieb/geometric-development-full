@@ -69,6 +69,22 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Get the chat agent profile for this user.
+     */
+    public function chatAgent()
+    {
+        return $this->hasOne(ChatAgent::class);
+    }
+
+    /**
+     * Get conversations assigned to this user as an agent.
+     */
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class, 'agent_id');
+    }
+
+    /**
      * Scope a query to only include active users.
      */
     public function scopeActive($query)
