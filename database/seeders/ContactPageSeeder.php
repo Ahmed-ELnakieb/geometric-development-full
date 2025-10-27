@@ -39,7 +39,7 @@ class ContactPageSeeder extends Seeder
             'breadcrumb' => [
                 'is_active' => true,
                 'page_title' => 'Contact Us',
-                'background_image' => 'assets/img/hero/hero.png', // Header background image
+                'background_image' => 'contact/breadcrumb/01K8JW7ASQ138J1XWENBGX6KMT.png', // Header background image
             ],
 
             // CONTACT INFO SECTION
@@ -97,7 +97,7 @@ class ContactPageSeeder extends Seeder
                 'is_active' => true,
                 'subtitle' => 'Contact us',
                 'title' => 'Find Your Perfect Property Today!',
-                'side_image' => null, // Can be set through admin
+                'side_image' => 'contact/form/01K8JW4YPWRQQASHYPKRG6NVA1.png', // Contact form side image
                 'form_action' => route('contact.store'),
                 'show_user_type' => true,
             ],
