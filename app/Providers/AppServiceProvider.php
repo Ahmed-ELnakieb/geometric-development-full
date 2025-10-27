@@ -31,6 +31,9 @@ class AppServiceProvider extends ServiceProvider
         // Fix for MySQL key length issues
         Schema::defaultStringLength(191);
         
+        // Register Page observer to lock system page slugs
+        \App\Models\Page::observe(\App\Observers\PageObserver::class);
+        
         // Register email logging listener
         \Illuminate\Support\Facades\Event::listen(
             \Illuminate\Mail\Events\MessageSent::class,

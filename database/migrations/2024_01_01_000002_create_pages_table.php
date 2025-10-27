@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->enum('template', ['home', 'about', 'contact', 'careers', 'blog', 'custom'])->default('custom');
+            $table->enum('template', ['home', 'about', 'contact', 'projects', 'careers', 'blog', 'custom'])->default('custom');
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->text('meta_keywords')->nullable();

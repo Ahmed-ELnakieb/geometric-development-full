@@ -630,7 +630,7 @@ class ProjectSeeder extends Seeder
 
         // Project 4: RAS AL KHAIMAH
         $rasAlKhaimah = Project::create([
-            "title" => "Ras Al Khaimah Towers",
+            "title" => "Ras Al Khaimah",
             "slug" => "ras-al-khaimah-towers",
             "location" => "Ras Al Khaimah, UAE",
             "type" => "mixed_use",
@@ -638,7 +638,7 @@ class ProjectSeeder extends Seeder
             "excerpt" =>
                 "A mixed-use development in Ras Al Khaimah combining residential, commercial, and hospitality spaces.",
             "description" =>
-                "Ras Al Khaimah Towers is a visionary mixed-use development blending residential, commercial, and hospitality elements. This project creates a vibrant urban center that caters to modern lifestyles and business needs, with high-rise residential units, office spaces, retail areas, and hotel facilities. Download our brochure to discover more.",
+                "Ras Al Khaimah is a visionary mixed-use development blending residential, commercial, and hospitality elements. This project creates a vibrant urban center that caters to modern lifestyles and business needs, with high-rise residential units, office spaces, retail areas, and hotel facilities. Download our brochure to discover more.",
             "video_url" => "https://www.youtube.com/watch?v=e45TPIcx5CY",
             "video_preview_url" => "assets/img/video/project-video.mp4",
             "property_size_min" => 580,
