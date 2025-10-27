@@ -151,7 +151,7 @@
 
         .brand-name {
             font-family: 'Arial', 'Helvetica', sans-serif;
-            font-size: clamp(24px, 4vw, 36px);
+            font-size: clamp(18px, 4vw, 36px);
             font-weight: 800;
             letter-spacing: 4px;
             color: #FFFFFF;
@@ -163,9 +163,9 @@
 
         .brand-subtitle {
             font-family: 'Arial', 'Helvetica', sans-serif;
-            font-size: clamp(12px, 2vw, 13px);
+            font-size: clamp(9px, 2vw, 13px);
             font-weight: 600;
-            letter-spacing: 6px;
+            letter-spacing: 4px;
             color: #C3905F;
             text-shadow: 0 0 15px rgba(195, 144, 95, 0.4);
         }
@@ -248,6 +248,16 @@
                 height: 10px;
             }
 
+            .brand-name {
+                font-size: clamp(16px, 3.5vw, 28px);
+                letter-spacing: 3px;
+            }
+
+            .brand-subtitle {
+                font-size: clamp(8px, 1.8vw, 11px);
+                letter-spacing: 3px;
+            }
+
             @keyframes containerSlide {
                 0%, 100% {
                     transform: translateX(0);
@@ -273,6 +283,16 @@
             .animated-dot {
                 width: 8px;
                 height: 8px;
+            }
+
+            .brand-name {
+                font-size: clamp(14px, 3vw, 24px);
+                letter-spacing: 2px;
+            }
+
+            .brand-subtitle {
+                font-size: clamp(7px, 1.5vw, 10px);
+                letter-spacing: 2px;
             }
 
             @keyframes containerSlide {
