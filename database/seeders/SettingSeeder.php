@@ -33,5 +33,15 @@ class SettingSeeder extends Seeder
         // Email Group
         Setting::set('admin_notification_email', 'admin@geometric-development.com', 'text', 'email');
         Setting::set('mail_from_name', 'Geometric Development', 'text', 'email');
+
+        // Preloader Group
+        Setting::set('preloader_enabled', '1', 'text', 'preloader');
+        Setting::set('preloader_use_logo', '1', 'text', 'preloader');
+        Setting::set('preloader_main_text', 'GEOMETRIC DEVELOPMENT', 'text', 'preloader');
+        Setting::set('preloader_sub_text', 'LEADING COMMUNITY DEVELOPER IN MUROJ, RICH HILLS', 'text', 'preloader');
+        Setting::set('preloader_background_type', 'color', 'text', 'preloader');
+        Setting::set('preloader_background_color', '#060606', 'text', 'preloader');
+        Setting::set('preloader_background_image', '', 'image', 'preloader');
+        Setting::set('preloader_custom_image', '', 'image', 'preloader');
     }
 }

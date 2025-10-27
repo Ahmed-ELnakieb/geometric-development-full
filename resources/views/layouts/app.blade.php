@@ -115,9 +115,10 @@
     <script src="{{ asset('assets/js/CustomEase.min.js') }}"></script>
     <script src="{{ asset('assets/js/counterup.min.js') }}"></script>
     <script src="{{ asset('assets/js/waypoints.min.js') }}"></script>
+    <script src="{{ asset('assets/js/geometric-preloader.js') }}"></script>
     <script src="{{ asset('assets/js/lenis.min.js') }}"></script>
     <script src="{{ asset('assets/js/ScrollTrigger.min.js') }}"></script>
-    <script src="{{ asset('assets/js/preloader.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/preloader.js') }}"></script> --}}
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <!-- WhatsApp Chat Widget -->
@@ -137,7 +138,8 @@
     <!-- PWA Service Worker Registration -->
     <script>
         // Only register service worker on non-admin pages
-        if ('serviceWorker' in navigator && !window.location.pathname.startsWith('/admin') && !window.location.pathname.startsWith('/filament')) {
+        if ('serviceWorker' in navigator && !window.location.pathname.startsWith('/admin') && !window.location.pathname
+            .startsWith('/filament')) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('{{ route('pwa.sw') }}')
                     .then(function(registration) {

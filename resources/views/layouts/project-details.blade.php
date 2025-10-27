@@ -65,7 +65,7 @@
         <script src="{{ asset('assets/js/waypoints.min.js') }}"></script>
         <script src="{{ asset('assets/js/lenis.min.js') }}"></script>
         <script src="{{ asset('assets/js/ScrollTrigger.min.js') }}"></script>
-        <script src="{{ asset('assets/js/preloader.js') }}"></script>
+        <script src="{{ asset('assets/js/geometric-preloader.js') }}"></script>
         <script src="{{ asset('assets/js/main.js') }}"></script>
 
         @stack('scripts')
