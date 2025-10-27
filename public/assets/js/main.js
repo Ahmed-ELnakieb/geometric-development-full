@@ -1540,41 +1540,47 @@ if($('.bs-a1-active').length) {
 	services-1-slider-activation
 */
 if($('.bs-s1-active').length) {
-	let slider = new Swiper('.bs-s1-active', {
-		loop: true,
-		spaceBetween: 40,
-		speed: 1000,
-		slidesPerView: 4,
+	$('.bs-s1-active').each(function() {
+		const slidesCount = $(this).find('.swiper-slide').length;
+		const minSlidesForLoop = 4; // Minimum slides needed for loop mode
+		
+		let slider = new Swiper(this, {
+			loop: slidesCount >= minSlidesForLoop, // Only enable loop if enough slides
+			spaceBetween: 40,
+			speed: 1000,
+			slidesPerView: 4,
+			loopedSlides: slidesCount >= minSlidesForLoop ? slidesCount : null,
 
-		autoplay: {
-			delay: 5000,
-		},
+			autoplay: slidesCount >= minSlidesForLoop ? {
+				delay: 5000,
+			} : false,
 
 
-		breakpoints: {
-			0: {
-				slidesPerView: 1,
-			},
-			576: {
-				slidesPerView: 2,
-			},
-			768: {
-				slidesPerView: 2,
-			},
-			992: {
-				slidesPerView: 3,
-			},
-			1200: {
-				slidesPerView: 3,
-			},
-			1400: {
-				slidesPerView: 4,
-			},
-			1600: {
-				slidesPerView: 4,
-			},
+			breakpoints: {
+				0: {
+					slidesPerView: 1,
+				},
+				576: {
+					slidesPerView: 2,
+				},
+				768: {
+					slidesPerView: 2,
+				},
+				992: {
+					slidesPerView: 3,
+				},
+				1200: {
+					slidesPerView: 3,
+				},
+				1400: {
+					slidesPerView: 4,
+				},
+				1600: {
+					slidesPerView: 4,
+				},
 
-		},
+			},
+		});
 	});
 }
 
@@ -1765,9 +1771,11 @@ if($('.bs-p3-active').length) {
 	showcase-3-slider-activation
 */
 if($('.bs-showc3-active').length) {
+	const slidesCount = $('.bs-showc3-active').find('.swiper-slide').length;
+	const minSlidesForLoop = 2; // Minimum slides needed for loop mode
 
 	let slider = new Swiper('.bs-showc3-active', {
-		loop: true,
+		loop: slidesCount >= minSlidesForLoop, // Only enable loop if enough slides
 		speed: 1000,
 		spaceBetween: 0,
 
