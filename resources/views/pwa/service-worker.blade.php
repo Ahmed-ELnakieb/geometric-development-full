@@ -1,5 +1,5 @@
-const CACHE_NAME = 'geometric-development-v{{ config("app.version", "1.0") }}-fixed-{{ time() }}';
-const OFFLINE_CACHE = 'offline-v-fixed-{{ time() }}';
+const CACHE_NAME = 'geometric-development-v{{ config("app.version", "1.0") }}-query-fix-{{ time() }}';
+const OFFLINE_CACHE = 'offline-v-query-fix-{{ time() }}';
 
 // Files to cache immediately on install
 const filesToCache = [
@@ -32,16 +32,21 @@ const shouldExclude = function(url) {
 };
 
 const preLoad = function () {
+    console.log('[SW] Pre-caching files:', filesToCache);
     return caches.open(CACHE_NAME).then(function (cache) {
         // Cache files individually to avoid failing the entire cache if one file fails
         const cachePromises = filesToCache.map(function(url) {
             return fetch(url).then(function(response) {
                 if (response.ok) {
+                    console.log('[SW] Cached:', url);
                     return cache.put(url, response);
+                } else {
+                    console.warn('[SW] Failed to cache (status ' + response.status + '):', url);
                 }
                 // Skip files that don't exist or return errors
                 return Promise.resolve();
-            }).catch(function() {
+            }).catch(function(error) {
+                console.error('[SW] Error caching:', url, error);
                 // Skip files that fail to fetch
                 return Promise.resolve();
             });
@@ -105,7 +110,7 @@ const addToCache = function (request) {
 
 const returnFromCache = function (request) {
     return caches.open(CACHE_NAME).then(function (cache) {
-        return cache.match(request).then(function (matching) {
+        return cache.match(request, { ignoreSearch: true }).then(function (matching) {
             if (!matching || matching.status === 404) {
                 // Check if this is an excluded route (admin, etc.)
                 try {
@@ -157,6 +162,16 @@ self.addEventListener("fetch", function (event) {
                          event.request.headers.get('accept').includes('text/html');
     
     if (isHTMLRequest) {
+        // Check if we're offline first for faster response
+        if (!navigator.onLine) {
+            event.respondWith(
+                caches.match(event.request).then(function(cachedResponse) {
+                    return cachedResponse || returnFromCache(event.request);
+                })
+            );
+            return;
+        }
+        
         // Network-first strategy for HTML pages with timeout
         event.respondWith(
             Promise.race([
@@ -171,17 +186,17 @@ self.addEventListener("fetch", function (event) {
                         return response;
                     }
                     // If network response is not ok, try cache
-                    return caches.match(event.request).then(function(cachedResponse) {
+                    return caches.match(event.request, { ignoreSearch: true }).then(function(cachedResponse) {
                         return cachedResponse || returnFromCache(event.request);
                     });
                 }),
-                // Timeout after 3 seconds
+                // Timeout after 1 second for faster offline detection
                 new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Network timeout')), 3000)
+                    setTimeout(() => reject(new Error('Network timeout')), 1000)
                 )
             ]).catch(function() {
                 // Network failed or timed out, use cache
-                return caches.match(event.request).then(function(cachedResponse) {
+                return caches.match(event.request, { ignoreSearch: true }).then(function(cachedResponse) {
                     return cachedResponse || returnFromCache(event.request);
                 });
             })
@@ -189,7 +204,7 @@ self.addEventListener("fetch", function (event) {
     } else {
         // Cache-first strategy for static assets (CSS, JS, images)
         event.respondWith(
-            caches.match(event.request).then(function(response) {
+            caches.match(event.request, { ignoreSearch: true }).then(function(response) {
                 if (response) {
                     return response;
                 }
@@ -199,7 +214,10 @@ self.addEventListener("fetch", function (event) {
                     if (response.ok) {
                         const responseClone = response.clone();
                         caches.open(CACHE_NAME).then(function(cache) {
-                            cache.put(event.request, responseClone);
+                            // Store without query parameters for better matching
+                            const url = new URL(event.request.url);
+                            const cleanUrl = url.origin + url.pathname;
+                            cache.put(cleanUrl, responseClone);
                         });
                     }
                     return response;
